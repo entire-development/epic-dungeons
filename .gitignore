@@ -9,3 +9,20 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 _deps
+
+# macOS
+.DS_Store
+
+
+# CMake
+build/
+
+# Sublime Text
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/
+
+# CLion
+.idea/
+
