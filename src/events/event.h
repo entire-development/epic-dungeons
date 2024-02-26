@@ -1,16 +1,10 @@
 #pragma once
-#include <vector>
 
-class Action {
-public:
-    virtual void execute() = 0;
-};
+namespace events {
+// Single action of Event class
+// for example: loot, fight, trap, etc.
+class Action {};
 
-
-class Event {
-public:
-    Event();
-    void execute();
-private:
-    std::vector<Action *> _actions;
-};
+// Scenario of the game contains multiple actions
+class Event {};
+} // namespace events
