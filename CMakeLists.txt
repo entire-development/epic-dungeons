@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.17)
 project(EpicDungeons)
 
+add_compile_options(-I c:/SFML/include/)
+
 set(CMAKE_CXX_STANDARD 20)
 
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
