@@ -1,10 +1,19 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.20)
 project(EpicDungeons)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(EpicDungeons main.cpp)
 file(GLOB_RECURSE SOURCES src/*.cpp)
 
-target_include_directories(EpicDungeons PUBLIC src)
-target_sources(EpicDungeons PUBLIC ${SOURCES})
+add_executable(EpicDungeons main.cpp ${SOURCES})
+target_include_directories(EpicDungeons PRIVATE src)
+
+# add spdlog
+find_package(spdlog 1.8.5 REQUIRED)
+target_link_libraries(EpicDungeons PRIVATE spdlog::spdlog)
+
+# add chrono
+find_package(Threads REQUIRED)
+target_link_libraries(EpicDungeons PRIVATE Threads::Threads)
+
+
