@@ -25,4 +25,11 @@ build/
 
 # CLion
 .idea/
-
+сmake-build-debug/
+сmake-build-release/
+сmake-build-minsize/
+сmake-build-relwithdebinfo/
+сmake-build-coverage/
+сmake-build-profile/
+сmake-build-asm/
+сmake-build-obj/
