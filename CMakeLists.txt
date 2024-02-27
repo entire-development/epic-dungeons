@@ -9,16 +9,17 @@ include(FetchContent)
 FetchContent_Declare(SFML
         GIT_REPOSITORY https://github.com/SFML/SFML.git
         GIT_TAG 2.6.x)
+
 FetchContent_MakeAvailable(SFML)
 
-add_executable(EpicDungeons main.cpp
-        src/view/demo.cpp)
+# IMPORTANT! Change executable back on main.cpp later. I need view/demo.cpp to test some sfml features.
+add_executable(EpicDungeons src/view/demo.cpp)
 file(GLOB_RECURSE SOURCES src/*.cpp)
 
 target_link_libraries(EpicDungeons PRIVATE sfml-graphics)
-target_compile_features(EpicDungeons PRIVATE cxx_std_20)
+#target_compile_features(EpicDungeons PRIVATE cxx_std_20)
 
 target_include_directories(EpicDungeons PUBLIC src)
 target_sources(EpicDungeons PUBLIC ${SOURCES})
 
-install(TARGETS CMakeSFMLProject)
+install(TARGETS EpicDungeons)
