@@ -15,4 +15,11 @@ AllowShortFunctionsOnASingleLine: All
 AllowShortIfStatementsOnASingleLine: true
 AllowShortLoopsOnASingleLine: true
 SortIncludes: true
---- 
+
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+# Max line length
+ColumnLimit: 120
+
+---   
