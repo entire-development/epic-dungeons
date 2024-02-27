@@ -2,6 +2,6 @@
 #include <iostream>
 
 int main() {
-  Game game;
-  return 0;
+    Game game;
+    return 0;
 }

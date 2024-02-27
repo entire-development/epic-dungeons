@@ -7,4 +7,4 @@ class Action {};
 
 // Scenario of the game contains multiple actions
 class Event {};
-} // namespace events
+}   // namespace events

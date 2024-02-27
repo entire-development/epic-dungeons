@@ -12,10 +12,18 @@ public:
         m_logger->set_level(spdlog::level::debug);
     }
 
-    void debug(const std::string &msg) { m_logger->debug(msg); }
-    void info(const std::string &msg) { m_logger->info(msg); }
-    void warn(const std::string &msg) { m_logger->warn(msg); }
-    void error(const std::string &msg) { m_logger->error(msg); }
+    void debug(const std::string &msg) {
+        m_logger->debug(msg);
+    }
+    void info(const std::string &msg) {
+        m_logger->info(msg);
+    }
+    void warn(const std::string &msg) {
+        m_logger->warn(msg);
+    }
+    void error(const std::string &msg) {
+        m_logger->error(msg);
+    }
 
 private:
     std::shared_ptr<spdlog::logger> m_logger;
@@ -26,9 +34,17 @@ Logger &getLogger() {
     return logger;
 }
 
-void debug(const std::string &msg) { getLogger().debug(msg); }
-void info(const std::string &msg) { getLogger().info(msg); }
-void warn(const std::string &msg) { getLogger().warn(msg); }
-void error(const std::string &msg) { getLogger().error(msg); }
+void debug(const std::string &msg) {
+    getLogger().debug(msg);
+}
+void info(const std::string &msg) {
+    getLogger().info(msg);
+}
+void warn(const std::string &msg) {
+    getLogger().warn(msg);
+}
+void error(const std::string &msg) {
+    getLogger().error(msg);
+}
 
-} // namespace logging
+}   // namespace logging
