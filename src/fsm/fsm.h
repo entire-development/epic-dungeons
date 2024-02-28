@@ -18,28 +18,36 @@ public:
     /// and changing the current state to the returned state
     void update(Args... args) {
         logging::debug("StateMachine::update: current state: " + m_current_state);
-        State<Args...> *state = m_states[m_current_state];
-        m_current_state = state->update(args...);
+        auto state = m_states[m_current_state];
+    std:
+        m_current_state = state.first + state.second->update(args...);
         logging::debug("StateMachine::update: new state: " + m_current_state);
     }
 
     /// @brief Add a state to the state machine
     void addState(State<Args...> *state) {
-        m_states[state->getName()] = state;
+        logging::debug("StateMachine::addState: " + state->getName());
+        m_states[state->getName()] = {"", state};
         state->m_machine = this;
     }
 
     /// @brief include StateMachine as state
     /// it must has entrypoint "start" and exitpoint "end"
-    void addSubMachine(const std::string &name, StateMachine<Args...> &machine) {
-        for (auto &state : machine.m_states) {
-            m_states[name + "." + state.first] = state.second;
+    void addSubMachine(const std::string &name, StateMachine<Args...> *machine) {
+        // add start and end states
+        addState(new RedirectState<Args...>(name, name + ".start"));
+        logging::debug("StateMachine::addSubMachine: " + name);
+        for (auto &state : machine->m_states) {
+            logging::debug("StateMachine::addSubMachine: " + state.first);
+            std::string new_state_name = name + "." + state.first;
+            std::string new_state_prefix = state.second->first + name + ".";
+            m_states[new_state_name] = {new_state_prefix, state.second->second};
             state.second->m_machine = this;
         }
     }
 
 private:
-    std::map<std::string, State<Args...> *> m_states;
+    std::map<std::string, std::pair<std::string, State<Args...> *>> m_states;
     std::string m_current_state = "start";
 };
 
