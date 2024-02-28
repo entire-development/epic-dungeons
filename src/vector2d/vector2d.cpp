@@ -3,22 +3,22 @@
 using namespace std;
 Vector2d::Vector2d(double x, double y) : x(x), y(y){};
 Vector2d Vector2d::operator+(Vector2d b) {
-    return Vector2d((*this).x + b.x, (*this).y + b.y);
+    return Vector2d(x + b.x, y + b.y);
 }
 Vector2d Vector2d::operator-(Vector2d b) {
-    return Vector2d((*this).x - b.x, (*this).y - b.y);
+    return Vector2d(x - b.x, y - b.y);
 }
 Vector2d Vector2d::operator-() {
-    return Vector2d(-(*this).x, -(*this).y);
+    return Vector2d(-x, -y);
 }
 Vector2d Vector2d::operator*(double b) {
-    return Vector2d((*this).x * b, (*this).y * b);
+    return Vector2d(x * b, y * b);
 }
 Vector2d Vector2d::operator/(double b) {
-    return Vector2d((*this).x / b, (*this).y / b);
+    return Vector2d(x / b, y / b);
 }
 Vector2d Vector2d::round() {
-    return Vector2d(roundf((*this).x), roundf((*this).y));
+    return Vector2d(roundf(x), roundf(y));
 }
 double Vector2d::lenght_squared() {
     return x + y;
@@ -27,8 +27,8 @@ double Vector2d::lenght() {
     return sqrt(lenght_squared());
 }
 Vector2d Vector2d::normalized() {
-    return (*this) / (*this).lenght();
+    return (*this) / lenght();
 }
 int Vector2d::manhattan_lenght() {
-    return std::round(fabs((*this).x) + fabs((*this).y));
+    return std::round(fabs(x) + fabs(y));
 }
