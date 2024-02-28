@@ -15,5 +15,3 @@ target_link_libraries(EpicDungeons PRIVATE spdlog::spdlog)
 # add chrono
 find_package(Threads REQUIRED)
 target_link_libraries(EpicDungeons PRIVATE Threads::Threads)
-
-
