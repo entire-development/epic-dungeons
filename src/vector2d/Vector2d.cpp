@@ -1,8 +1,8 @@
-#include <Vector2d.h>
+#include "Vector2d.h"
 #include <cmath>
 using namespace std;
 vector2d::vector2d() {
-    x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+    x1 = 0, y1 = 0;
 }
 vector2d::vector2d(double x1, double y1) {
     (*this).x1 = x1, (*this).y1 = y1;
