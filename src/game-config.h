@@ -1,0 +1,5 @@
+#pragma once
+#define FRAMERATE 30
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
+#define WINDOW_NAME "*EPIC DUNGEONS*"
