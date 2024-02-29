@@ -2,33 +2,33 @@
 #include <cmath>
 using namespace std;
 Vector2d::Vector2d(double x, double y) : x(x), y(y){};
-const Vector2d Vector2d::operator+(const Vector2d &other) {
+Vector2d Vector2d::operator+(const Vector2d &other) const {
     return Vector2d(x + other.x, y + other.y);
 }
-const Vector2d Vector2d::operator-(const Vector2d &other) {
+Vector2d Vector2d::operator-(const Vector2d &other) const {
     return Vector2d(x - other.x, y - other.y);
 }
-const Vector2d Vector2d::operator-() {
+Vector2d Vector2d::operator-() const {
     return Vector2d(-x, -y);
 }
-const Vector2d Vector2d::operator*(double b) {
+Vector2d Vector2d::operator*(double b) const {
     return Vector2d(x * b, y * b);
 }
-const Vector2d Vector2d::operator/(double b) {
+Vector2d Vector2d::operator/(double b) const {
     return Vector2d(x / b, y / b);
 }
-const Vector2d Vector2d::round() {
+Vector2d Vector2d::round() const {
     return Vector2d(roundf(x), roundf(y));
 }
-const double Vector2d::length_squared() {
+double Vector2d::length_squared() const {
     return pow(x, 2) + pow(y, 2);
 }
-const double Vector2d::length() {
+double Vector2d::length() const {
     return sqrt(length_squared());
 }
-const Vector2d Vector2d::normalized() {
+Vector2d Vector2d::normalized() const {
     return (*this) / length();
 }
-const int Vector2d::manhattan_length() {
+int Vector2d::manhattan_length() const {
     return std::round(fabs(x) + fabs(y));
 }
