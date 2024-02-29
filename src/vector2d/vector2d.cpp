@@ -21,7 +21,7 @@ Vector2d Vector2d::round() {
     return Vector2d(roundf(x), roundf(y));
 }
 double Vector2d::lenght_squared() {
-    return x + y;
+    return pow(x, 2) + pow(y, 2);
 }
 double Vector2d::lenght() {
     return sqrt(lenght_squared());
