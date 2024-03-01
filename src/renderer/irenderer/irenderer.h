@@ -12,28 +12,28 @@ namespace Renderer {
         // call on game initialization
         virtual void start();
 
-        // call in main event loop. Updates the screen. IDK is it good idea to implement it with double, but why not
-        virtual Input::KeyboardEvent update(uint64_t deltatime) = 0;
+        // updates inputs, deltatime, clears old canvas. Should be called at the start of event loop iteration.
+        virtual void updateState(uint64_t deltatime) = 0;
+
+        // draws all objects on the canvas. Should be called at the end of event loop iteration.
+        virtual void drawCanvas() = 0;
 
         // close window at program finish
-        virtual void close();
+        virtual void finish();
 
         // call do draw specific image and its current animation frame
-        virtual int drawSprite(int x, int y, std::string sprite_id) = 0;
+        virtual void drawSprite(int x, int y, std::string sprite_id) = 0;
 
         // call to draw rectangle
-        virtual int
-        drawRec(int x, int y, int w, int h, std::string color = "#000000", std::string stroke_color = "NONE",
-                int stroke_weight = 0) = 0;
+//        virtual void
+//        drawRec(int x, int y, int w, int h, std::string color = "#000000", std::string stroke_color = "NONE",
+//                int stroke_weight = 0);
 
         // call to draw
-        virtual int drawText(int x, int y, std::string line) = 0;
+        virtual void drawText(int x, int y, std::string line) = 0;
 
         // check if is active
         virtual bool isActive();
-
-        // get previous keyboard event
-        Input::KeyboardEvent getPrevKeyboardEvent();
 
         // destructor
         virtual ~IRenderer() = default;
@@ -44,8 +44,5 @@ namespace Renderer {
 
         // activity status
         bool active;
-
-        // previous keyboard event
-        Input::KeyboardEvent prev_keyboard_event;
     };
 }
