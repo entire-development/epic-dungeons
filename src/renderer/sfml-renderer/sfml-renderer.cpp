@@ -1,6 +1,9 @@
-#include "view/renderer/sfml-renderer/sfml-renderer.h"
-#include "game-config.h"
+#include "static-data/game-config.h"
+#include "sfml-renderer.h"
+#include "input/input.h"
 #include <iostream>
+
+using namespace Renderer;
 
 SFMLRenderer::SFMLRenderer() :
     IRenderer(),
@@ -10,8 +13,8 @@ SFMLRenderer::SFMLRenderer() :
     window.setFramerateLimit(FRAMERATE);
 }
 
-KeyboardEvent SFMLRenderer::update(uint64_t deltatime) {
-    KeyboardEvent event_keycode = {0, 0};
+Input::KeyboardEvent SFMLRenderer::update(uint64_t deltatime) {
+    Input::KeyboardEvent event_keycode = {0, 0};
     animation_timer = animation_timer + deltatime;
     for (auto event = sf::Event{}; window.pollEvent(event);) {
         if (event.type == sf::Event::Closed) window.close();
