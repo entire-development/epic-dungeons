@@ -10,7 +10,7 @@ int main() {
     renderer.start();
 
     // game loop emulation
-    while (renderer.is_active()) {
+    while (renderer.isActive()) {
         renderer.update(deltatime_placeholder);
     }
 }

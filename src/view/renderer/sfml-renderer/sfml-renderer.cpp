@@ -29,14 +29,14 @@ KeyboardEvent SFMLRenderer::update(uint64_t deltatime) {
     return event_keycode;
 }
 
-int SFMLRenderer::draw_sprite(int x, int y, std::string sprite_id) {
+int SFMLRenderer::drawSprite(int x, int y, std::string sprite_id) {
     return 0;
 }
 
-int SFMLRenderer::draw_text(int x, int y, std::string line) {
+int SFMLRenderer::drawText(int x, int y, std::string line) {
     return 0;
 }
 
-int SFMLRenderer::draw_rec(int x, int y, int w, int h, std::string color, std::string stroke_color, int stroke_weight) {
+int SFMLRenderer::drawRec(int x, int y, int w, int h, std::string color, std::string stroke_color, int stroke_weight) {
     return 0;
 }

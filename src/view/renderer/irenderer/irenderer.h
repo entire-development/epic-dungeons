@@ -22,24 +22,22 @@ class IRenderer {
         virtual void close();
 
         // call do draw specific image and its current animation frame
-        virtual int draw_sprite(int x, int y, std::string sprite_id) = 0;
+        virtual int drawSprite(int x, int y, std::string sprite_id) = 0;
 
         // call to draw rectangle
-        virtual int draw_rec(int x, int y, int w, int h, std::string color="#000000", std::string stroke_color="NONE", int stroke_weight=0) = 0;
+        virtual int drawRec(int x, int y, int w, int h, std::string color="#000000", std::string stroke_color="NONE", int stroke_weight=0) = 0;
 
         // call to draw
-        virtual int draw_text(int x, int y, std::string line) = 0;
+        virtual int drawText(int x, int y, std::string line) = 0;
 
         // check if is active
-        virtual bool is_active ();
+        virtual bool isActive ();
 
         // get previous keyboard event
-        KeyboardEvent get_prev_keyboard_event() ;
+        KeyboardEvent getPrevKeyboardEvent() ;
 
         // destructor
-        virtual ~IRenderer() {
-
-        };
+        virtual ~IRenderer() = default;
 
     protected:
         // looped timer that will be later used in animation rendering
