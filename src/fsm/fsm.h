@@ -7,7 +7,11 @@ namespace fsm {
 
 template <typename States> class StateMachine {
 public:
-    template <typename State> void addState(const States &state) { m_states[state] = std::make_shared<State>(state); }
+    template <typename S> void addState() {
+        auto state = std::make_shared<S>();
+        if (state->m_id == nullptr) { throw std::runtime_error("State id is null"); }
+        m_states[*(state->m_id)] = state;
+    }
 
     void changeState(const States &state) {
         if (m_current_state) { m_current_state->exit(this); }
