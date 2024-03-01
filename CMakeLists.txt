@@ -19,7 +19,7 @@ FetchContent_MakeAvailable(SFML)
 # demo.cpp IMPORTANT! Change executable back on main.cpp later. I need view/demo.cpp to test some sfml features.
 # game-config.cpp NOT SO IMPORTANT! game-config.h is a configuration file that stores all potentially
 # non-static info like framerate, window resolution or dungeon rooms count.
-add_executable(EpicDungeons src/view/demo.cpp src/game-config.h)
+add_executable(EpicDungeons src/view/demo.cpp)
 file(GLOB_RECURSE SOURCES src/*.cpp)
 
 target_link_libraries(EpicDungeons PRIVATE sfml-graphics)

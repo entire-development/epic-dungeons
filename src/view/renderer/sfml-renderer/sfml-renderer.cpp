@@ -3,6 +3,7 @@
 #include <iostream>
 
 SFMLRenderer::SFMLRenderer() :
+    IRenderer(),
     window(sf::RenderWindow{ { WINDOW_WIDTH, WINDOW_HEIGHT }, WINDOW_NAME })
 {
     animation_timer = 0;
@@ -28,6 +29,14 @@ KeyboardEvent SFMLRenderer::update(uint64_t deltatime) {
     return event_keycode;
 }
 
-bool SFMLRenderer::is_active() {
-    return active;
+int SFMLRenderer::draw_sprite(int x, int y, std::string sprite_id) {
+    return 0;
+}
+
+int SFMLRenderer::draw_text(int x, int y, std::string line) {
+    return 0;
+}
+
+int SFMLRenderer::draw_rec(int x, int y, int w, int h, std::string color, std::string stroke_color, int stroke_weight) {
+    return 0;
 }

@@ -4,9 +4,10 @@
 #include "view/renderer/sfml-renderer/sfml-renderer.h"
 
 int main() {
-    // init
     SFMLRenderer renderer = SFMLRenderer();
     uint64_t deltatime_placeholder = 0;
+
+    renderer.start();
 
     // game loop emulation
     while (renderer.is_active()) {
