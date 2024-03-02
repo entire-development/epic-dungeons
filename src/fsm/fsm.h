@@ -5,22 +5,26 @@
 
 namespace fsm {
 
-template <typename States> class StateMachine {
+template<typename States>
+class StateMachine {
 public:
-    template <typename S> void addState() {
-        auto state = std::make_shared<S>();
-        if (state->m_id == nullptr) { throw std::runtime_error("State id is null"); }
-        m_states[*(state->m_id)] = state;
+    template<typename S>
+    void addState(const States &state) {
+        m_states[state] = std::make_shared<S>();
     }
 
     void changeState(const States &state) {
-        if (m_current_state) { m_current_state->exit(this); }
+        if (m_current_state) {
+            m_current_state->exit(this);
+        }
         m_current_state = m_states[state];
         m_current_state->enter(this);
     }
 
     void update() {
-        if (m_current_state) { m_current_state->update(this); }
+        if (m_current_state) {
+            m_current_state->update(this);
+        }
     }
 
 protected:
@@ -30,4 +34,4 @@ private:
     std::map<States, std::shared_ptr<State<States>>> m_states;
 };
 
-} // namespace fsm
+}   // namespace fsm
