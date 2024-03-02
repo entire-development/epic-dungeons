@@ -1,31 +1,21 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.20)
 project(EpicDungeons)
-
-# I don't understand why, but this line is important for sfml library. It won't build without it.
-add_compile_options(-I c:/SFML/include/)
 
 set(CMAKE_CXX_STANDARD 20)
 
-option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
-
-# fetch the graphic library from github! It locates in _deps folder. donwload sfml to your system (like with
-# brew install sfml) if project builds too slow on your machine.
-include(FetchContent)
-FetchContent_Declare(SFML
-        GIT_REPOSITORY https://github.com/SFML/SFML.git
-        GIT_TAG 2.6.x)
-FetchContent_MakeAvailable(SFML)
-
-# demo.cpp IMPORTANT! Change executable back on main.cpp later. I need monitor/demo.cpp to test some sfml features.
-# game-config.cpp NOT SO IMPORTANT! game-config.h is a configuration file that stores all potentially
-# non-static info like framerate, window resolution or dungeon rooms count.
-add_executable(EpicDungeons main.cpp)
 file(GLOB_RECURSE SOURCES src/*.cpp)
 
-target_link_libraries(EpicDungeons PRIVATE sfml-graphics)
-# target_compile_features(EpicDungeons PRIVATE cxx_std_20)
+add_executable(EpicDungeons main.cpp ${SOURCES})
+target_include_directories(EpicDungeons PRIVATE src)
 
-target_include_directories(EpicDungeons PUBLIC src)
-target_sources(EpicDungeons PUBLIC ${SOURCES})
+# add spdlog
+find_package(spdlog 1.8.5 REQUIRED)
+target_link_libraries(EpicDungeons PRIVATE spdlog::spdlog)
 
-install(TARGETS EpicDungeons)
+# add chrono
+find_package(Threads REQUIRED)
+target_link_libraries(EpicDungeons PRIVATE Threads::Threads)
+
+# add sfml
+find_package(SFML 2.6 COMPONENTS graphics audio REQUIRED)
+target_link_libraries(EpicDungeons PRIVATE sfml-graphics sfml-audio)

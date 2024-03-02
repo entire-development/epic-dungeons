@@ -3,22 +3,32 @@
 #include <vector>
 
 namespace dungeon {
-class Dungeon {
-  public:
-  Dungeon();
+class Dungeon;
+class IDungeonMaker;
 
-  std::vector<Room *> getRooms();
-  Cell *getCurrentCell();
-
-  // find rooms which are connected with given room by corridor(cells)
-  std::vector<Room *> getRoomNeighbours(Room *room);
-
-  private:
-  void generate(int seed);
-
-  std::vector<Room *> m_rooms;
-  std::vector<Cell *> m_cells;
-
-  Cell *m_current_cell = nullptr;
+class IDungeonMaker {
+public:
+    virtual void build() = 0;
+    virtual Dungeon *getDungeon() = 0;
 };
-} // namespace dungeon
+
+class Dungeon {
+public:
+    std::vector<Room *> getRooms();
+    Cell *getCurrentCell();
+
+    // find rooms which are connected with given room by corridor(cells)
+    std::vector<Room *> getRoomNeighbours(Room *room);
+
+    friend class IDungeonMaker;
+
+private:
+    // dungeon may be built only by DungeonMaker
+    Dungeon() = default;
+
+    std::vector<Room *> m_rooms;
+    std::vector<Cell *> m_cells;
+
+    Cell *m_current_cell = nullptr;
+};
+}   // namespace dungeon
