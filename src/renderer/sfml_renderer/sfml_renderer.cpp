@@ -131,13 +131,13 @@ Color::Color(std::string hex_str) {
 
 Color::Color(uint32_t hex) : sfcolor(sf::Color(hex)) {}
 
-std::string Color::toHexString() {
+std::string Color::toHexString() const {
     std::stringstream ss;
     ss << std::hex << "#" << +sfcolor.r << +sfcolor.g << +sfcolor.b;
     std::string result( ss.str() );
     return result;
 }
 
-inline sf::Color Color::getSFColor() {
+inline sf::Color Color::getSFColor() const {
     return sfcolor;
 }

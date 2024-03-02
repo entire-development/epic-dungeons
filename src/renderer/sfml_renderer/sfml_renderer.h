@@ -11,8 +11,8 @@ namespace Renderer {
             Color(std::string hex_str);
             Color(uint32_t hex);
             Color(sf::Color color);
-            std::string toHexString();
-            sf::Color getSFColor();
+            std::string toHexString() const;
+            sf::Color getSFColor() const;
 
         private:
             sf::Color sfcolor;
