@@ -1,15 +1,15 @@
 #pragma once
 #include "cell/cell.h"
 #include <vector>
+#include <memory>
 
 namespace dungeon {
 class Dungeon;
-class IDungeonMaker;
 
 class IDungeonMaker {
 public:
     virtual void build() = 0;
-    virtual Dungeon *getDungeon() = 0;
+    [[nodiscard]] virtual std::shared_ptr<Dungeon> getDungeon() const = 0;
 };
 
 class Dungeon {
