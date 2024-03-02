@@ -1,6 +1,5 @@
 #include <iostream>
 #include "irenderer.h"
-#include "input/input.h"
 
 using namespace Renderer;
 

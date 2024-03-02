@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include "SFML/Graphics.hpp"
-#include "input/input.h"
+#include "keyboard/keyboard.h"
 
 namespace Renderer {
     class IRenderer {

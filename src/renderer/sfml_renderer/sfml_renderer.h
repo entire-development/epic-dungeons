@@ -1,7 +1,7 @@
 #pragma once
-#include "renderer/irenderer/irenderer.h"
+#include "renderer/irenderer.h"
 #include "SFML/Graphics.hpp"
-#include "input/input.h"
+#include "keyboard//keyboard.h"
 #include <iostream>
 #include <map>
 
@@ -33,6 +33,6 @@ namespace Renderer {
     private:
         sf::RenderWindow window;
 
-        Input::Key handleSFMLKey(sf::Keyboard::Key key);
+        Keyboard::Key handleSFMLKey(sf::Keyboard::Key key);
     };
 }

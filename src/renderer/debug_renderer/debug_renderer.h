@@ -1,5 +1,5 @@
 #pragma once
-#include "renderer/irenderer/irenderer.h"
+#include "renderer/irenderer.h"
 
 namespace Renderer {
     class DebugRenderer : IRenderer {
