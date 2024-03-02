@@ -15,12 +15,15 @@ public:
     void debug(const std::string &msg) {
         m_logger->debug(msg);
     }
+
     void info(const std::string &msg) {
         m_logger->info(msg);
     }
+
     void warn(const std::string &msg) {
         m_logger->warn(msg);
     }
+
     void error(const std::string &msg) {
         m_logger->error(msg);
     }
@@ -34,15 +37,18 @@ Logger &getLogger() {
     return logger;
 }
 
-void debug(const std::string &msg) {
+static void debug(const std::string &msg) {
     getLogger().debug(msg);
 }
-void info(const std::string &msg) {
+
+static void info(const std::string &msg) {
     getLogger().info(msg);
 }
-void warn(const std::string &msg) {
+
+static void warn(const std::string &msg) {
     getLogger().warn(msg);
 }
+
 void error(const std::string &msg) {
     getLogger().error(msg);
 }
