@@ -3,7 +3,7 @@
 #include "keyboard/keyboard.h"
 #include <iostream>
 
-namespace Renderer {
+namespace renderer {
 class IRenderer {
 public:
     // constructors

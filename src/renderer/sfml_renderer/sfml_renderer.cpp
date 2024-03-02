@@ -5,7 +5,7 @@
 #include <iostream>
 #include <sstream>
 
-using namespace Renderer;
+using namespace renderer;
 
 SFMLRenderer::SFMLRenderer(sf::RenderWindow &window) : window(window), IRenderer() {}
 

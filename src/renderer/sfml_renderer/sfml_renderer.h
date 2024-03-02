@@ -5,7 +5,7 @@
 #include <iostream>
 #include <map>
 
-namespace Renderer {
+namespace renderer {
 class Color {
 public:
     Color(const std::string &hex_str);
