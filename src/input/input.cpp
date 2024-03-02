@@ -5,53 +5,16 @@ using namespace Input;
 
 InputController &InputController::getInstance() {
     static InputController singleton;
+    if (singleton.key_states.empty()) singleton.key_states.resize(50);
     return singleton;
 }
 
-void InputController::setControl(Input::Controls control, bool state) {
-    this->controls_map[control] = state;
-}
+void InputController::setKeyState(Key key, bool state) {
+    if (key == Key::UNKNOWN) return;
+    key_states[key] = state;
+}; // Read the upper line
 
-bool InputController::isKeyPressed(int key) {
-    if (current_keyboard_event.code == key) return true;
-    return false;
-}
-
-void InputController::setKeyPressed(KeyboardEvent key) {
-    current_keyboard_event = key;
-}
-
-void InputController::printCurrentEvent() {
-    if (current_keyboard_event.type != 0) {
-        std::cout << "outer event!!" << std::endl;
-        //std::cout << +current_keyboard_event.type << " - " << +current_keyboard_event.code << std::endl;
-    }
-}
-
-bool InputController::isMoveTop() {
-    return controls_map[Controls::MOVE_TOP];
-}
-
-bool InputController::isMoveRight() {
-    return controls_map[Controls::MOVE_RIGHT];
-}
-
-bool InputController::isMoveDown() {
-    return controls_map[Controls::MOVE_DOWN];
-}
-
-bool InputController::isMoveLeft() {
-    return controls_map[Controls::MOVE_LEFT];
-}
-
-bool InputController::isAction() {
-    return controls_map[Controls::ACTION];
-}
-
-bool InputController::isClose() {
-    return controls_map[Controls::CLOSE];
-}
-
-bool InputController::isSecondary() {
-    return controls_map[Controls::SECONDARY];
-}
+bool InputController::isPressed(Key key) {
+    if (key == Key::UNKNOWN) return false;
+    return key_states[key];
+};

@@ -11,9 +11,9 @@ namespace Renderer {
         float y;
         float w;
         float h;
-        uint64_t color; // this type is temporary! later I will write a wholesome Color class.
-        float stroke;
-        uint64_t stroke_color;
+        uint64_t color = 0xffffffff; // this type is temporary! later I will write a wholesome Color class.
+        float stroke = 0;
+        uint64_t stroke_color = 0x000000ff;
     };
 
     class SFMLRenderer : public IRenderer {
@@ -31,15 +31,8 @@ namespace Renderer {
         void drawText(int x, int y, std::string line) override;
 
     private:
-        std::map<Input::Controls, sf::Keyboard::Key> SFMLControls = {
-                { Input::Controls::MOVE_TOP, sf::Keyboard::Up },
-                { Input::Controls::MOVE_RIGHT, sf::Keyboard::Right },
-                { Input::Controls::MOVE_DOWN, sf::Keyboard::Down },
-                { Input::Controls::MOVE_LEFT, sf::Keyboard::Left },
-                { Input::Controls::ACTION, sf::Keyboard::Z },
-                { Input::Controls::CLOSE, sf::Keyboard::X },
-                { Input::Controls::SECONDARY, sf::Keyboard::C },
-        };
         sf::RenderWindow window;
+
+        Input::Key handleSFMLKey(sf::Keyboard::Key key);
     };
 }
