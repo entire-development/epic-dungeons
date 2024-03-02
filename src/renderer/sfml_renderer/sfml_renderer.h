@@ -31,7 +31,7 @@ namespace Renderer {
     class SFMLRenderer : public IRenderer {
     public:
         // constructor
-        SFMLRenderer();
+        SFMLRenderer(sf::RenderWindow& window);
 
         void drawCanvas() override;
         void updateState(uint64_t deltatime) override;
@@ -43,7 +43,7 @@ namespace Renderer {
         void drawText(int x, int y, std::string line) override;
 
     private:
-        sf::RenderWindow window;
+        sf::RenderWindow& window;
 
         Keyboard::Key handleSFMLKey(sf::Keyboard::Key key);
     };
