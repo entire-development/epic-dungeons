@@ -1,30 +1,93 @@
 #pragma once
-#include <iostream>
+#include <SFML/Window/Keyboard.hpp>
+#include <vector>
 
-namespace Keyboard {
-    enum Key {
-        UNKNOWN = -1,
-        KEY_1 = 0, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6, KEY_7, KEY_8, KEY_9, KEY_0,
-        KEY_A, KEY_B, KEY_C, KEY_D, KEY_E, KEY_F, KEY_G, KEY_H, KEY_I,
-        KEY_J, KEY_K, KEY_L, KEY_M, KEY_N, KEY_O, KEY_P, KEY_Q, KEY_R,
-        KEY_S, KEY_T, KEY_U, KEY_V, KEY_W, KEY_X, KEY_Y, KEY_Z,
-        KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT,
-        KEY_SPACE, KEY_ENTER, KEY_ESCAPE, KEY_BACKSPACE, KEY_TAB, KEY_SHIFT, KEY_CTRL, KEY_ALT, KEY_SUPER,
-    };
+namespace keyboard {
+enum Key {
+    UNKNOWN = -1,
+    KEY_1 = 0,
+    KEY_2,
+    KEY_3,
+    KEY_4,
+    KEY_5,
+    KEY_6,
+    KEY_7,
+    KEY_8,
+    KEY_9,
+    KEY_0,
+    KEY_A,
+    KEY_B,
+    KEY_C,
+    KEY_D,
+    KEY_E,
+    KEY_F,
+    KEY_G,
+    KEY_H,
+    KEY_I,
+    KEY_J,
+    KEY_K,
+    KEY_L,
+    KEY_M,
+    KEY_N,
+    KEY_O,
+    KEY_P,
+    KEY_Q,
+    KEY_R,
+    KEY_S,
+    KEY_T,
+    KEY_U,
+    KEY_V,
+    KEY_W,
+    KEY_X,
+    KEY_Y,
+    KEY_Z,
+    KEY_UP,
+    KEY_DOWN,
+    KEY_LEFT,
+    KEY_RIGHT,
+    KEY_SPACE,
+    KEY_ENTER,
+    KEY_ESCAPE,
+    KEY_BACKSPACE,
+    KEY_TAB,
+    KEY_SHIFT,
+    KEY_CTRL,
+    KEY_ALT,
+    KEY_SUPER,
+};
 
-    class KeyboardController {
-        public:
-            static KeyboardController& getInstance();
+class KeyboardController {
+public:
+    static KeyboardController &getInstance() {
+        static KeyboardController instance;
+        return instance;
+    }
 
-            void setKeyState(Key key, bool state);
-            bool isPressed(Key key);
+    void setKeyState(const Key &key, bool state);
+    const bool isPressed(const Key &key) const;
 
-            KeyboardController() {};
-            KeyboardController(KeyboardController const&) = delete;  // Prevent copy-construction
-            KeyboardController& operator=(KeyboardController const&) = delete;  // Prevent assignment
+    // Prevent copying and assignment
+    KeyboardController(const KeyboardController &) = delete;
+    KeyboardController &operator=(const KeyboardController &) = delete;
 
-        private:
-            std::vector<bool> key_states = {};
-    };
+private:
+    KeyboardController() : key_states(50, false) {}
+
+    std::vector<bool> key_states;
+};
+
+const Key sfmlToKey(const sf::Keyboard::Key &key);
+
+static void setKeyState(const Key &key, const bool &state) {
+    KeyboardController::getInstance().setKeyState(key, state);
 }
 
+static void setKeyState(const sf::Keyboard::Key &key, const bool &state) {
+    setKeyState(sfmlToKey(key), state);
+}
+
+static const bool isPressed(const Key &key) {
+    return KeyboardController::getInstance().isPressed(key);
+}
+
+}   // namespace keyboard

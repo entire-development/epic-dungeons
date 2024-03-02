@@ -1,13 +1,17 @@
 #pragma once
-#include "keyboard/keyboard.h" // ._.
-#define FRAMERATE 30
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
-#define WINDOW_NAME "*EPIC DUNGEONS*"
-#define CONTROLS_MOVE_RIGHT Keyboard::Key::KEY_RIGHT
-#define CONTROLS_MOVE_DOWN Keyboard::Key::KEY_DOWN
-#define CONTROLS_MOVE_LEFT Keyboard::Key::KEY_LEFT
-#define CONTROLS_MOVE_UP Keyboard::Key::KEY_UP
-#define CONTROLS_ACTION Keyboard::Key::KEY_Z
-#define CONTROLS_CLOSE Keyboard::Key::KEY_X
-#define CONTROLS_SECONDARY Keyboard::Key::C
+#include "keyboard/keyboard.h"
+
+namespace cfg {
+const int FRAMERATE = 30;
+const unsigned WINDOW_WIDTH = 800;
+const unsigned WINDOW_HEIGHT = 600;
+const std::string WINDOW_NAME = "*EPIC DUNGEONS*";
+
+const keyboard::Key CONTROLS_MOVE_RIGHT = keyboard::Key::KEY_RIGHT;
+const keyboard::Key CONTROLS_MOVE_DOWN = keyboard::Key::KEY_DOWN;
+const keyboard::Key CONTROLS_MOVE_LEFT = keyboard::Key::KEY_LEFT;
+const keyboard::Key CONTROLS_MOVE_UP = keyboard::Key::KEY_UP;
+const keyboard::Key CONTROLS_ACTION = keyboard::Key::KEY_Z;
+const keyboard::Key CONTROLS_CLOSE = keyboard::Key::KEY_X;
+const keyboard::Key CONTROLS_SECONDARY = keyboard::Key::KEY_C;
+}   // namespace cfg

@@ -2,7 +2,5 @@
 #include "renderer/irenderer.h"
 
 namespace Renderer {
-    class DebugRenderer : IRenderer {
-
-    };
-}
+class DebugRenderer : IRenderer {};
+}   // namespace Renderer
