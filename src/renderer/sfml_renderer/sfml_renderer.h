@@ -1,6 +1,6 @@
 #pragma once
 #include "SFML/Graphics.hpp"
-#include "keyboard//keyboard.h"
+#include "keyboard/keyboard.h"
 #include "renderer/irenderer.h"
 #include <iostream>
 #include <map>
@@ -45,4 +45,4 @@ public:
 private:
     sf::RenderWindow &window;
 };
-}   // namespace Renderer
+}   // namespace renderer
