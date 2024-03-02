@@ -6,14 +6,26 @@
 #include <map>
 
 namespace Renderer {
+    class Color {
+        public:
+            Color(std::string hex_str);
+            Color(uint32_t hex);
+            Color(sf::Color color);
+            std::string toHexString();
+            sf::Color getSFColor();
+
+        private:
+            sf::Color sfcolor;
+    };
+
     struct Rectangle {
         float x;
         float y;
         float w;
         float h;
-        uint64_t color = 0xffffffff; // this type is temporary! later I will write a wholesome Color class.
+        Color color = 0xffffffff; // this type is temporary! later I will write a wholesome Color class.
         float stroke = 0;
-        uint64_t stroke_color = 0x000000ff;
+        Color stroke_color = 0x000000ff;
     };
 
     class SFMLRenderer : public IRenderer {
