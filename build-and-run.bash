@@ -1,3 +1,4 @@
+cmake -S . -B build
 cmake --build build
-cd build || exit
-./EpicDungeons
+chmod +x build/EpicDungeons
+./build/EpicDungeons
