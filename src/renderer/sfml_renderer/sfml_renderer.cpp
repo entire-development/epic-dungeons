@@ -9,13 +9,13 @@ using namespace renderer;
 
 SFMLRenderer::SFMLRenderer(sf::RenderWindow &window) : window(window), IRenderer() {}
 
-void SFMLRenderer::updateState(uint64_t deltatime) {
-    animation_timer += deltatime;
+void SFMLRenderer::update() {
+    window.display();
     window.clear();
 }
 
-void SFMLRenderer::drawCanvas() {
-    window.display();
+void SFMLRenderer::setDeltatime(uint64_t deltatime) {
+    animation_timer += deltatime;
 }
 
 void SFMLRenderer::drawSprite(int x, int y, const std::string &sprite_id) {

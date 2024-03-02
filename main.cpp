@@ -10,8 +10,7 @@ int main() {
     auto renderer = renderer::SFMLRenderer(window);
 
     while (window.isOpen()) {
-        renderer.updateState(1);
-
+        renderer.setDeltatime(1);
         for (auto event = sf::Event {}; window.pollEvent(event);) {
             if (event.type == sf::Event::Closed) {
                 window.close();
@@ -37,7 +36,7 @@ int main() {
             renderer.drawRec({400, 400, 100, 100, sf::Color::Yellow});
         }
 
-        renderer.drawCanvas();
+        renderer.update();
     }
 
     return 0;

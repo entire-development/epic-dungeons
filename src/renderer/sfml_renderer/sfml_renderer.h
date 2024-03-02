@@ -33,8 +33,9 @@ public:
     // constructor
     SFMLRenderer(sf::RenderWindow &window);
 
-    void drawCanvas() override;
-    void updateState(uint64_t deltatime) override;
+    void update() override;
+
+    void setDeltatime(uint64_t deltatime) override;
 
     void drawSprite(int x, int y, const std::string &sprite_id) override;
 
