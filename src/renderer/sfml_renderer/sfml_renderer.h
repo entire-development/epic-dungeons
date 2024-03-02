@@ -33,14 +33,19 @@ public:
     // constructor
     SFMLRenderer(sf::RenderWindow &window);
 
-    void drawCanvas() override;
+    void display() override;
     void updateState(uint64_t deltatime) override;
+    void clear() override;
 
     void drawSprite(int x, int y, const std::string &sprite_id) override;
 
     void drawRec(const Rectangle &rectangle);
 
     void drawText(int x, int y, const std::string &line) override;
+
+    void close() {
+        window.close();
+    }
 
 private:
     sf::RenderWindow &window;

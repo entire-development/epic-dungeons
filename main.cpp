@@ -1,13 +1,20 @@
+#include "gui_controller/controller.h"
 #include "keyboard/keyboard.h"
 #include "renderer/sfml_renderer/sfml_renderer.h"
 #include "static_data/game_config.h"
 #include <SFML/Graphics.hpp>
 
 int main() {
-    auto window = sf::RenderWindow {{cfg::WINDOW_WIDTH, cfg::WINDOW_HEIGHT}, cfg::WINDOW_NAME};
+    auto window = sf::RenderWindow {{cfg::WINDOW_WIDTH, cfg::WINDOW_HEIGHT},
+                                    cfg::WINDOW_NAME,
+                                    sf::Style::Titlebar | sf::Style::Close};
     window.setFramerateLimit(cfg::FRAMERATE);
+    window.setVerticalSyncEnabled(true);
 
     auto renderer = renderer::SFMLRenderer(window);
+    engine::Engine engine;
+
+    gui::Controller controller(renderer, engine);
 
     while (window.isOpen()) {
         renderer.updateState(1);
@@ -24,20 +31,7 @@ int main() {
             }
         }
 
-        if (keyboard::isPressed(cfg::CONTROLS_MOVE_UP)) {
-            renderer.drawRec({100, 100, 100, 100, sf::Color::Red});
-        }
-        if (keyboard::isPressed(cfg::CONTROLS_MOVE_DOWN)) {
-            renderer.drawRec({200, 200, 100, 100, sf::Color::Green});
-        }
-        if (keyboard::isPressed(cfg::CONTROLS_MOVE_LEFT)) {
-            renderer.drawRec({300, 300, 100, 100, sf::Color::Blue});
-        }
-        if (keyboard::isPressed(cfg::CONTROLS_MOVE_RIGHT)) {
-            renderer.drawRec({400, 400, 100, 100, sf::Color::Yellow});
-        }
-
-        renderer.drawCanvas();
+        controller.update();
     }
 
     return 0;

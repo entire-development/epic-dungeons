@@ -71,4 +71,61 @@ const bool KeyboardController::isPressed(const Key &key) const {
     return key_states[key];
 }
 
+const std::string keyToString(const Key &key) {
+    // clang-format off
+    switch (key) {
+        case Key::KEY_1:        return "1";
+        case Key::KEY_2:        return "2";
+        case Key::KEY_3:        return "3";
+        case Key::KEY_4:        return "4";
+        case Key::KEY_5:        return "5";
+        case Key::KEY_6:        return "6";
+        case Key::KEY_7:        return "7";
+        case Key::KEY_8:        return "8";
+        case Key::KEY_9:        return "9";
+        case Key::KEY_0:        return "0";
+        case Key::KEY_A:        return "A";
+        case Key::KEY_B:        return "B";
+        case Key::KEY_C:        return "C";
+        case Key::KEY_D:        return "D";
+        case Key::KEY_E:        return "E";
+        case Key::KEY_F:        return "F";
+        case Key::KEY_G:        return "G";
+        case Key::KEY_H:        return "H";
+        case Key::KEY_I:        return "I";
+        case Key::KEY_J:        return "J";
+        case Key::KEY_K:        return "K";
+        case Key::KEY_L:        return "L";
+        case Key::KEY_M:        return "M";
+        case Key::KEY_N:        return "N";
+        case Key::KEY_O:        return "O";
+        case Key::KEY_P:        return "P";
+        case Key::KEY_Q:        return "Q";
+        case Key::KEY_R:        return "R";
+        case Key::KEY_S:        return "S";
+        case Key::KEY_T:        return "T";
+        case Key::KEY_U:        return "U";
+        case Key::KEY_V:        return "V";
+        case Key::KEY_W:        return "W";
+        case Key::KEY_X:        return "X";
+        case Key::KEY_Y:        return "Y";
+        case Key::KEY_Z:        return "Z";
+        case Key::KEY_UP:       return "UP";
+        case Key::KEY_DOWN:     return "DOWN";
+        case Key::KEY_LEFT:     return "LEFT";
+        case Key::KEY_RIGHT:    return "RIGHT";
+        case Key::KEY_SPACE:    return "SPACE";
+        case Key::KEY_ENTER:    return "ENTER";
+        case Key::KEY_ESCAPE:   return "ESCAPE";
+        case Key::KEY_BACKSPACE:return "BACKSPACE";
+        case Key::KEY_TAB:      return "TAB";
+        case Key::KEY_SHIFT:    return "SHIFT";
+        case Key::KEY_CTRL:     return "CTRL";
+        case Key::KEY_ALT:      return "ALT";
+        case Key::KEY_SUPER:    return "SUPER";
+        default:                return "UNKNOWN";
+    }
+    // clang-format on
+}
+
 }   // namespace keyboard
