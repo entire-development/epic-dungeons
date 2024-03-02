@@ -19,3 +19,6 @@ target_link_libraries(EpicDungeons PRIVATE Threads::Threads)
 # add sfml
 find_package(SFML 2.6 COMPONENTS graphics audio REQUIRED)
 target_link_libraries(EpicDungeons PRIVATE sfml-graphics sfml-audio)
+
+# include fonts
+file(COPY ${CMAKE_SOURCE_DIR}/res/fonts DESTINATION ${CMAKE_BINARY_DIR}/res)

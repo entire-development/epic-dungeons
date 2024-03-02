@@ -11,10 +11,13 @@ SFMLRenderer::SFMLRenderer(sf::RenderWindow &window) : window(window), IRenderer
 
 void SFMLRenderer::updateState(uint64_t deltatime) {
     animation_timer += deltatime;
+}
+
+void SFMLRenderer::clear() {
     window.clear();
 }
 
-void SFMLRenderer::drawCanvas() {
+void SFMLRenderer::display() {
     window.display();
 }
 
@@ -24,7 +27,20 @@ void SFMLRenderer::drawSprite(int x, int y, const std::string &sprite_id) {
     window.draw(shape);
 }
 
-void SFMLRenderer::drawText(int x, int y, const std::string &line) {}
+void SFMLRenderer::drawText(int x, int y, const std::string &line) {
+    sf::Font font;
+    if (!font.loadFromFile(cfg::FONT_PATH)) {
+        std::cerr << "Font not found!" << std::endl;
+        return;
+    }
+    sf::Text text;
+    text.setFont(font);
+    text.setString(line);
+    text.setCharacterSize(24);
+    text.setFillColor(sf::Color::White);
+    text.setPosition(x, y);
+    window.draw(text);
+}
 
 void SFMLRenderer::drawRec(const Rectangle &rectangle) {
     sf::RectangleShape new_rectangle;

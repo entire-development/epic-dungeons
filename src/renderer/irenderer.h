@@ -16,7 +16,10 @@ public:
     virtual void updateState(uint64_t deltatime) = 0;
 
     // draws all objects on the canvas. Should be called at the end of event loop iteration.
-    virtual void drawCanvas() = 0;
+    virtual void display() = 0;
+
+    // clears canvas
+    virtual void clear() = 0;
 
     // close window at program finish
     virtual void finish();
@@ -45,4 +48,4 @@ protected:
     // activity status
     bool active;
 };
-}   // namespace Renderer
+}   // namespace renderer
