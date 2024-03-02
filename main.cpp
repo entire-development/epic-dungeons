@@ -2,13 +2,12 @@
 #include "renderer/sfml_renderer/sfml_renderer.h"
 #include "static_data/game_config.h"
 #include <SFML/Graphics.hpp>
-#include <iostream>
 
 int main() {
     auto window = sf::RenderWindow {{cfg::WINDOW_WIDTH, cfg::WINDOW_HEIGHT}, cfg::WINDOW_NAME};
     window.setFramerateLimit(cfg::FRAMERATE);
 
-    auto renderer = Renderer::SFMLRenderer(window);
+    auto renderer = renderer::SFMLRenderer(window);
 
     while (window.isOpen()) {
         renderer.updateState(1);

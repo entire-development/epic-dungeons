@@ -1,7 +1,7 @@
 #include <iostream>
 #include "irenderer.h"
 
-using namespace Renderer;
+using namespace renderer;
 
 IRenderer::IRenderer() :
     animation_timer(0),
