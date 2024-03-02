@@ -5,8 +5,11 @@
 #include <SFML/Graphics.hpp>
 
 int main() {
-    auto window = sf::RenderWindow {{cfg::WINDOW_WIDTH, cfg::WINDOW_HEIGHT}, cfg::WINDOW_NAME};
+    auto window = sf::RenderWindow {{cfg::WINDOW_WIDTH, cfg::WINDOW_HEIGHT},
+                                    cfg::WINDOW_NAME,
+                                    sf::Style::Titlebar | sf::Style::Close};
     window.setFramerateLimit(cfg::FRAMERATE);
+    window.setVerticalSyncEnabled(true);
 
     auto renderer = renderer::SFMLRenderer(window);
     engine::Engine engine;
