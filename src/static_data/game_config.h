@@ -1,5 +1,6 @@
 #pragma once
 #include "keyboard/keyboard.h"
+#include <string>
 
 namespace cfg {
 const int FRAMERATE = 30;
