@@ -3,6 +3,7 @@
 #include "renderer/sfml_renderer/sfml_renderer.h"
 #include "static_data/game_config.h"
 #include <SFML/Graphics.hpp>
+#include <chrono>
 
 int main() {
     auto window = sf::RenderWindow {{cfg::WINDOW_WIDTH, cfg::WINDOW_HEIGHT},
