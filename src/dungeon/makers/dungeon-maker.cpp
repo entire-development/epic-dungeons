@@ -8,8 +8,8 @@ void DungeonMaker::build() {
     DungeonMatrix result = generate_skeleton();
 }
 
-DungeonMatrix DungeonMaker::build_matrix() {
-    randint.seed(15);
+DungeonMatrix DungeonMaker::build_matrix(int seed) {
+    randint.seed(seed);
     DungeonMatrix result = generate_skeleton();
     return result;
 }

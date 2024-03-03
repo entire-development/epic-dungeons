@@ -13,7 +13,7 @@ namespace dungeon_matrix {
 
     class DungeonMatrix final {
     private:
-        const size_t height, width;
+        size_t height, width;
 
         std::vector<coords> rooms;
 
