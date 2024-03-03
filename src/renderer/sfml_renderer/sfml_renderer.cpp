@@ -10,6 +10,7 @@ using namespace renderer;
 SFMLRenderer::SFMLRenderer(sf::RenderWindow &window) : window(window), IRenderer() {}
 
 void SFMLRenderer::updateState(uint64_t deltatime) {
+    m_delta_time = deltatime;
     animation_timer += deltatime;
 }
 

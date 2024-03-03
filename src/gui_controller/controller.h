@@ -52,10 +52,19 @@ public:
         }
     }
 
+    uint64_t getDeltaTime() {
+        return delta_time;
+    }
+
+    void setDeltaTime(uint64_t dt) {
+        delta_time = dt;
+    }
+
     renderer::SFMLRenderer &m_renderer;
     engine::Engine &m_engine;
 
 protected:
+    uint64_t delta_time;
     std::shared_ptr<State> m_current_state;
     std::map<GUIState, std::shared_ptr<State>> m_states;
 };
