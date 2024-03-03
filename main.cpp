@@ -3,6 +3,7 @@
 #include "renderer/sfml_renderer/sfml_renderer.h"
 #include "static_data/game_config.h"
 #include <SFML/Graphics.hpp>
+#include <chrono>
 
 int main() {
     auto window = sf::RenderWindow {{cfg::WINDOW_WIDTH, cfg::WINDOW_HEIGHT},
@@ -15,9 +16,16 @@ int main() {
     engine::Engine engine;
 
     gui::Controller controller(renderer, engine);
-
+    uint64_t last_time = 0;
     while (window.isOpen()) {
-        renderer.updateState(1);
+        uint64_t current_time =
+            std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())
+                .count();
+        uint64_t delta_time = current_time - last_time;
+        last_time = current_time;
+
+        renderer.updateState(delta_time);
+        controller.setDeltaTime(delta_time);
 
         for (auto event = sf::Event {}; window.pollEvent(event);) {
             if (event.type == sf::Event::Closed) {

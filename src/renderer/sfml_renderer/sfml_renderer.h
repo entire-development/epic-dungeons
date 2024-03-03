@@ -47,7 +47,12 @@ public:
         window.close();
     }
 
+    uint64_t getDeltaTime() {
+        return m_delta_time;
+    }
+
 private:
+    uint64_t m_delta_time;
     sf::RenderWindow &window;
 };
 }   // namespace renderer
