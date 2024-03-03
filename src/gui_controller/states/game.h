@@ -26,7 +26,7 @@ public:
         // Animation
         anim_time += renderer.getDeltaTime();
         if (anim_time >= 1000) {
-            anim_time = 0;
+            anim_time -= 1000;
         }
         renderer.drawText(400, 400, "Animation frame: " + std::to_string(anim_time / 250));
         renderer.drawText(400, 430, "Loading" + std::string(anim_time / 250, '.'));

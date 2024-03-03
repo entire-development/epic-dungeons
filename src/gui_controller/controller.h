@@ -39,16 +39,22 @@ public:
     }
 
     void changeState(const GUIState &state) {
-        if (m_current_state) {
-            m_current_state->exit(this);
-        }
-        m_current_state = m_states[state];
-        m_current_state->enter(this);
+        m_next_state = m_states[state];
     }
 
     void update() {
+        if (m_next_state) {
+            m_current_state = m_next_state;
+            m_next_state = nullptr;
+            m_current_state->enter(this);
+        }
         if (m_current_state) {
             m_current_state->update(this);
+        }
+        if (m_next_state) {
+            if (m_current_state) {
+                m_current_state->exit(this);
+            }
         }
     }
 
@@ -66,6 +72,7 @@ public:
 protected:
     uint64_t delta_time;
     std::shared_ptr<State> m_current_state;
+    std::shared_ptr<State> m_next_state;
     std::map<GUIState, std::shared_ptr<State>> m_states;
 };
 
