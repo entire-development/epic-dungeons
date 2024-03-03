@@ -72,6 +72,107 @@ void DungeonMatrix::random_pave(int y1, int y2, int x1, int x2, pseudorandom::Ra
     }
 }
 
-std::vector<coords> DungeonMatrix::neighbors(int y, int x) {
-    return std::vector<coords>{coords(y - 1, x), coords(y + 1, x), coords(y, x - 1), coords(y, x + 1)};
+std::vector<coords> DungeonMatrix::neighbors(int y, int x, int dist) {
+    return std::vector<coords>{coords(y - dist, x), coords(y + dist, x), coords(y, x - dist), coords(y, x + dist)};
+}
+
+std::vector<coords> DungeonMatrix::corners(int y, int x) {
+    return std::vector<coords>{coords(y - 1, x - 1), coords(y + 1, x - 1), coords(y - 1, x + 1), coords(y + 1, x + 1)};
+}
+
+coords DungeonMatrix::get_end(int y, int x, coords from) const {
+    // (y, x) - corridor
+    for (coords n : neighbors(y, x)) {
+        if (n == from) continue;
+        if (get_cell(n.first, n.second) != DungeonMatrixCell::Corridor) continue;
+        return get_end(n.first, n.second, coords(y, x));
+    }
+    return coords(y, x);
+}
+
+std::shared_ptr<std::deque<coords>> DungeonMatrix::get_path(int y, int x, coords from) const {
+    // (y, x) - corridor
+    for (coords n : neighbors(y, x)) {
+        if (n == from) continue;
+        if (get_cell(n.first, n.second) != DungeonMatrixCell::Corridor) continue;
+
+        std::shared_ptr<std::deque<coords>> path = get_path(n.first, n.second, coords(y, x));
+        path->emplace_front(y, x);
+        return path;
+    }
+    std::shared_ptr<std::deque<coords>> path = std::make_shared<std::deque<coords>>();
+    path->emplace_front(y, x);
+    return path;
+}
+
+bool DungeonMatrix::check_errors(int y, int x, coords from) const {
+    if (get_cell(y, x) != DungeonMatrixCell::Corridor) return false;
+
+    for (coords c : corners(y, x)) {
+        int corridors_n_count = ((get_cell(y, c.second) == DungeonMatrixCell::Corridor) ? 1 : 0)
+                + ((get_cell(c.first, x) == DungeonMatrixCell::Corridor) ? 1 : 0);
+        int rooms_n_count = ((get_cell(y, c.second) == DungeonMatrixCell::Room) ? 1 : 0)
+                + ((get_cell(c.first, x) == DungeonMatrixCell::Room) ? 1 : 0);
+
+        // check corner touching a corridor
+        if (get_cell(c.first, c.second) == DungeonMatrixCell::Corridor && corridors_n_count != 1)
+            return true;
+
+        // check corner touching a room
+        if (get_cell(c.first, c.second) == DungeonMatrixCell::Room && rooms_n_count == 0 && corridors_n_count != 1)
+            return true;
+    }
+
+    int corridors_n_count = 0, rooms_n_count = 0;
+    for (coords n : neighbors(y, x)) {
+        coords c1 = (x == n.second) ? coords(n.first, x - 1) : coords(y - 1, n.second);
+        coords c2 = (x == n.second) ? coords(n.first, x + 1) : coords(y + 1, n.second);
+
+        if (get_cell(n.first, n.second) == DungeonMatrixCell::Corridor) {
+            corridors_n_count++;
+        } else if (get_cell(n.first, n.second) == DungeonMatrixCell::Room) {
+            if (get_cell(c1.first, c1.second) == DungeonMatrixCell::Room && get_cell(c2.first, c2.second) == DungeonMatrixCell::Room) {
+                rooms_n_count++;
+                continue;
+            }
+
+            // check touching a room
+            if (get_cell(c1.first, c1.second) == DungeonMatrixCell::Room ) {
+                if (get_cell(y, c1.second) != DungeonMatrixCell::Corridor && get_cell(c1.first, x) != DungeonMatrixCell::Corridor)
+                    return true;
+            } else {
+                if (get_cell(y, c2.second) != DungeonMatrixCell::Corridor && get_cell(c2.first, x) != DungeonMatrixCell::Corridor)
+                    return true;
+            }
+        }
+    }
+
+    // check neighbors count
+    if (2 - rooms_n_count != corridors_n_count) return true;
+
+    for (coords n : neighbors(y, x)) {
+        if (n == from) continue;
+        if (check_errors(n.first, n.second, coords(y, x))) return true;
+    }
+
+    return false;
+}
+
+coords DungeonMatrix::get_room(int id) const {
+    return rooms[id];
+}
+
+void DungeonMatrix::erase_room(int id) {
+    int y = rooms[id].first, x = rooms[id].second;
+    rooms.erase(rooms.begin() + id);
+
+    for (int dy = -1; dy <= 1; dy++)
+        for (int dx = -1; dx <= 1; dx++)
+            set_cell(y + dy, x + dx, DungeonMatrixCell::Empty);
+
+    for (coords n : neighbors(y, x, 2)) {
+        if (get_cell(n.first, n.second) != DungeonMatrixCell::Corridor) continue;
+        std::shared_ptr<std::deque<coords>> path = get_path(n.first, n.second);
+        for (coords c : *path) set_cell(c.first, c.second, DungeonMatrixCell::Empty);
+    }
 }
