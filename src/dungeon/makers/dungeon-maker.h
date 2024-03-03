@@ -18,6 +18,7 @@ namespace dungeon {
         static const size_t rooms_noise_strength = 2;
 
         static const size_t corridor_noise_iterations = 50;
+        static const size_t corridor_noise_strength = 2;
 
         // random
         pseudorandom::Randint randint;
@@ -27,6 +28,7 @@ namespace dungeon {
                                   std::vector<std::pair<dungeon_matrix::coords, dungeon_matrix::coords>> &queue, int y, int x);
         void generate_skeleton(const std::shared_ptr<dungeon_matrix::DungeonMatrix>& mat);
         void room_noise(const std::shared_ptr<dungeon_matrix::DungeonMatrix>& old);
+        void corridor_noise(const std::shared_ptr<dungeon_matrix::DungeonMatrix>& old);
     public:
         std::shared_ptr<dungeon_matrix::DungeonMatrix> build_matrix(int seed);
         void build() final;

@@ -15,11 +15,7 @@ namespace dungeon_matrix {
     class DungeonMatrix final {
     private:
         size_t height, width;
-
         std::vector<coords> rooms;
-
-        matrix<bool> mark_flags;
-        std::vector<coords> marks;
 
         void pave_horizontal(int y, int x1, int x2);
         void pave_vertical(int y1, int y2, int x);

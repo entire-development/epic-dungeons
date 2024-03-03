@@ -11,6 +11,9 @@ void DungeonMaker::build() {
 
     for (int i = 0; i < rooms_noise_iterations; i++)
         room_noise(result);
+
+    for (int i = 0; i < corridor_noise_iterations; i++)
+        corridor_noise(result);
 }
 
 std::shared_ptr<DungeonMatrix> DungeonMaker::build_matrix(int seed) {
@@ -21,6 +24,9 @@ std::shared_ptr<DungeonMatrix> DungeonMaker::build_matrix(int seed) {
 
     for (int i = 0; i < rooms_noise_iterations; i++)
         room_noise(result);
+
+    for (int i = 0; i < corridor_noise_iterations; i++)
+        corridor_noise(result);
 
     return result;
 }
@@ -92,6 +98,39 @@ void DungeonMaker::room_noise(const std::shared_ptr<DungeonMatrix>& old) {
         if (mat->check_errors(pair.first.first, pair.first.second)) return;
         if (mat->get_end(pair.first.first, pair.first.second) != pair.second) return;
     }
+
+    *old = *mat;
+}
+
+void DungeonMaker::corridor_noise(const std::shared_ptr<dungeon_matrix::DungeonMatrix> &old) {
+    std::shared_ptr<DungeonMatrix> mat = std::make_shared<DungeonMatrix>(*old);
+    coords room = mat->get_room(randint(0, (int) mat->rooms_count() - 1));
+
+    std::vector<coords> starts;
+    for (coords n : mat->neighbors(room.first, room.second, 2)) {
+        if (mat->get_cell(n.first, n.second) != DungeonMatrixCell::Corridor) continue;
+        starts.push_back(n);
+    }
+
+    coords start = starts[randint(0, (int)starts.size() - 1)];
+    std::shared_ptr<std::deque<coords>> path = mat->get_path(start.first, start.second);
+
+    if (path->size() < 5) return;
+
+    int mid_id = randint(1, (int)path->size() - 2);
+    int start_id = randint(0, mid_id - 1), end_id = randint(mid_id + 1, (int)path->size() - 1);
+
+    for (int i = start_id; i < end_id; i++) mat->set_cell((*path)[i].first, (*path)[i].second, DungeonMatrixCell::Empty);
+    int y = (*path)[mid_id].first + randint(-(int)corridor_noise_strength, corridor_noise_strength),
+        x = (*path)[mid_id].second + randint(-(int)corridor_noise_strength, corridor_noise_strength);
+
+    if (y < 0 || x < 0 || y >= height || x >= width) return;
+
+    mat->random_pave((*path)[start_id].first, y, (*path)[start_id].second, x, randint);
+    mat->random_pave((*path)[end_id].first, y, (*path)[end_id].second, x, randint);
+
+    if (mat->check_errors(start.first, start.second)) return;
+    if (mat->get_end(start.first, start.second) != (*path)[path->size() - 1]) return;
 
     *old = *mat;
 }

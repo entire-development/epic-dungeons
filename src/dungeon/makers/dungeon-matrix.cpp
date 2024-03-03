@@ -3,8 +3,7 @@
 using namespace dungeon_matrix;
 
 DungeonMatrix::DungeonMatrix(size_t height, size_t width) : width(width), height(height),
-        cells(matrix<DungeonMatrixCell>(height, std::vector<DungeonMatrixCell>(width, DungeonMatrixCell::Empty))),
-        mark_flags(matrix<bool>(height, std::vector<bool>(width, false))) {}
+        cells(matrix<DungeonMatrixCell>(height, std::vector<DungeonMatrixCell>(width, DungeonMatrixCell::Empty))) {}
 
 bool DungeonMatrix::generate_room(int y, int x, bool trust) {
     if (y < 1 || x < 1 || y >= height - 1 || x >= width - 1) return false;
