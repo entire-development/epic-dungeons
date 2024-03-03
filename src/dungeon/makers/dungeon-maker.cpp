@@ -132,5 +132,8 @@ void DungeonMaker::corridor_noise(const std::shared_ptr<dungeon_matrix::DungeonM
     if (mat->check_errors(start.first, start.second)) return;
     if (mat->get_end(start.first, start.second) != (*path)[path->size() - 1]) return;
 
+    coords end = mat->get_end(y, x);
+    if (end != start && end != (*path)[path->size() - 1]) return;
+
     *old = *mat;
 }
