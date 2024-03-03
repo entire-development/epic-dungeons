@@ -1,19 +1,10 @@
 #pragma once
 #include "dungeon/dungeon.h"
 #include "dungeon-matrix.h"
-#include <random>
+#include "randint.h"
+#include <utility>
 
 namespace dungeon {
-    using namespace dungeon_matrix;
-
-    class Randint final {
-    private:
-        std::mt19937 random;
-    public:
-        void seed(int seed);
-        int operator()(int le, int ri);
-    };
-
     class DungeonMaker final : IDungeonMaker {
     private:
         // settings
@@ -22,12 +13,14 @@ namespace dungeon {
         static const size_t basic_distance = 6;
 
         // random
-        Randint randint;
+        pseudorandom::Randint randint;
 
         std::shared_ptr<Dungeon> dungeon;
-        static bool generate_room(DungeonMatrix &mat, std::vector<std::pair<coords, coords>> &queue, int y, int x);
-        const DungeonMatrix &generate_skeleton();
+        static bool generate_room(dungeon_matrix::DungeonMatrix &mat,
+                std::vector<std::pair<dungeon_matrix::coords, dungeon_matrix::coords>> &queue, int y, int x);
+        dungeon_matrix::DungeonMatrix generate_skeleton();
     public:
+        dungeon_matrix::DungeonMatrix build_matrix();
         void build() final;
         [[nodiscard]] std::shared_ptr<Dungeon> getDungeon() const final;
     };
