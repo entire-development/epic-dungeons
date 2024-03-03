@@ -26,7 +26,7 @@ namespace dungeon {
         static bool generate_room(const std::shared_ptr<dungeon_matrix::DungeonMatrix>& mat,
                                   std::vector<std::pair<dungeon_matrix::coords, dungeon_matrix::coords>> &queue, int y, int x);
         void generate_skeleton(const std::shared_ptr<dungeon_matrix::DungeonMatrix>& mat);
-        void room_noise(std::shared_ptr<dungeon_matrix::DungeonMatrix> old);
+        void room_noise(const std::shared_ptr<dungeon_matrix::DungeonMatrix>& old);
     public:
         std::shared_ptr<dungeon_matrix::DungeonMatrix> build_matrix(int seed);
         void build() final;

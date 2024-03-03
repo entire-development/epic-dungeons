@@ -4,7 +4,7 @@ using namespace dungeon_matrix;
 using namespace dungeon;
 
 void DungeonMaker::build() {
-    randint.seed(16;
+    randint.seed(16);
     std::shared_ptr<DungeonMatrix> result = std::make_shared<DungeonMatrix>(height, width);
 
     generate_skeleton(result);
@@ -70,13 +70,13 @@ bool DungeonMaker::generate_room(const std::shared_ptr<DungeonMatrix>& mat, std:
     return true;
 }
 
-void DungeonMaker::room_noise(std::shared_ptr<DungeonMatrix> old) {
+void DungeonMaker::room_noise(const std::shared_ptr<DungeonMatrix>& old) {
     std::shared_ptr<DungeonMatrix> mat = std::make_shared<DungeonMatrix>(*old);
-    int room_id = randint(0, (int)mat->rooms_count() - 1);
+    int room_id = randint(0, (int) mat->rooms_count() - 1);
     coords old_place = mat->get_room(room_id);
 
-    int dy = randint(-(int)rooms_noise_strength, rooms_noise_strength),
-        dx = randint(-(int)rooms_noise_strength, rooms_noise_strength);
+    int dy = randint(-(int) rooms_noise_strength, rooms_noise_strength),
+            dx = randint(-(int) rooms_noise_strength, rooms_noise_strength);
 
     std::vector<std::pair<coords, coords>> pairs;
     for (coords n : mat->neighbors(old_place.first, old_place.second, 2)) {
@@ -93,5 +93,5 @@ void DungeonMaker::room_noise(std::shared_ptr<DungeonMatrix> old) {
         if (mat->get_end(pair.first.first, pair.first.second) != pair.second) return;
     }
 
-    old.swap(mat);
+    *old = *mat;
 }
