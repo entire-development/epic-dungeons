@@ -18,16 +18,26 @@ public:
 
     virtual void update(GameMachine *gm) {}
 
+    // freeze on pause
+    virtual void freeze(GameMachine *gm) {
+        exit(gm);
+    }
+
     virtual void exit(GameMachine *gm) {}
+
+    // unfreeze on resume
+    virtual void unfreeze(GameMachine *gm) {
+        enter(gm);
+    }
 };
 
 class GameMachine {
 public:
     GameMachine();
 
-    void enter(Controller *controller) {
+    void unfreeze(Controller *controller) {
         if (m_current_state) {
-            m_current_state->enter(this);
+            m_current_state->unfreeze(this);
         }
     }
 
@@ -64,9 +74,9 @@ public:
         m_renderer = renderer;
     }
 
-    void exit(Controller *controller) {
+    void freeze(Controller *controller) {
         if (m_current_state) {
-            m_current_state->exit(this);
+            m_current_state->freeze(this);
         }
     }
 
