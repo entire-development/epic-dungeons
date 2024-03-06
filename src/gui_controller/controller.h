@@ -60,7 +60,7 @@ public:
         m_next_state = m_states[state];
     }
 
-    void update() {
+    virtual void update() {
         if (m_next_state) {
             m_current_state = m_next_state;
             m_next_state = nullptr;
