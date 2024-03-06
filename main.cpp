@@ -1,6 +1,6 @@
 #include "gui_controller/controller.h"
 #include "keyboard/keyboard.h"
-#include "renderer/sfml_renderer/sfml_renderer.h"
+#include "renderer/graphics.h"
 #include "static_data/game_config.h"
 #include <SFML/Graphics.hpp>
 #include <chrono>
@@ -12,7 +12,7 @@ int main() {
     window.setFramerateLimit(cfg::FRAMERATE);
     window.setVerticalSyncEnabled(true);
 
-    auto renderer = renderer::SFMLRenderer(window);
+    auto renderer = graphics::Renderer(window);
     engine::Engine engine;
 
     gui::Controller controller(renderer, engine);
@@ -24,7 +24,7 @@ int main() {
         uint64_t delta_time = current_time - last_time;
         last_time = current_time;
 
-        renderer.updateState(delta_time);
+        //renderer.updateState(delta_time);
         controller.setDeltaTime(delta_time);
 
         for (auto event = sf::Event {}; window.pollEvent(event);) {

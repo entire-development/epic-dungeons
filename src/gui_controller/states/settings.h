@@ -22,7 +22,7 @@ public:
         }
     }
 
-    void render(renderer::SFMLRenderer &renderer) {
+    void render(graphics::Renderer &renderer) {
         renderer.clear();
         renderer.drawText(100, 100, "Settings");
 

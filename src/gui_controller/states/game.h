@@ -19,7 +19,7 @@ public:
         }
     }
 
-    void render(renderer::SFMLRenderer &renderer) {
+    void render(graphics::Renderer &renderer) {
         renderer.clear();
         renderer.drawText(400, 300, "This is game of imagination");
 

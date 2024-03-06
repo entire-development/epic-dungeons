@@ -1,6 +1,6 @@
 #pragma once
 #include "engine/engine.h"
-#include "renderer/sfml_renderer/sfml_renderer.h"
+#include "renderer/graphics.h"
 
 namespace gui {
 class Controller;
@@ -31,7 +31,7 @@ class Controller {
     friend class State;
 
 public:
-    Controller(renderer::SFMLRenderer &renderer, engine::Engine &engine);
+    Controller(graphics::Renderer &renderer, engine::Engine &engine);
 
     template<typename T>
     void addState(const GUIState &state) {
@@ -66,7 +66,7 @@ public:
         delta_time = dt;
     }
 
-    renderer::SFMLRenderer &m_renderer;
+    graphics::Renderer &m_renderer;
     engine::Engine &m_engine;
 
 protected:

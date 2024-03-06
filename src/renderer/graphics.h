@@ -1,11 +1,10 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 #include "keyboard/keyboard.h"
-#include "renderer/irenderer.h"
 #include <iostream>
 #include <map>
 
-namespace renderer {
+namespace graphics {
 class Color {
 public:
     Color(const std::string &hex_str);
@@ -28,23 +27,31 @@ struct Rectangle {
     Color stroke_color = 0x000000ff;
 };
 
-class SFMLRenderer : public IRenderer {
+class Renderer {
 public:
     // constructor
-    SFMLRenderer(sf::RenderWindow &window);
+    Renderer(sf::RenderWindow &window);
 
-    void display() override;
-    void updateState(uint64_t deltatime) override;
-    void clear() override;
+    void display();
+    void updateState(uint64_t deltatime);
+    void clear();
 
-    void drawSprite(int x, int y, const std::string &sprite_id) override;
+    void drawSprite(int x, int y, const std::string &sprite_id);
 
     void drawRec(const Rectangle &rectangle);
 
-    void drawText(int x, int y, const std::string &line) override;
+    void drawText(int x, int y, const std::string &line);
 
     void close() {
         window.close();
+    }
+
+    bool isActive() {
+        return active;
+    }
+
+    void open () {
+        active = true;
     }
 
     uint64_t getDeltaTime() {
@@ -54,5 +61,6 @@ public:
 private:
     uint64_t m_delta_time;
     sf::RenderWindow &window;
+    bool active;
 };
-}   // namespace renderer
+}   // namespace graphics

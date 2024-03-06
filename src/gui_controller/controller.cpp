@@ -7,7 +7,7 @@
 
 namespace gui {
 
-Controller::Controller(renderer::SFMLRenderer &renderer, engine::Engine &engine) :
+Controller::Controller(graphics::Renderer &renderer, engine::Engine &engine) :
     m_renderer(renderer), m_engine(engine) {
     addState<Game>(GUIState::kGame);
     addState<MainMenu>(GUIState::kMainMenu);

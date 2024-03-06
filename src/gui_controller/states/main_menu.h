@@ -49,7 +49,7 @@ public:
 
     void exit(Controller *controller) {}
 
-    void render(renderer::SFMLRenderer &renderer) {
+    void render(graphics::Renderer &renderer) {
         renderer.clear();
         for (int i = 0; i < m_options.size(); i++) {
             renderer.drawText(100, 100 + i * 50, m_options[i]);

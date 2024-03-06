@@ -1,34 +1,29 @@
-#include "sfml_renderer.h"
+#include "graphics.h"
 #include "keyboard/keyboard.h"
 #include "static_data/game_config.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <sstream>
 
-using namespace renderer;
+using namespace graphics;
 
-SFMLRenderer::SFMLRenderer(sf::RenderWindow &window) : window(window), IRenderer() {}
+Renderer::Renderer(sf::RenderWindow &window) : window(window) {}
 
-void SFMLRenderer::updateState(uint64_t deltatime) {
-    m_delta_time = deltatime;
-    animation_timer += deltatime;
-}
-
-void SFMLRenderer::clear() {
+void Renderer::clear() {
     window.clear();
 }
 
-void SFMLRenderer::display() {
+void Renderer::display() {
     window.display();
 }
 
-void SFMLRenderer::drawSprite(int x, int y, const std::string &sprite_id) {
+void Renderer::drawSprite(int x, int y, const std::string &sprite_id) {
     sf::CircleShape shape(50);
     shape.setFillColor(sf::Color(100, 250, 50));
     window.draw(shape);
 }
 
-void SFMLRenderer::drawText(int x, int y, const std::string &line) {
+void Renderer::drawText(int x, int y, const std::string &line) {
     sf::Font font;
     if (!font.loadFromFile(cfg::FONT_PATH)) {
         std::cerr << "Font not found!" << std::endl;
@@ -43,7 +38,7 @@ void SFMLRenderer::drawText(int x, int y, const std::string &line) {
     window.draw(text);
 }
 
-void SFMLRenderer::drawRec(const Rectangle &rectangle) {
+void Renderer::drawRec(const Rectangle &rectangle) {
     sf::RectangleShape new_rectangle;
     new_rectangle.setSize(sf::Vector2f(rectangle.w, rectangle.h));
     new_rectangle.setFillColor(rectangle.color.getSFColor());
