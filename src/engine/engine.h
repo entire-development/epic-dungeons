@@ -1,14 +1,24 @@
 #pragma once
-#include "fsm/fsm.h"
-#pragma "engine/states.h"
+#include "dungeon/dungeon.h"
+#include <memory>
 
 namespace engine {
 
-enum class EngineState {
-    kInCell,
-    kRoomSelection,
-    kDirectionChoice,
-};
+class Engine {
+public:
+    Engine() : m_dungeon(nullptr) {}
 
-class Engine : public fsm::StateMachine<EngineState> {};
+    void bindDungeon(const std::shared_ptr<dungeon::Dungeon> &dungeon) {
+        this->m_dungeon = dungeon;
+    }
+
+    std::shared_ptr<dungeon::Dungeon> getDungeon() {
+        return m_dungeon;
+    }
+
+private:
+    std::shared_ptr<dungeon::Dungeon> m_dungeon;
+    std::weak_ptr<dungeon::Cell> m_current_cell;
+    std::weak_ptr<dungeon::Room> m_target_room;
+};
 }   // namespace engine
