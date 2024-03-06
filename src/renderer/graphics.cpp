@@ -2,6 +2,7 @@
 #include "keyboard/keyboard.h"
 #include "static_data/game_config.h"
 #include <SFML/Graphics.hpp>
+#include <cassert>
 #include <iostream>
 #include <sstream>
 
@@ -48,34 +49,31 @@ void Renderer::drawRec(const Rectangle &rectangle) {
     window.draw(new_rectangle);
 }
 
-// TODO: refactor
-//Color::Color(const sf::Color &color) : sfcolor(color) {}
-//
-//Color::Color(const std::string &hex_str) {
-//    if (hex_str[0] != '#') {
-//        sfcolor = sf::Color(0x00000000);
-//        return;
-//    }
-//    if (hex_str.length() < 7 || hex_str.length() > 9) {
-//        sfcolor = sf::Color(0x00000000);
-//        return;
-//    }
-//    uint32_t hex;
-//    std::stringstream ss;
-//    ss << std::hex << (hex_str.substr(1, hex_str.length() - 1) + "ff");
-//    ss >> hex;
-//    sfcolor = sf::Color(hex);
-//}
-//
-//Color::Color(const uint32_t &hex) : sfcolor(sf::Color(hex)) {}
-//
-//const std::string Color::toHexString() const {
-//    std::stringstream ss;
-//    ss << std::hex << "#" << +sfcolor.r << +sfcolor.g << +sfcolor.b;
-//    std::string result(ss.str());
-//    return result;
-//}
-//
-//inline const sf::Color Color::getSFColor() const {
-//    return sfcolor;
-//}
+graphics::Color::Color(const std::string &hex_str) {
+    assert(hex_str[0] == '#' && (hex_str.size() == 7 || hex_str.size() == 9)
+           && std::all_of(hex_str.begin() + 1, hex_str.end(), isxdigit));
+
+    std::stringstream ss;
+    ss << hex_str.substr(1);
+
+    uint32_t hex;
+    ss >> std::hex >> hex;
+
+    if (hex_str.size() == 7) {
+        hex <<= 8;
+        hex += 0xFF;
+    }
+
+    r = (hex & 0xFF000000) >> (8 * 3);
+    g = (hex & 0x00FF0000) >> (8 * 2);
+    b = (hex & 0x0000FF00) >> (8 * 1);
+    a = (hex & 0x000000FF) >> (8 * 0);
+}
+
+graphics::Color::Color(const sf::Color &color) : r(color.r), g(color.g), b(color.b), a(color.a) {}
+
+graphics::Color::Color(const uint8_t r, const uint8_t g, const uint8_t b, const uint8_t a) : r(r), g(g), b(b), a(a) {}
+
+sf::Color graphics::Color::getSFColor() const {
+    return {r, g, b, a};
+}
