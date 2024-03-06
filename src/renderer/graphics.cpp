@@ -49,6 +49,12 @@ void Renderer::drawRec(const Rectangle &rectangle) {
     window.draw(new_rectangle);
 }
 
+void Renderer::draw(const Text& text, int x, int y) {
+    sf::Text set_text = text.toSF();
+    set_text.setPosition(x, y);
+    window.draw(set_text);
+}
+
 graphics::Color::Color(const std::string &hex_str) {
     assert(hex_str[0] == '#' && (hex_str.size() == 7 || hex_str.size() == 9)
            && std::all_of(hex_str.begin() + 1, hex_str.end(), isxdigit));
