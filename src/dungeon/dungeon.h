@@ -19,7 +19,7 @@ public:
     std::shared_ptr<Cell> getCurrentCell();
 
     // find rooms which are connected with given room by corridor(cells)
-    std::vector<Room> getRoomNeighbours(Room *room);
+    std::vector<Room> getRoomNeighbours(std::weak_ptr<Room> room);
 
     friend class IDungeonMaker;
 
