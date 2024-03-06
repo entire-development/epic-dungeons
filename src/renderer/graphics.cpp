@@ -55,6 +55,10 @@ void Renderer::draw(const Text& text, int x, int y) {
     window.draw(set_text);
 }
 
+graphics::Color::Color() {
+    Color("#000000");
+}
+
 graphics::Color::Color(const std::string &hex_str) {
     assert(hex_str[0] == '#' && (hex_str.size() == 7 || hex_str.size() == 9)
            && std::all_of(hex_str.begin() + 1, hex_str.end(), isxdigit));
