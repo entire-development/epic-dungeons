@@ -18,7 +18,5 @@ public:
 
 private:
     std::shared_ptr<dungeon::Dungeon> m_dungeon;
-    std::weak_ptr<dungeon::Cell> m_current_cell;
-    std::weak_ptr<dungeon::Room> m_target_room;
 };
 }   // namespace engine
