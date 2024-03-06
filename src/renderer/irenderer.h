@@ -12,10 +12,14 @@ public:
     // call on game initialization
     virtual void start();
 
-    virtual void setDeltatime(uint64_t deltatime) = 0;
+    // updates inputs, deltatime, clears old canvas. Should be called at the start of event loop iteration.
+    virtual void updateState(uint64_t deltatime) = 0;
 
-    // updates inputs, deltatime, draws all objects on canvas, then clears it. Should be called at the end of event loop iteration.
-    virtual void update() = 0;
+    // draws all objects on the canvas. Should be called at the end of event loop iteration.
+    virtual void display() = 0;
+
+    // clears canvas
+    virtual void clear() = 0;
 
     // close window at program finish
     virtual void finish();
@@ -44,4 +48,4 @@ protected:
     // activity status
     bool active;
 };
-}   // namespace Renderer
+}   // namespace renderer

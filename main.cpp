@@ -1,16 +1,32 @@
+#include "gui_controller/controller.h"
 #include "keyboard/keyboard.h"
 #include "renderer/sfml_renderer/sfml_renderer.h"
 #include "static_data/game_config.h"
 #include <SFML/Graphics.hpp>
+#include <chrono>
 
 int main() {
-    auto window = sf::RenderWindow {{cfg::WINDOW_WIDTH, cfg::WINDOW_HEIGHT}, cfg::WINDOW_NAME};
+    auto window = sf::RenderWindow {{cfg::WINDOW_WIDTH, cfg::WINDOW_HEIGHT},
+                                    cfg::WINDOW_NAME,
+                                    sf::Style::Titlebar | sf::Style::Close};
     window.setFramerateLimit(cfg::FRAMERATE);
+    window.setVerticalSyncEnabled(true);
 
     auto renderer = renderer::SFMLRenderer(window);
+    engine::Engine engine;
 
+    gui::Controller controller(renderer, engine);
+    uint64_t last_time = 0;
     while (window.isOpen()) {
-        renderer.setDeltatime(1);
+        uint64_t current_time =
+            std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())
+                .count();
+        uint64_t delta_time = current_time - last_time;
+        last_time = current_time;
+
+        renderer.updateState(delta_time);
+        controller.setDeltaTime(delta_time);
+
         for (auto event = sf::Event {}; window.pollEvent(event);) {
             if (event.type == sf::Event::Closed) {
                 window.close();
@@ -23,20 +39,7 @@ int main() {
             }
         }
 
-        if (keyboard::isPressed(cfg::CONTROLS_MOVE_UP)) {
-            renderer.drawRec({100, 100, 100, 100, sf::Color::Red});
-        }
-        if (keyboard::isPressed(cfg::CONTROLS_MOVE_DOWN)) {
-            renderer.drawRec({200, 200, 100, 100, sf::Color::Green});
-        }
-        if (keyboard::isPressed(cfg::CONTROLS_MOVE_LEFT)) {
-            renderer.drawRec({300, 300, 100, 100, sf::Color::Blue});
-        }
-        if (keyboard::isPressed(cfg::CONTROLS_MOVE_RIGHT)) {
-            renderer.drawRec({400, 400, 100, 100, sf::Color::Yellow});
-        }
-
-        renderer.update();
+        controller.update();
     }
 
     return 0;

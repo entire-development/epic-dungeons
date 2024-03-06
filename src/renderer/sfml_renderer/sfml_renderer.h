@@ -1,6 +1,6 @@
 #pragma once
 #include "SFML/Graphics.hpp"
-#include "keyboard//keyboard.h"
+#include "keyboard/keyboard.h"
 #include "renderer/irenderer.h"
 #include <iostream>
 #include <map>
@@ -33,9 +33,9 @@ public:
     // constructor
     SFMLRenderer(sf::RenderWindow &window);
 
-    void update() override;
-
-    void setDeltatime(uint64_t deltatime) override;
+    void display() override;
+    void updateState(uint64_t deltatime) override;
+    void clear() override;
 
     void drawSprite(int x, int y, const std::string &sprite_id) override;
 
@@ -43,7 +43,16 @@ public:
 
     void drawText(int x, int y, const std::string &line) override;
 
+    void close() {
+        window.close();
+    }
+
+    uint64_t getDeltaTime() {
+        return m_delta_time;
+    }
+
 private:
+    uint64_t m_delta_time;
     sf::RenderWindow &window;
 };
-}   // namespace Renderer
+}   // namespace renderer
