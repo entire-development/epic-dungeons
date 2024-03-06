@@ -48,33 +48,34 @@ void Renderer::drawRec(const Rectangle &rectangle) {
     window.draw(new_rectangle);
 }
 
-Color::Color(const sf::Color &color) : sfcolor(color) {}
-
-Color::Color(const std::string &hex_str) {
-    if (hex_str[0] != '#') {
-        sfcolor = sf::Color(0x00000000);
-        return;
-    }
-    if (hex_str.length() < 7 || hex_str.length() > 9) {
-        sfcolor = sf::Color(0x00000000);
-        return;
-    }
-    uint32_t hex;
-    std::stringstream ss;
-    ss << std::hex << (hex_str.substr(1, hex_str.length() - 1) + "ff");
-    ss >> hex;
-    sfcolor = sf::Color(hex);
-}
-
-Color::Color(const uint32_t &hex) : sfcolor(sf::Color(hex)) {}
-
-const std::string Color::toHexString() const {
-    std::stringstream ss;
-    ss << std::hex << "#" << +sfcolor.r << +sfcolor.g << +sfcolor.b;
-    std::string result(ss.str());
-    return result;
-}
-
-inline const sf::Color Color::getSFColor() const {
-    return sfcolor;
-}
+// TODO: refactor
+//Color::Color(const sf::Color &color) : sfcolor(color) {}
+//
+//Color::Color(const std::string &hex_str) {
+//    if (hex_str[0] != '#') {
+//        sfcolor = sf::Color(0x00000000);
+//        return;
+//    }
+//    if (hex_str.length() < 7 || hex_str.length() > 9) {
+//        sfcolor = sf::Color(0x00000000);
+//        return;
+//    }
+//    uint32_t hex;
+//    std::stringstream ss;
+//    ss << std::hex << (hex_str.substr(1, hex_str.length() - 1) + "ff");
+//    ss >> hex;
+//    sfcolor = sf::Color(hex);
+//}
+//
+//Color::Color(const uint32_t &hex) : sfcolor(sf::Color(hex)) {}
+//
+//const std::string Color::toHexString() const {
+//    std::stringstream ss;
+//    ss << std::hex << "#" << +sfcolor.r << +sfcolor.g << +sfcolor.b;
+//    std::string result(ss.str());
+//    return result;
+//}
+//
+//inline const sf::Color Color::getSFColor() const {
+//    return sfcolor;
+//}

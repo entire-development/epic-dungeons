@@ -7,12 +7,14 @@ namespace gui {
 class Game : public State {
 public:
     uint64_t anim_time = 0;
+    uint32_t deltatime = 0;
 
     void enter(Controller *controller) {
         render(controller->m_renderer);
     }
 
     void update(Controller *controller) {
+        deltatime = controller->getDeltaTime();
         render(controller->m_renderer);
         if (keyboard::isPressed(keyboard::KEY_ESCAPE)) {
             controller->changeState(GUIState::kMainMenu);
@@ -24,7 +26,7 @@ public:
         renderer.drawText(400, 300, "This is game of imagination");
 
         // Animation
-        anim_time += renderer.getDeltaTime();
+        anim_time += deltatime;
         if (anim_time >= 1000) {
             anim_time -= 1000;
         }
