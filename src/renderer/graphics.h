@@ -8,7 +8,6 @@
 namespace graphics {
 class Color {
 public:
-    Color();
     Color(const std::string &hex_str);
     Color(const sf::Color &color);
     Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255);
