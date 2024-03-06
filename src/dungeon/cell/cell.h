@@ -16,7 +16,7 @@ public:
     bool isDiscovered() const;
 
     events::Event *getEvent();
-    std::vector<Cell *> getNeighbours();
+    std::vector<std::weak_ptr<Cell>> getNeighbours();
 
     friend void connectCells(Cell *cell1, Cell *cell2);
 
@@ -28,7 +28,7 @@ private:
     bool m_is_discovered = false;
 
     events::Event *m_event = nullptr;
-    std::vector<Cell *> m_neighbours;
+    std::vector<std::weak_ptr<Cell>> m_neighbours;
 };
 
 class Room : public Cell {};
