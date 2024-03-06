@@ -21,7 +21,7 @@ public:
     }
 
     void enter(Controller *controller) override {
-        game_machine.enter(controller);
+        game_machine.unfreeze(controller);
     }
 
     void update(Controller *controller) override {
@@ -33,7 +33,7 @@ public:
     }
 
     void exit(Controller *controller) override {
-        game_machine.exit(controller);
+        game_machine.freeze(controller);
     }
 };
 
