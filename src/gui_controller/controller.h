@@ -25,13 +25,31 @@ public:
     virtual void update(Controller *controller) {}
 
     virtual void exit(Controller *controller) {}
+
+    virtual void onEngineBind(std::weak_ptr<engine::Engine> engine) {}
+
+    virtual void onRendererBind(std::weak_ptr<renderer::SFMLRenderer> renderer) {}
 };
 
 class Controller {
     friend class State;
 
 public:
-    Controller(renderer::SFMLRenderer &renderer, engine::Engine &engine);
+    Controller();
+
+    void bindEngine(std::shared_ptr<engine::Engine> &engine) {
+        m_engine = engine;
+        for (auto &state : m_states) {
+            state.second->onEngineBind(engine);
+        }
+    }
+
+    void bindRenderer(std::shared_ptr<renderer::SFMLRenderer> renderer) {
+        m_renderer = renderer;
+        for (auto &state : m_states) {
+            state.second->onRendererBind(renderer);
+        }
+    }
 
     template<typename T>
     void addState(const GUIState &state) {
@@ -66,8 +84,8 @@ public:
         delta_time = dt;
     }
 
-    renderer::SFMLRenderer &m_renderer;
-    engine::Engine &m_engine;
+    std::shared_ptr<renderer::SFMLRenderer> m_renderer;
+    std::shared_ptr<engine::Engine> m_engine;
 
 protected:
     uint64_t delta_time;
