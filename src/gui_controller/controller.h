@@ -1,6 +1,6 @@
 #pragma once
 #include "engine/engine.h"
-#include "renderer/sfml_renderer/sfml_renderer.h"
+#include "renderer/graphics.h"
 
 namespace gui {
 class Controller;
@@ -20,6 +20,8 @@ class State {
     friend class Controller;
 
 public:
+    State() = default;
+
     virtual void enter(Controller *controller) {}
 
     virtual void update(Controller *controller) {}
@@ -28,7 +30,7 @@ public:
 
     virtual void onEngineBind(std::weak_ptr<engine::Engine> engine) {}
 
-    virtual void onRendererBind(std::weak_ptr<renderer::SFMLRenderer> renderer) {}
+    virtual void onRendererBind(std::weak_ptr<graphics::Renderer> renderer) {}
 };
 
 class Controller {
@@ -37,14 +39,14 @@ class Controller {
 public:
     Controller();
 
-    void bindEngine(std::shared_ptr<engine::Engine> &engine) {
+    void bindEngine(std::shared_ptr<engine::Engine> engine) {
         m_engine = engine;
         for (auto &state : m_states) {
             state.second->onEngineBind(engine);
         }
     }
 
-    void bindRenderer(std::shared_ptr<renderer::SFMLRenderer> renderer) {
+    void bindRenderer(std::shared_ptr<graphics::Renderer> renderer) {
         m_renderer = renderer;
         for (auto &state : m_states) {
             state.second->onRendererBind(renderer);
@@ -84,7 +86,7 @@ public:
         delta_time = dt;
     }
 
-    std::shared_ptr<renderer::SFMLRenderer> m_renderer;
+    std::shared_ptr<graphics::Renderer> m_renderer;
     std::shared_ptr<engine::Engine> m_engine;
 
 protected:

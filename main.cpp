@@ -1,6 +1,7 @@
+#include "dungeon/makers/MockDungeonMaker.h"
 #include "gui_controller/controller.h"
 #include "keyboard/keyboard.h"
-#include "renderer/sfml_renderer/sfml_renderer.h"
+#include "renderer/graphics.h"
 #include "static_data/game_config.h"
 #include <SFML/Graphics.hpp>
 #include <chrono>
@@ -12,8 +13,12 @@ int main() {
     window.setFramerateLimit(cfg::FRAMERATE);
     window.setVerticalSyncEnabled(true);
 
-    auto renderer = std::make_shared<renderer::SFMLRenderer>(window);
+    auto renderer = std::make_shared<graphics::Renderer>(window);
     auto engine = std::make_shared<engine::Engine>();
+
+    dungeon::MockDungeonMaker dungeon_maker;
+    dungeon_maker.build();
+    engine->bindDungeon(dungeon_maker.getDungeon());
 
     gui::Controller controller;
     controller.bindEngine(engine);
@@ -26,7 +31,6 @@ int main() {
         uint64_t delta_time = current_time - last_time;
         last_time = current_time;
 
-        renderer->updateState(delta_time);
         controller.setDeltaTime(delta_time);
 
         for (auto event = sf::Event {}; window.pollEvent(event);) {

@@ -16,7 +16,7 @@ public:
         game_machine.bindEngine(engine);
     }
 
-    void onRendererBind(std::weak_ptr<renderer::SFMLRenderer> renderer) override {
+    void onRendererBind(std::weak_ptr<graphics::Renderer> renderer) override {
         game_machine.bindRenderer(renderer);
     }
 

@@ -8,8 +8,7 @@ class Main : public GameState {
     bool is_presssed = false;
 
     void enter(GameMachine *gm) override {
-        is_presssed = keyboard::isPressed(keyboard::KEY_ENTER);
-        renderer::SFMLRenderer *r = gm->m_renderer.lock().get();
+        graphics::Renderer *r = gm->m_renderer.lock().get();
         r->clear();
         render(r);
         r->display();
@@ -23,8 +22,7 @@ class Main : public GameState {
         is_presssed = keyboard::isPressed(keyboard::KEY_ENTER);
     }
 
-    void render(renderer::SFMLRenderer *r) {
-        r->drawText(50, 50, "Press ENTER to start");
+    void render(graphics::Renderer *r) {
         r->drawRec({100, 100, 100, 100, sf::Color::Red});
         r->drawText(50, 300, "Press ESC to exit");
     }
