@@ -70,7 +70,7 @@ public:
         m_engine = engine;
     }
 
-    void bindRenderer(std::weak_ptr<renderer::SFMLRenderer> renderer) {
+    void bindRenderer(std::weak_ptr<graphics::Renderer> renderer) {
         m_renderer = renderer;
     }
 
@@ -81,7 +81,7 @@ public:
     }
 
     std::weak_ptr<engine::Engine> m_engine;
-    std::weak_ptr<renderer::SFMLRenderer> m_renderer;
+    std::weak_ptr<graphics::Renderer> m_renderer;
 
 protected:
     std::shared_ptr<GameState> m_current_state, m_next_state;
