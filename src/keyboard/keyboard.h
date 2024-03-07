@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Window/Keyboard.hpp>
+#include <string>
 #include <vector>
 
 namespace keyboard {
@@ -77,6 +78,7 @@ private:
 };
 
 const Key sfmlToKey(const sf::Keyboard::Key &key);
+const std::string keyToString(const Key &key);
 
 static void setKeyState(const Key &key, const bool &state) {
     KeyboardController::getInstance().setKeyState(key, state);
