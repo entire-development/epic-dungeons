@@ -1,3 +1,4 @@
+#include "dungeon/makers/MockDungeonMaker.h"
 #include "gui_controller/controller.h"
 #include "keyboard/keyboard.h"
 #include "renderer/graphics.h"
@@ -14,6 +15,10 @@ int main() {
 
     auto renderer = std::make_shared<graphics::Renderer>(window);
     auto engine = std::make_shared<engine::Engine>();
+
+    dungeon::MockDungeonMaker dungeon_maker;
+    dungeon_maker.build();
+    engine->bindDungeon(dungeon_maker.getDungeon());
 
     gui::Controller controller;
     controller.bindEngine(engine);

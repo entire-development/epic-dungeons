@@ -4,6 +4,8 @@
 
 namespace dungeon {
 void dungeon::MockDungeonMaker::build() {
+    dungeon = std::make_shared<Dungeon>();
+
     std::vector<std::shared_ptr<Room>> rooms = {
         std::make_shared<Room>(Position(20, 25)), std::make_shared<Room>(Position(29, 29)),
         std::make_shared<Room>(Position(24, 20)), std::make_shared<Room>(Position(25, 25)),
@@ -44,15 +46,15 @@ void dungeon::MockDungeonMaker::build() {
     };
 
     for (size_t i = 0; i < cells.size(); i++) {
-        for (size_t j = 0; j < cells.size(); j++) {
+        for (size_t j = i + 1; j < cells.size(); j++) {
             std::shared_ptr<Cell> cell1 = cells[i];
             std::shared_ptr<Cell> cell2 = cells[j];
             int dx = std::abs(cell1->getPosition().first - cell2->getPosition().first);
             int dy = std::abs(cell1->getPosition().second - cell2->getPosition().second);
 
             if (cell1->isRoom()) {
-                assert(!cell2->isRoom());
-                if ((dx == 0 && dy == 2) || (dx == 2 && dy == 0)) {
+                if (((dx == 0 && dy == 2) || (dx == 2 && dy == 0))) {
+                    assert(!cell2->isRoom());
                     connectCells(cell1, cell2);
                 }
             } else {
@@ -67,10 +69,9 @@ void dungeon::MockDungeonMaker::build() {
     }
 
     dungeon->m_cells = cells;
-
-    dungeon->m_rooms.resize(rooms.size());
-    for (size_t i = 0; i < rooms.size(); i++) {
-        dungeon->m_rooms[i] = std::weak_ptr<Room>(rooms[i]);
+    dungeon->m_rooms.reserve(rooms.size());
+    for (auto &room : rooms) {
+        dungeon->m_rooms.push_back(room);
     }
 
     dungeon->m_current_cell = dungeon->m_cells[14];

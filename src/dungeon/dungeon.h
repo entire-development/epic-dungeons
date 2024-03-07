@@ -15,22 +15,27 @@ public:
 
 class Dungeon {
 public:
-    std::vector<std::weak_ptr<Room>> getRooms();
-    std::shared_ptr<Cell> getCurrentCell();
+    // dungeon may be built only by DungeonMaker
+    Dungeon() : m_rooms(), m_cells() {}
+
+    std::vector<std::weak_ptr<Room>> getRooms() {
+        return m_rooms;
+    }
+
+    std::weak_ptr<Cell> getCurrentCell() {
+        return m_current_cell;
+    }
 
     // find rooms which are connected with given room by corridor(cells)
-    std::vector<Room> getRoomNeighbours(std::weak_ptr<Room> room);
+    std::vector<std::weak_ptr<Room>> getRoomNeighbours(std::weak_ptr<Room> room);
 
     friend class IDungeonMaker;
     friend class MockDungeonMaker;
 
 private:
-    // dungeon may be built only by DungeonMaker
-    Dungeon() = default;
-
     std::vector<std::weak_ptr<Room>> m_rooms;
     std::vector<std::shared_ptr<Cell>> m_cells;
 
-    std::shared_ptr<Cell> m_current_cell = nullptr;
+    std::weak_ptr<Cell> m_current_cell;
 };
 }   // namespace dungeon

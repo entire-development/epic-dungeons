@@ -1,22 +1,44 @@
 #pragma once
 
 #include "events/event.h"
+#include <memory>
+#include <utility>
 #include <vector>
 
 namespace dungeon {
 typedef std::pair<int, int> Position;
+class Room;
 
 class Cell {
+    friend class Dungeon;
+
 public:
     explicit Cell(Position position, bool is_room = false);
-    constexpr Position getPosition() const;
-    constexpr bool isRoom() const;
+    virtual ~Cell() = default;
 
-    bool isVisited() const;
-    bool isDiscovered() const;
+    constexpr Position getPosition() const {
+        return m_position;
+    }
 
-    std::shared_ptr<events::Event> getEvent();
-    std::vector<std::weak_ptr<Cell>> getNeighbours();
+    constexpr bool isRoom() const {
+        return m_is_room;
+    }
+
+    bool isVisited() const {
+        return m_is_visited;
+    }
+
+    bool isDiscovered() const {
+        return m_is_discovered;
+    }
+
+    std::shared_ptr<events::Event> getEvent() {
+        return m_event;
+    }
+
+    std::vector<std::weak_ptr<Cell>> getNeighbours() {
+        return m_neighbours;
+    }
 
     friend void connectCells(std::weak_ptr<Cell> cell1, std::weak_ptr<Cell> cell2);
 
