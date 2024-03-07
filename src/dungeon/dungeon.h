@@ -22,6 +22,7 @@ public:
     std::vector<Room> getRoomNeighbours(std::weak_ptr<Room> room);
 
     friend class IDungeonMaker;
+    friend class MockDungeonMaker;
 
 private:
     // dungeon may be built only by DungeonMaker
