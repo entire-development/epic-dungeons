@@ -16,9 +16,13 @@ class Dungeon {
 public:
     std::vector<Room *> getRooms();
     Cell *getCurrentCell();
+    void setTargetRoom(Room *room);
+
+    // get all cells
+    std::vector<Cell *> getCells();
 
     // find rooms which are connected with given room by corridor(cells)
-    std::vector<Room> getRoomNeighbours(Room *room);
+    std::vector<Room *> getRoomNeighbours(Room *room);
 
     friend class IDungeonMaker;
 

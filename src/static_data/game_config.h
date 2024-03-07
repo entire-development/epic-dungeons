@@ -6,6 +6,7 @@ namespace cfg {
 const int FRAMERATE = 30;
 const unsigned WINDOW_WIDTH = 800;
 const unsigned WINDOW_HEIGHT = 600;
+const unsigned CELL_SIZE = 50;
 const std::string WINDOW_NAME = "*EPIC DUNGEONS*";
 
 const keyboard::Key CONTROLS_MOVE_RIGHT = keyboard::Key::KEY_RIGHT;

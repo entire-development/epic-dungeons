@@ -8,6 +8,7 @@ class GameState;
 
 enum class GUIGameState {
     kMain,
+    kRoomSelection,
 };
 
 class GameState {

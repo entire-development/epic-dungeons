@@ -8,6 +8,7 @@ typedef std::pair<int, int> Position;
 
 class Cell {
 public:
+    virtual ~Cell() {}
     Cell(Position position, bool is_room = false);
     constexpr Position getPosition() const;
     constexpr bool isRoom() const;
