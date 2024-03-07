@@ -32,6 +32,7 @@ private:
 };
 
 class Room : public Cell {
+public:
     explicit Room(Position position);
 };
 
