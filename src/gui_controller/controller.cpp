@@ -7,8 +7,7 @@
 
 namespace gui {
 
-Controller::Controller(graphics::Renderer &renderer, engine::Engine &engine) :
-    m_renderer(renderer), m_engine(engine) {
+Controller::Controller() : delta_time(0) {
     addState<Game>(GUIState::kGame);
     addState<MainMenu>(GUIState::kMainMenu);
     addState<Settings>(GUIState::kSettings);

@@ -1,22 +1,23 @@
 #pragma once
-#include <iostream>
-#include "SFML/Graphics.hpp"
+#include "SFML/Graphics/Color.hpp"
+#include "color.h"
 #include "static_data/game_config.h"
-#include "graphics.h"
+#include <iostream>
 
-namespace graphics
-{
+namespace graphics {
+class Color;
+
 class Text {
 public:
     Text(const std::string &text, const std::string &font_name, const uint &size);
 
-    Text& setColor(const Color &color);
-    Text& setOutlineColor(const Color &color);
-    Text& setOutlineThickness(float thickness);
-    Text& setStyle(const sf::Uint32 style);
-    Text& setRotation(float angle);
-    Text& setLetterSpacing(float spacingFactor);
-    Text& setScale(float factorX, float factorY);
+    Text &setColor(const graphics::Color &color);
+    Text &setOutlineColor(const Color &color);
+    Text &setOutlineThickness(float thickness);
+    Text &setStyle(const sf::Uint32 style);
+    Text &setRotation(float angle);
+    Text &setLetterSpacing(float spacingFactor);
+    Text &setScale(float factorX, float factorY);
     std::string getFont(const std::string &name) const;
     sf::Text toSF() const;
 
@@ -30,7 +31,7 @@ private:
     float y_scale = 1.0f;
     float outline_thickness = 0;
     sf::Text text_style;
-    Color text_color = Color("#ffffff");
-    Color outline_color = Color("#000000");
+    graphics::Color text_color = "#ffffff";
+    graphics::Color outline_color = "#000000";
 };
-}
+}   // namespace graphics

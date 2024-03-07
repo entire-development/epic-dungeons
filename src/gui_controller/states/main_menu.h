@@ -9,7 +9,7 @@ public:
     void enter(Controller *controller) {
         m_selected = 0;
         is_key_pressed = false;
-        render(controller->m_renderer);
+        render(controller->m_renderer.get());
     }
 
     void update(Controller *controller) {
@@ -26,12 +26,12 @@ public:
         if (pressed_up) {
             m_selected = (m_selected - 1 + m_options.size()) % m_options.size();
             is_key_pressed = true;
-            render(controller->m_renderer);
+            render(controller->m_renderer.get());
 
         } else if (pressed_down) {
             m_selected = (m_selected + 1) % m_options.size();
             is_key_pressed = true;
-            render(controller->m_renderer);
+            render(controller->m_renderer.get());
         } else if (pressed_enter) {
             switch (m_selected) {
                 case 0:
@@ -49,15 +49,15 @@ public:
 
     void exit(Controller *controller) {}
 
-    void render(graphics::Renderer &renderer) {
-        renderer.clear();
+    void render(graphics::Renderer *renderer) {
+        renderer->clear();
         for (int i = 0; i < m_options.size(); i++) {
-            renderer.drawText(100, 100 + i * 50, m_options[i]);
+            renderer->drawText(100, 100 + i * 50, m_options[i]);
             if (i == m_selected) {
-                renderer.drawText(80, 100 + i * 50, ">");
+                renderer->drawText(80, 100 + i * 50, ">");
             }
         }
-        renderer.display();
+        renderer->display();
     }
 
 private:

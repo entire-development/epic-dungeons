@@ -1,41 +1,14 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "color.h"
 #include "keyboard/keyboard.h"
 #include "text.h"
 #include <iostream>
 #include <map>
 
 namespace graphics {
-class Color {
-public:
-    Color(const std::string &hex_str);
-    Color(const sf::Color &color);
-    Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255);
-
-    [[nodiscard]] sf::Color getSFColor() const;
-
-    [[nodiscard]] uint8_t getR() const {
-        return r;
-    };
-
-    [[nodiscard]] uint8_t getG() const {
-        return g;
-    };
-
-    [[nodiscard]] uint8_t getB() const {
-        return b;
-    };
-
-    [[nodiscard]] uint8_t getA() const {
-        return a;
-    };
-
-private:
-    uint8_t r;   // red
-    uint8_t g;   // green
-    uint8_t b;   // blue
-    uint8_t a;   // alpha
-};
+class Text;
+class Color;
 
 struct Rectangle {
     float x;
@@ -61,7 +34,7 @@ public:
 
     void drawText(int x, int y, const std::string &line);
 
-    void draw(const Text& text, int x, int y);
+    void draw(const Text &text, int x, int y);
 
     void close() {
         window.close();

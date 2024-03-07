@@ -1,41 +1,40 @@
 #pragma once
 
 #include "gui_controller/controller.h"
+#include "gui_controller/game/game_machine.h"
+#include "keyboard/keyboard.h"
 #include "static_data/game_config.h"
 
 namespace gui {
 class Game : public State {
 public:
-    uint64_t anim_time = 0;
-    uint32_t deltatime = 0;
+    Game() : State(), game_machine() {}
 
-    void enter(Controller *controller) {
-        render(controller->m_renderer);
+    game::GameMachine game_machine;
+
+    void onEngineBind(std::weak_ptr<engine::Engine> engine) override {
+        game_machine.bindEngine(engine);
     }
 
-    void update(Controller *controller) {
-        deltatime = controller->getDeltaTime();
-        render(controller->m_renderer);
+    void onRendererBind(std::weak_ptr<graphics::Renderer> renderer) override {
+        game_machine.bindRenderer(renderer);
+    }
+
+    void enter(Controller *controller) override {
+        game_machine.unfreeze(controller);
+    }
+
+    void update(Controller *controller) override {
         if (keyboard::isPressed(keyboard::KEY_ESCAPE)) {
             controller->changeState(GUIState::kMainMenu);
+            return;
         }
+        game_machine.update(controller);
     }
 
-    void render(graphics::Renderer &renderer) {
-        renderer.clear();
-        renderer.drawText(400, 300, "This is game of imagination");
-
-        // Animation
-        anim_time += deltatime;
-        if (anim_time >= 1000) {
-            anim_time -= 1000;
-        }
-        renderer.drawText(400, 400, "Animation frame: " + std::to_string(anim_time / 250));
-        renderer.drawText(400, 430, "Loading" + std::string(anim_time / 250, '.'));
-
-        // Back
-        renderer.drawText(100, 500, "Press ESC to go back");
-        renderer.display();
+    void exit(Controller *controller) override {
+        game_machine.freeze(controller);
     }
 };
+
 }   // namespace gui

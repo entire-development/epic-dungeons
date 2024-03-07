@@ -21,4 +21,4 @@ find_package(SFML 2.5.1 COMPONENTS graphics audio REQUIRED)
 target_link_libraries(EpicDungeons PRIVATE sfml-graphics sfml-audio)
 
 # include fonts
-file(COPY ${CMAKE_SOURCE_DIR}/res/fonts DESTINATION ${CMAKE_BINARY_DIR}/res)
+file(COPY ${CMAKE_SOURCE_DIR}/res DESTINATION ${CMAKE_BINARY_DIR}/res)

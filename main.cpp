@@ -12,10 +12,12 @@ int main() {
     window.setFramerateLimit(cfg::FRAMERATE);
     window.setVerticalSyncEnabled(true);
 
-    auto renderer = graphics::Renderer(window);
-    engine::Engine engine;
+    auto renderer = std::make_shared<graphics::Renderer>(window);
+    auto engine = std::make_shared<engine::Engine>();
 
-    gui::Controller controller(renderer, engine);
+    gui::Controller controller;
+    controller.bindEngine(engine);
+    controller.bindRenderer(renderer);
     uint64_t last_time = 0;
     while (window.isOpen()) {
         uint64_t current_time =
@@ -24,7 +26,6 @@ int main() {
         uint64_t delta_time = current_time - last_time;
         last_time = current_time;
 
-        //renderer.updateState(delta_time);
         controller.setDeltaTime(delta_time);
 
         for (auto event = sf::Event {}; window.pollEvent(event);) {

@@ -20,18 +20,38 @@ class State {
     friend class Controller;
 
 public:
+    State() = default;
+
     virtual void enter(Controller *controller) {}
 
     virtual void update(Controller *controller) {}
 
     virtual void exit(Controller *controller) {}
+
+    virtual void onEngineBind(std::weak_ptr<engine::Engine> engine) {}
+
+    virtual void onRendererBind(std::weak_ptr<graphics::Renderer> renderer) {}
 };
 
 class Controller {
     friend class State;
 
 public:
-    Controller(graphics::Renderer &renderer, engine::Engine &engine);
+    Controller();
+
+    void bindEngine(std::shared_ptr<engine::Engine> engine) {
+        m_engine = engine;
+        for (auto &state : m_states) {
+            state.second->onEngineBind(engine);
+        }
+    }
+
+    void bindRenderer(std::shared_ptr<graphics::Renderer> renderer) {
+        m_renderer = renderer;
+        for (auto &state : m_states) {
+            state.second->onRendererBind(renderer);
+        }
+    }
 
     template<typename T>
     void addState(const GUIState &state) {
@@ -42,7 +62,7 @@ public:
         m_next_state = m_states[state];
     }
 
-    void update() {
+    virtual void update() {
         if (m_next_state) {
             m_current_state = m_next_state;
             m_next_state = nullptr;
@@ -66,8 +86,8 @@ public:
         delta_time = dt;
     }
 
-    graphics::Renderer &m_renderer;
-    engine::Engine &m_engine;
+    std::shared_ptr<graphics::Renderer> m_renderer;
+    std::shared_ptr<engine::Engine> m_engine;
 
 protected:
     uint64_t delta_time;

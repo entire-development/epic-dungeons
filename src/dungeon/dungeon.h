@@ -18,7 +18,7 @@ public:
     Cell *getCurrentCell();
 
     // find rooms which are connected with given room by corridor(cells)
-    std::vector<Room *> getRoomNeighbours(Room *room);
+    std::vector<Room> getRoomNeighbours(Room *room);
 
     friend class IDungeonMaker;
 
