@@ -8,7 +8,7 @@ typedef std::pair<int, int> Position;
 
 class Cell {
 public:
-    Cell(Position position, bool is_room = false);
+    explicit Cell(Position position, bool is_room = false);
     constexpr Position getPosition() const;
     constexpr bool isRoom() const;
 
@@ -31,7 +31,9 @@ private:
     std::vector<std::weak_ptr<Cell>> m_neighbours;
 };
 
-class Room : public Cell {};
+class Room : public Cell {
+    explicit Room(Position position);
+};
 
 void connectCells(std::weak_ptr<Cell> cell1, std::weak_ptr<Cell> cell2);
 }   // namespace dungeon
