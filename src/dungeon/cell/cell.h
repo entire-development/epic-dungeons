@@ -8,17 +8,17 @@ typedef std::pair<int, int> Position;
 
 class Cell {
 public:
-    Cell(Position position, bool is_room = false);
+    explicit Cell(Position position, bool is_room = false);
     constexpr Position getPosition() const;
     constexpr bool isRoom() const;
 
     bool isVisited() const;
     bool isDiscovered() const;
 
-    events::Event *getEvent();
-    std::vector<Cell *> getNeighbours();
+    std::shared_ptr<events::Event> getEvent();
+    std::vector<std::weak_ptr<Cell>> getNeighbours();
 
-    friend void connectCells(Cell *cell1, Cell *cell2);
+    friend void connectCells(std::weak_ptr<Cell> cell1, std::weak_ptr<Cell> cell2);
 
 private:
     const Position m_position;
@@ -27,11 +27,14 @@ private:
     bool m_is_visited = false;
     bool m_is_discovered = false;
 
-    events::Event *m_event = nullptr;
-    std::vector<Cell *> m_neighbours;
+    std::shared_ptr<events::Event> m_event = nullptr;
+    std::vector<std::weak_ptr<Cell>> m_neighbours;
 };
 
-class Room : public Cell {};
+class Room : public Cell {
+public:
+    explicit Room(Position position);
+};
 
-void connectCells(Cell *cell1, Cell *cell2);
+void connectCells(std::weak_ptr<Cell> cell1, std::weak_ptr<Cell> cell2);
 }   // namespace dungeon
