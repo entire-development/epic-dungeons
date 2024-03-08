@@ -44,7 +44,7 @@ void Renderer::drawRec(const Rectangle &rectangle) {
     new_rectangle.setSize(sf::Vector2f(rectangle.w, rectangle.h));
     new_rectangle.setFillColor(rectangle.color.toSF());
     new_rectangle.setOutlineColor(rectangle.stroke_color.toSF());
-    new_rectangle.setOutlineThickness(5);
+    new_rectangle.setOutlineThickness(rectangle.stroke);
     new_rectangle.setPosition(rectangle.x, rectangle.y);
     window.draw(new_rectangle);
 }

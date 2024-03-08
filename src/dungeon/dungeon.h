@@ -18,6 +18,14 @@ public:
     // dungeon may be built only by DungeonMaker
     Dungeon() : m_rooms(), m_cells() {}
 
+    std::vector<std::shared_ptr<Cell>> getCells() {
+        return m_cells;
+    }
+
+    void setTargetRoom(std::weak_ptr<Room> room) {
+        m_target_room = room;
+    }
+
     std::vector<std::weak_ptr<Room>> getRooms() {
         return m_rooms;
     }
@@ -37,5 +45,6 @@ private:
     std::vector<std::shared_ptr<Cell>> m_cells;
 
     std::weak_ptr<Cell> m_current_cell;
+    std::weak_ptr<Room> m_target_room;
 };
 }   // namespace dungeon

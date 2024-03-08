@@ -6,6 +6,7 @@ namespace cfg {
 const int FRAMERATE = 30;
 const unsigned WINDOW_WIDTH = 800;
 const unsigned WINDOW_HEIGHT = 600;
+const unsigned CELL_SIZE = 15;
 const std::string WINDOW_NAME = "*EPIC DUNGEONS*";
 const std::string FONTS_PATH = "res/fonts/";
 const std::string SPRITES_PATH = "res/sprites/";
