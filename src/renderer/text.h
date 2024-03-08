@@ -33,5 +33,6 @@ private:
     sf::Text text_style;
     graphics::Color text_color = "#ffffff";
     graphics::Color outline_color = "#000000";
+    mutable sf::Font text_font;
 };
 }   // namespace graphics

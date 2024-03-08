@@ -45,12 +45,11 @@ Text &Text::setScale(float factorX, float factorY) {
 }
 
 std::string Text::getFont(const std::string &name) const {
-    std::string font = cfg::FONT_PATH + name + ".ttf";
+    std::string font = cfg::FONTS_PATH + name + ".ttf";
     return font;
 }
 
 sf::Text Text::toSF() const {
-    sf::Font text_font;
     if (!text_font.loadFromFile(getFont(font))) {
         throw std::runtime_error("Error loading font from file: " + font);
     }
