@@ -15,6 +15,10 @@ class RoomSelection : public GameState {
         render(r, d);
     }
 
+    virtual void update(GameMachine *gm) {
+        selection(gm->m_renderer.lock().get(), gm->m_engine.lock().get()->getDungeon());
+    }
+
     void selection(graphics::Renderer *r, std::shared_ptr<dungeon::Dungeon> d) {
         bool pressed_up = keyboard::isPressed(keyboard::KEY_UP) || keyboard::isPressed(keyboard::KEY_W);
         bool pressed_down = keyboard::isPressed(keyboard::KEY_DOWN) || keyboard::isPressed(keyboard::KEY_S);
