@@ -44,7 +44,7 @@ void Renderer::drawRec(const Rectangle &rectangle) {
     new_rectangle.setSize(sf::Vector2f(rectangle.w, rectangle.h));
     new_rectangle.setFillColor(rectangle.color.toSF());
     new_rectangle.setOutlineColor(rectangle.stroke_color.toSF());
-    new_rectangle.setOutlineThickness(5);
+    new_rectangle.setOutlineThickness(rectangle.stroke);
     new_rectangle.setPosition(rectangle.x, rectangle.y);
     window.draw(new_rectangle);
 }
@@ -53,6 +53,12 @@ void Renderer::draw(const Text &text, int x, int y) {
     sf::Text set_text = text.toSF();
     set_text.setPosition(x, y);
     window.draw(set_text);
+}
+
+void Renderer::draw(const Sprite &sprite, int x, int y) {
+    sf::Sprite set_sprite = sprite.toSF();
+    set_sprite.setPosition(x, y);
+    window.draw(set_sprite);
 }
 
 }   // namespace graphics

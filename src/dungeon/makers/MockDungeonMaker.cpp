@@ -38,8 +38,8 @@ void dungeon::MockDungeonMaker::build() {
         std::make_shared<Cell>(Position(23, 25)),   // 22
         std::make_shared<Cell>(Position(25, 28)),   // 23
         std::make_shared<Cell>(Position(29, 22)),   // 24
-        std::make_shared<Cell>(Position(29, 28)),   // 25
-        std::make_shared<Cell>(Position(29, 27)),   // 26
+        std::make_shared<Cell>(Position(29, 27)),   // 25
+        std::make_shared<Cell>(Position(29, 26)),   // 26
         std::make_shared<Cell>(Position(26, 20)),   // 27
         std::make_shared<Cell>(Position(28, 20)),   // 28
         rooms[5],                                   // 29
