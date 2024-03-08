@@ -8,8 +8,8 @@ std::weak_ptr<Room> findNextRoom(std::weak_ptr<Cell> prev, std::weak_ptr<Cell> c
     if (cur_shared->isRoom())   // if cur is room, return it
         return std::dynamic_pointer_cast<Room>(cur_shared);
 
-    for (auto &cell : prev_shared->getNeighbours()) {
-        if (cell.lock() == cur_shared)
+    for (auto &cell : cur_shared->getNeighbours()) {
+        if (cell.lock() == prev_shared)
             continue;
         if (cell.lock()->isRoom())
             return std::dynamic_pointer_cast<Room>(cell.lock());
