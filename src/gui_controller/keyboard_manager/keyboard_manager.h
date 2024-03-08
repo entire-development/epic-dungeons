@@ -20,8 +20,8 @@ public:
         return m_cur_state[key] && !m_prev_state[key];
     }
 private:
-    std::vector<bool> m_cur_state = std::vector<bool>(47, false);
-    std::vector<bool> m_prev_state = std::vector<bool>(47, false);
+    std::vector<bool> m_cur_state = std::vector<bool>(49, false);
+    std::vector<bool> m_prev_state = std::vector<bool>(49, false);
 };
 } // namespace gui
 
