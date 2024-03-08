@@ -8,6 +8,7 @@ class Main : public GameState {
     bool is_presssed = false;
 
     void enter(GameMachine *gm) override {
+        is_presssed = true;
         graphics::Renderer *r = gm->m_renderer.lock().get();
         r->clear();
         render(r);
