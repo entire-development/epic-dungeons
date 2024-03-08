@@ -2,10 +2,10 @@
 #include "SFML/Graphics.hpp"
 #include "color.h"
 #include "keyboard/keyboard.h"
+#include "sprite.h"
 #include "text.h"
 #include <iostream>
 #include <map>
-#include "sprite.h"
 
 namespace graphics {
 class Text;
