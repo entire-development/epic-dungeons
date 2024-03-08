@@ -8,8 +8,7 @@ class Main : public GameState {
     bool is_pressed = false;
 
     void enter(GameMachine *gm) override {
-        if (keyboard::isPressed(keyboard::KEY_ENTER))
-            is_pressed = true;
+        is_pressed = keyboard::isPressed(keyboard::KEY_ENTER);
         graphics::Renderer *r = gm->m_renderer.lock().get();
         r->clear();
         render(r);
