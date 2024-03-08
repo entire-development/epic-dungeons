@@ -6,6 +6,7 @@ Sprite::Sprite(const std::string &path) {
     if (!m_texture.loadFromFile(m_path)) {
         throw std::runtime_error("Error loading sprite from file: " + m_path);
     }
+    m_texture.setSmooth(true);   // enable smooth texture
 }
 
 Sprite &Sprite::setColor(const graphics::Color &color) {
