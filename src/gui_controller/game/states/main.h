@@ -15,6 +15,9 @@ class Main : public GameState {
     void render(graphics::Renderer *r) {
         r->drawRec({100, 100, 100, 100, sf::Color::Red});
         r->drawText(50, 300, "Press ESC to exit");
+        graphics::Sprite sprite("test1.png");
+        sprite.toSize(100, 100);
+        r->draw(sprite, 0, 0);
     }
 };
 }   // namespace game
