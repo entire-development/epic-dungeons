@@ -15,21 +15,16 @@ class RoomSelection : public GameState {
         render(r, d);
     }
 
-    virtual void update(GameMachine *gm) {
-        // selection(gm->m_renderer.lock().get(), gm->m_engine.lock().get()->getDungeon());
-        // render(gm->m_renderer.lock().get(), gm->m_engine.lock().get()->getDungeon());
-    }
-
     void selection(graphics::Renderer *r, std::shared_ptr<dungeon::Dungeon> d) {
         bool pressed_up = keyboard::isPressed(keyboard::KEY_UP) || keyboard::isPressed(keyboard::KEY_W);
         bool pressed_down = keyboard::isPressed(keyboard::KEY_DOWN) || keyboard::isPressed(keyboard::KEY_S);
-        bool pressed_enter = keyboard::isPressed(keyboard::KEY_ENTER);
 
-        if (pressed_up) {
+        if (pressed_up && keyboard::isPressed(keyboard::KEY_ENTER)) {
             r_selected = (r_selected + 1) % neighbours.size();
-        } else if (pressed_down) {
+        } else if (pressed_down && keyboard::isPressed(keyboard::KEY_ENTER)) {
             r_selected = (r_selected - 1 + neighbours.size()) % neighbours.size();
         }
+        render(r, d);
     }
 
     void render(graphics::Renderer *r, std::shared_ptr<dungeon::Dungeon> d) {
@@ -41,10 +36,11 @@ class RoomSelection : public GameState {
             float y = static_cast<float>(cell->getPosition().second);
             if (cell->isRoom()) {
                 r->drawRec({(x - 1) * cfg::CELL_SIZE, (y - 1) * cfg::CELL_SIZE, 3 * cfg::CELL_SIZE, 3 * cfg::CELL_SIZE,
-                            sf::Color::Red, -1});
+                            sf::Color::Red, -1, "#00000000"});
             } else {
                 r->drawRec(
-                    {x * cfg::CELL_SIZE, y * cfg::CELL_SIZE, cfg::CELL_SIZE, cfg::CELL_SIZE, sf::Color::Blue, -1});
+                    {x * cfg::CELL_SIZE, y * cfg::CELL_SIZE, cfg::CELL_SIZE, cfg::CELL_SIZE, sf::Color::Blue, -1, "#00000000"});
+                
             }
         }
         r->display();
