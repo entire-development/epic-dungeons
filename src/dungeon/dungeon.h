@@ -1,6 +1,7 @@
 #pragma once
 #include "cell/cell.h"
 #include <memory>
+#include <utility>
 #include <vector>
 
 namespace dungeon {
@@ -10,7 +11,7 @@ class IDungeonMaker;
 class IDungeonMaker {
 public:
     virtual void build() = 0;
-    virtual std::shared_ptr<Dungeon> getDungeon() = 0;
+    [[nodiscard]] virtual std::shared_ptr<Dungeon> getDungeon() const = 0;
 };
 
 class Dungeon {
@@ -18,27 +19,28 @@ public:
     // dungeon may be built only by DungeonMaker
     Dungeon() : m_rooms(), m_cells() {}
 
-    std::vector<std::shared_ptr<Cell>> getCells() {
+    [[nodiscard]] std::vector<std::shared_ptr<Cell>> getCells() const {
         return m_cells;
     }
 
     void setTargetRoom(std::weak_ptr<Room> room) {
-        m_target_room = room;
+        m_target_room = std::move(room);
     }
 
-    std::vector<std::weak_ptr<Room>> getRooms() {
+    [[nodiscard]] std::vector<std::weak_ptr<Room>> getRooms() const {
         return m_rooms;
     }
 
-    std::weak_ptr<Cell> getCurrentCell() {
+    [[nodiscard]] std::weak_ptr<Cell> getCurrentCell() const {
         return m_current_cell;
     }
 
     // find rooms which are connected with given room by corridor(cells)
-    std::vector<std::weak_ptr<Room>> getRoomNeighbours(std::weak_ptr<Room> room);
+    static std::vector<std::weak_ptr<Room>> getRoomNeighbours(const std::weak_ptr<Room>& room);
 
     friend class IDungeonMaker;
     friend class MockDungeonMaker;
+    friend class DungeonMaker;
 
 private:
     std::vector<std::weak_ptr<Room>> m_rooms;

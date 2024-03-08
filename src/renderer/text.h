@@ -9,7 +9,7 @@ class Color;
 
 class Text {
 public:
-    Text(const std::string &text, const std::string &font_name, const uint &size);
+    Text(const std::string &text, const std::string &font_name, const size_t &size);
 
     Text &setColor(const graphics::Color &color);
     Text &setOutlineColor(const Color &color);
@@ -24,7 +24,7 @@ public:
 private:
     std::string line;
     std::string font;
-    uint character_size;
+    size_t character_size;
     float text_angle = 0.f;
     float letter_spacing = 1;
     float x_scale = 1.0f;

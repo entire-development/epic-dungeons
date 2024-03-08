@@ -2,7 +2,7 @@
 
 namespace graphics {
 
-Text::Text(const std::string &text, const std::string &font_name, const uint &size) {
+Text::Text(const std::string &text, const std::string &font_name, const size_t &size) {
     line = text;
     font = font_name;
     character_size = size;

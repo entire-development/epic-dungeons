@@ -77,7 +77,7 @@ void dungeon::MockDungeonMaker::build() {
     dungeon->m_current_cell = dungeon->m_cells[14];
 }
 
-std::shared_ptr<Dungeon> MockDungeonMaker::getDungeon() {
+std::shared_ptr<Dungeon> MockDungeonMaker::getDungeon() const {
     return dungeon;
 }
 }   // namespace dungeon

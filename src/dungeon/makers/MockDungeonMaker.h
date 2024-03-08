@@ -6,7 +6,7 @@ namespace dungeon {
 class MockDungeonMaker : public IDungeonMaker {
 public:
     void build() final;
-    std::shared_ptr<Dungeon> getDungeon() final;
+    [[nodiscard]] std::shared_ptr<Dungeon> getDungeon() const final;
 
 private:
     std::shared_ptr<Dungeon> dungeon;
