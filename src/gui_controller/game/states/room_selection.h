@@ -16,29 +16,29 @@ class RoomSelection : public GameState {
     }
 
     virtual void update(GameMachine *gm) {
-        selection(gm->m_renderer.lock().get(), gm->m_engine.lock().get()->getDungeon());
-    }
+        graphics::Renderer *r = gm->m_renderer.lock().get();
+        std::shared_ptr<dungeon::Dungeon> d = gm->m_engine.lock().get()->getDungeon();
+        bool pressed_right = keyboard::isPressed(keyboard::KEY_RIGHT) || keyboard::isPressed(keyboard::KEY_D);
+        bool pressed_left = keyboard::isPressed(keyboard::KEY_LEFT) || keyboard::isPressed(keyboard::KEY_LEFT);
+        bool pressed_enter = keyboard::isPressed(keyboard::KEY_ENTER);
 
-    void selection(graphics::Renderer *r, std::shared_ptr<dungeon::Dungeon> d) {
-        bool pressed_up = keyboard::isPressed(keyboard::KEY_UP) || keyboard::isPressed(keyboard::KEY_W);
-        bool pressed_down = keyboard::isPressed(keyboard::KEY_DOWN) || keyboard::isPressed(keyboard::KEY_S);
-        // bool pressed_enter = keyboard::isPressed(keyboard::KEY_ENTER);
-
-        if (!(pressed_up || pressed_down))
+        if (!(pressed_right || pressed_left))
             is_key_pressed = false;
 
         if (is_key_pressed)
             return;
 
-        if (pressed_up) {
+        if (pressed_right) {
             r_selected = (r_selected + 1) % neighbours.size();
             is_key_pressed = true;
             render(r, d, neighbours[r_selected].lock());
-        } else if (pressed_down) {
+        } else if (pressed_left) {
             r_selected = (r_selected - 1 + neighbours.size()) % neighbours.size();
             is_key_pressed = true;
             render(r, d, neighbours[r_selected].lock());
-        } 
+        } else if (pressed_enter) {
+            // next state
+        }
     }
 
     void render(graphics::Renderer *r, std::shared_ptr<dungeon::Dungeon> d, std::shared_ptr<dungeon::Cell> room = nullptr) {
