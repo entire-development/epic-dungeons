@@ -55,4 +55,10 @@ void Renderer::draw(const Text &text, int x, int y) {
     window.draw(set_text);
 }
 
+void Renderer::draw(const Sprite &sprite, int x, int y) {
+    sf::Sprite set_sprite = sprite.toSF();
+    set_sprite.setPosition(x, y);
+    window.draw(set_sprite);
+}
+
 }   // namespace graphics

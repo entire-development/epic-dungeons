@@ -5,6 +5,7 @@
 #include "text.h"
 #include <iostream>
 #include <map>
+#include "sprite.h"
 
 namespace graphics {
 class Text;
@@ -35,6 +36,8 @@ public:
     void drawText(int x, int y, const std::string &line);
 
     void draw(const Text &text, int x, int y);
+
+    void draw(const Sprite &sprite, int x, int y);
 
     void close() {
         window.close();
