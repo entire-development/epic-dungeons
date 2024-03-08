@@ -5,10 +5,11 @@
 namespace gui {
 namespace game {
 class Main : public GameState {
-    bool is_presssed = false;
+    bool is_pressed = false;
 
     void enter(GameMachine *gm) override {
-        is_presssed = true;
+        if (keyboard::isPressed(keyboard::KEY_ENTER))
+            is_pressed = true;
         graphics::Renderer *r = gm->m_renderer.lock().get();
         r->clear();
         render(r);
@@ -16,11 +17,11 @@ class Main : public GameState {
     }
 
     void update(GameMachine *gm) override {
-        if (!is_presssed && keyboard::isPressed(keyboard::KEY_ENTER)) {
+        if (!is_pressed && keyboard::isPressed(keyboard::KEY_ENTER)) {
             gm->changeState(GUIGameState::kRoomSelection);
             return;
         }
-        is_presssed = keyboard::isPressed(keyboard::KEY_ENTER);
+        is_pressed = keyboard::isPressed(keyboard::KEY_ENTER);
     }
 
     void render(graphics::Renderer *r) {
