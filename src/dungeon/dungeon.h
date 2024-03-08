@@ -1,6 +1,7 @@
 #pragma once
 #include "cell/cell.h"
 #include <memory>
+#include <utility>
 #include <vector>
 
 namespace dungeon {
@@ -18,6 +19,14 @@ public:
     // dungeon may be built only by DungeonMaker
     Dungeon() : m_rooms(), m_cells() {}
 
+    [[nodiscard]] std::vector<std::shared_ptr<Cell>> getCells() const {
+        return m_cells;
+    }
+
+    void setTargetRoom(std::weak_ptr<Room> room) {
+        m_target_room = std::move(room);
+    }
+
     [[nodiscard]] std::vector<std::weak_ptr<Room>> getRooms() const {
         return m_rooms;
     }
@@ -27,7 +36,7 @@ public:
     }
 
     // find rooms which are connected with given room by corridor(cells)
-    static std::vector<std::weak_ptr<Room>> getRoomNeighbours(const std::weak_ptr<Room>& room) ;
+    static std::vector<std::weak_ptr<Room>> getRoomNeighbours(const std::weak_ptr<Room>& room);
 
     friend class IDungeonMaker;
     friend class MockDungeonMaker;
@@ -38,5 +47,6 @@ private:
     std::vector<std::shared_ptr<Cell>> m_cells;
 
     std::weak_ptr<Cell> m_current_cell;
+    std::weak_ptr<Room> m_target_room;
 };
 }   // namespace dungeon

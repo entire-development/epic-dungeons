@@ -6,7 +6,7 @@ namespace pseudorandom {
     private:
         std::mt19937 random;
     public:
-        void seed(int seed);
+        void seed(unsigned int seed);
         int operator()(int le, int ri);
     };
 }

@@ -2,7 +2,7 @@
 
 using namespace pseudorandom;
 
-void Randint::seed(int seed) {
+void Randint::seed(unsigned int seed) {
     random.seed(seed);
 }
 

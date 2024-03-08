@@ -1,11 +1,11 @@
 #include "dungeon-maker.h"
+#include <ctime>
 
 using namespace dungeon_matrix;
 using namespace dungeon;
 
 void DungeonMaker::build() {
-    int seed = 0;
-    std::shared_ptr<DungeonMatrix> mat = build_matrix(seed);
+    std::shared_ptr<DungeonMatrix> mat = build_matrix();
 
     dungeon = std::make_shared<Dungeon>();
     std::vector<std::vector<std::shared_ptr<Cell>>> cells(height, std::vector<std::shared_ptr<Cell>>(width));
@@ -33,9 +33,11 @@ void DungeonMaker::build() {
             connectCells(room, cells[n.first][n.second]);
         }
     }
+
+    dungeon->m_current_cell = dungeon->m_rooms[0];
 }
 
-std::shared_ptr<DungeonMatrix> DungeonMaker::build_matrix(int seed) {
+std::shared_ptr<DungeonMatrix> DungeonMaker::build_matrix() {
     randint.seed(seed);
     std::shared_ptr<DungeonMatrix> result = std::make_shared<DungeonMatrix>(height, width);
 
@@ -156,4 +158,16 @@ void DungeonMaker::corridor_noise(const std::shared_ptr<dungeon_matrix::DungeonM
     if (end != start && end != (*path)[path->size() - 1]) return;
 
     *old = *mat;
+}
+
+unsigned int DungeonMaker::getSeed() const {
+    return seed;
+}
+
+void DungeonMaker::setSeed(unsigned int value) {
+    seed = value;
+}
+
+void DungeonMaker::setRandomSeed() {
+    seed = std::time(nullptr);
 }
