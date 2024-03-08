@@ -4,16 +4,35 @@ using namespace dungeon_matrix;
 using namespace dungeon;
 
 void DungeonMaker::build() {
-    randint.seed(16);
-    std::shared_ptr<DungeonMatrix> result = std::make_shared<DungeonMatrix>(height, width);
+    int seed = 0;
+    std::shared_ptr<DungeonMatrix> mat = build_matrix(seed);
 
-    generate_skeleton(result);
+    dungeon = std::make_shared<Dungeon>();
+    std::vector<std::vector<std::shared_ptr<Cell>>> cells(height, std::vector<std::shared_ptr<Cell>>(width));
 
-    for (int i = 0; i < rooms_noise_iterations; i++)
-        room_noise(result);
+    for (int room_id = 0; room_id < mat->rooms_count(); room_id++) {
+        coords room_coords = mat->get_room(room_id);
+        std::shared_ptr<Room> room = std::make_shared<Room>(room_coords);
 
-    for (int i = 0; i < corridor_noise_iterations; i++)
-        corridor_noise(result);
+        dungeon->m_cells.push_back(room);
+        dungeon->m_rooms.push_back(room);
+
+        for (coords n : mat->neighbors(room_coords.first, room_coords.second, 2)) {
+            if (mat->get_cell(n.first, n.second) != DungeonMatrixCell::Corridor) continue;
+            if (cells[n.first][n.second] == nullptr) {
+                std::shared_ptr<std::deque<coords>> path = mat->get_path(n.first, n.second);
+
+                for (int i = 0; i < path->size(); i++) {
+                    dungeon->m_cells.push_back(std::make_shared<Cell>((*path)[i]));
+
+                    if (i != 0)
+                        connectCells(dungeon->m_cells.back(), dungeon->m_cells[dungeon->m_cells.size() - 2]);
+                    cells[(*path)[i].first][(*path)[i].second] = dungeon->m_cells.back();
+                }
+            }
+            connectCells(room, cells[n.first][n.second]);
+        }
+    }
 }
 
 std::shared_ptr<DungeonMatrix> DungeonMaker::build_matrix(int seed) {

@@ -1,6 +1,7 @@
 #pragma once
 #include "randint.h"
 #include <deque>
+#include <memory>
 
 namespace dungeon_matrix {
     typedef std::pair<int, int> coords;
@@ -17,10 +18,11 @@ namespace dungeon_matrix {
         size_t height, width;
         std::vector<coords> rooms;
 
+        matrix<DungeonMatrixCell> cells;
+
         void pave_horizontal(int y, int x1, int x2);
         void pave_vertical(int y1, int y2, int x);
     public:
-        matrix<DungeonMatrixCell> cells;
         explicit DungeonMatrix(size_t height, size_t width);
 
         void set_cell(int y, int x, DungeonMatrixCell value);
