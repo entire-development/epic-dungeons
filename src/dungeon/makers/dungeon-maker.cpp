@@ -39,7 +39,8 @@ void DungeonMaker::build() {
 
 std::shared_ptr<DungeonMatrix> DungeonMaker::build_matrix() {
     randint.seed(seed);
-    std::shared_ptr<DungeonMatrix> result = std::make_shared<DungeonMatrix>(height, width);
+    size_t h = height, w = width;
+    std::shared_ptr<DungeonMatrix> result = std::make_shared<DungeonMatrix>(h, w);
 
     generate_skeleton(result);
 
