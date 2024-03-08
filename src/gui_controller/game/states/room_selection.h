@@ -19,7 +19,7 @@ class RoomSelection : public GameState {
         std::shared_ptr<graphics::Renderer> r = gm->m_renderer.lock();
         std::shared_ptr<dungeon::Dungeon> d = gm->m_engine.lock().get()->getDungeon();
         bool pressed_right = keyboard::isPressed(keyboard::KEY_RIGHT) || keyboard::isPressed(keyboard::KEY_D);
-        bool pressed_left = keyboard::isPressed(keyboard::KEY_LEFT) || keyboard::isPressed(keyboard::KEY_LEFT);
+        bool pressed_left = keyboard::isPressed(keyboard::KEY_LEFT) || keyboard::isPressed(keyboard::KEY_A);
         bool pressed_enter = keyboard::isPressed(keyboard::KEY_ENTER);
 
         if (!(pressed_right || pressed_left))
