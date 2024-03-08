@@ -24,6 +24,7 @@ class Main : public GameState {
     }
 
     void render(graphics::Renderer *r) {
+        r->drawText(50, 50, "Press ENTER to start the game");
         r->drawRec({100, 100, 100, 100, sf::Color::Red});
         r->drawText(50, 300, "Press ESC to exit");
     }
