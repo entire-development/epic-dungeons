@@ -47,6 +47,5 @@ int main() {
 
         controller.update();
     }
-
     return 0;
 }
