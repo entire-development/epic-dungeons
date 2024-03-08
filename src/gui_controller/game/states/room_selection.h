@@ -22,16 +22,26 @@ class RoomSelection : public GameState {
     void selection(graphics::Renderer *r, std::shared_ptr<dungeon::Dungeon> d) {
         bool pressed_up = keyboard::isPressed(keyboard::KEY_UP) || keyboard::isPressed(keyboard::KEY_W);
         bool pressed_down = keyboard::isPressed(keyboard::KEY_DOWN) || keyboard::isPressed(keyboard::KEY_S);
+        // bool pressed_enter = keyboard::isPressed(keyboard::KEY_ENTER);
 
-        if (pressed_up && keyboard::isPressed(keyboard::KEY_ENTER)) {
+        if (!(pressed_up || pressed_down))
+            is_key_pressed = false;
+
+        if (is_key_pressed)
+            return;
+
+        if (pressed_up) {
             r_selected = (r_selected + 1) % neighbours.size();
-        } else if (pressed_down && keyboard::isPressed(keyboard::KEY_ENTER)) {
+            is_key_pressed = true;
+            render(r, d, neighbours[r_selected].lock());
+        } else if (pressed_down) {
             r_selected = (r_selected - 1 + neighbours.size()) % neighbours.size();
-        }
-        render(r, d);
+            is_key_pressed = true;
+            render(r, d, neighbours[r_selected].lock());
+        } 
     }
 
-    void render(graphics::Renderer *r, std::shared_ptr<dungeon::Dungeon> d) {
+    void render(graphics::Renderer *r, std::shared_ptr<dungeon::Dungeon> d, std::shared_ptr<dungeon::Cell> room = nullptr) {
         r->clear();
         r->drawText(50, 50, "Select a room");
         std::vector<std::shared_ptr<dungeon::Cell>> cells = d->getCells();
@@ -39,12 +49,16 @@ class RoomSelection : public GameState {
             float x = static_cast<float>(cell->getPosition().first);
             float y = static_cast<float>(cell->getPosition().second);
             if (cell->isRoom()) {
-                r->drawRec({(x - 1) * cfg::CELL_SIZE, (y - 1) * cfg::CELL_SIZE, 3 * cfg::CELL_SIZE, 3 * cfg::CELL_SIZE,
-                            sf::Color::Red, -1, "#00000000"});
+                if (cell == room) {
+                    r->drawRec({(x - 1) * cfg::CELL_SIZE, (y - 1) * cfg::CELL_SIZE, 3 * cfg::CELL_SIZE, 3 * cfg::CELL_SIZE,
+                            sf::Color::Red, -1, "#FFFFFF"});
+                } else {
+                    r->drawRec({(x - 1) * cfg::CELL_SIZE, (y - 1) * cfg::CELL_SIZE, 3 * cfg::CELL_SIZE, 3 * cfg::CELL_SIZE,
+                            sf::Color::Red, -1});
+                }
             } else {
                 r->drawRec(
-                    {x * cfg::CELL_SIZE, y * cfg::CELL_SIZE, cfg::CELL_SIZE, cfg::CELL_SIZE, sf::Color::Blue, -1, "#00000000"});
-                
+                    {x * cfg::CELL_SIZE, y * cfg::CELL_SIZE, cfg::CELL_SIZE, cfg::CELL_SIZE, sf::Color::Blue, -1});
             }
         }
         r->display();
@@ -55,6 +69,7 @@ class RoomSelection : public GameState {
     }
 
 private:
+    bool is_key_pressed = false;
     int r_selected = 0;
     std::vector<std::weak_ptr<dungeon::Room>> neighbours;
 };
