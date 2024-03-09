@@ -27,7 +27,15 @@ enum class CellType {
     FIRST_SHOP,
 };
 
-class Cell {
+enum class Direction {
+    NONE = -1,
+    UP = 0,
+    RIGHT,
+    DOWN,
+    LEFT,
+};
+
+class Cell : public std::enable_shared_from_this<Cell> {
     friend class Dungeon;
 
 public:
@@ -66,8 +74,11 @@ public:
         m_is_discovered = true;
     }
 
+    std::weak_ptr<Cell> getNeighbour(const Direction &direction);
+
     friend void connectCells(std::weak_ptr<Cell> cell1, std::weak_ptr<Cell> cell2);
     friend void setCellType(std::weak_ptr<Cell> cell, const CellType &type);
+    friend Direction getDirection(std::weak_ptr<Cell> from, std::weak_ptr<Cell> to);
 
 private:
     const Position m_position;

@@ -82,7 +82,7 @@ public:
         auto current = d->getCurrentCell().lock();
         float cx = static_cast<float>(current->getPosition().first) * cfg::CELL_SIZE;
         float cy = static_cast<float>(current->getPosition().second) * cfg::CELL_SIZE;
-        float x_offset = cx - cfg::WINDOW_WIDTH / 2;
+        float x_offset = cx - cfg::WINDOW_WIDTH * 3 / 4;
         float y_offset = cy - cfg::WINDOW_HEIGHT / 2;
         cx -= x_offset;
         cy -= y_offset;
