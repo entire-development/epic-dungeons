@@ -56,7 +56,7 @@ public:
             }
             float progress = (float) m_timer / m_duration;
             progress = 1 / (1 + std::exp(-10 * (progress - 0.5)));
-            render(r, d, progress * m_direction);
+            render(r, d, progress);
             return;
         }
 
@@ -69,13 +69,13 @@ public:
         if (!is_in_room) {
             if (pressed_right) {
                 is_key_pressed = true;
-                m_next_cell = d->getNextOnPath();
+                d->setNextCell(d->getNextOnPath().lock());
                 m_timer = 0;
                 animation = true;
                 m_direction = 1;
             } else if (pressed_left) {
                 is_key_pressed = true;
-                m_next_cell = d->getPrevOnPath();
+                d->setNextCell(d->getPrevOnPath().lock());
                 m_timer = 0;
                 animation = true;
                 m_direction = -1;
@@ -106,9 +106,12 @@ public:
             d->setTargetRoom(neighbours[r_selected].lock());
         } else if (pressed_enter) {
             is_key_pressed = true;
-            m_next_cell = gm->m_engine.lock()->getDungeon()->getNextOnPath();
+            d->setNextCell(d->getNextOnPath().lock());
             hall_length = gm->m_engine.lock()->getDungeon()->getDistanceToTarget() - 1;
-            gm->changeState(GUIGameState::kEvent);
+            m_timer = 0;
+            animation = true;
+            m_direction = 1;
+            // gm->changeState(GUIGameState::kEvent);
         }
 
         if (is_key_pressed)
@@ -120,20 +123,20 @@ public:
         r->clear();
         float background_x = 0;
         if (!is_in_room) {
-            background_x = ((float) ((hall_length - distance_to_target) % 4) + animation_progress) / 4;
+            background_x = ((float) ((hall_length - distance_to_target) % 4) + animation_progress * m_direction) / 4;
             background_x = m_hall_background_width * background_x;
         }
         r->draw(*m_background, -background_x, 0);
         r->draw(*m_background, m_hall_background_width - background_x - 5, 0);
-        r->draw(*m_background, m_hall_background_width + background_x + 5, 0);
+        r->draw(*m_background, -m_hall_background_width - background_x + 5, 0);
 
         r->draw(*m_gradient, -(cfg::WINDOW_WIDTH / 2), cfg::WINDOW_HEIGHT);
-        utils::drawMap(r, d, Vector2d(cfg::WINDOW_WIDTH * 4 / 5, cfg::WINDOW_HEIGHT / 2));
+        utils::drawMap(r, d, Vector2d(cfg::WINDOW_WIDTH * 4 / 5, cfg::WINDOW_HEIGHT / 2), animation_progress);
         r->display();
     }
 
     void exit(GameMachine *gm) {
-        gm->m_engine.lock()->getDungeon()->setCurrentCell(m_next_cell.lock());
+        gm->m_engine.lock()->getDungeon()->setCurrentCell(gm->m_engine.lock()->getDungeon()->getNextCell().lock());
     }
 
 private:
@@ -148,7 +151,6 @@ private:
     uint32_t hall_length = 0;
     uint32_t distance_to_target = 0;
     std::vector<std::weak_ptr<dungeon::Room>> neighbours;
-    std::weak_ptr<dungeon::Cell> m_next_cell;
 
     std::shared_ptr<graphics::Sprite> m_background;
     std::shared_ptr<graphics::Sprite> m_hall_background;

@@ -43,6 +43,14 @@ public:
         return m_target_room;
     }
 
+    void setNextCell(std::shared_ptr<Cell> cell) {
+        m_next_cell = cell;
+    }
+
+    [[nodiscard]] std::weak_ptr<Cell> getNextCell() const {
+        return m_next_cell;
+    }
+
     std::weak_ptr<Cell> getNextOnPath() const;
     std::weak_ptr<Cell> getPrevOnPath() const;
     uint32_t getDistanceToTarget() const;
@@ -60,5 +68,6 @@ private:
 
     std::weak_ptr<Cell> m_current_cell;
     std::weak_ptr<Room> m_target_room;
+    std::weak_ptr<Cell> m_next_cell;
 };
 }   // namespace dungeon

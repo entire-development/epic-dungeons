@@ -7,7 +7,7 @@
 namespace gui {
 namespace utils {
 void drawMap(const std::shared_ptr<graphics::Renderer> &renderer, const std::shared_ptr<dungeon::Dungeon> &dungeon,
-             const Vector2d &center);
+             const Vector2d &center, const float &animation_progress);
 
 }   // namespace utils
 }   // namespace gui

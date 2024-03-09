@@ -6,7 +6,7 @@ namespace gui {
 namespace utils {
 
 void drawMap(const std::shared_ptr<graphics::Renderer> &renderer, const std::shared_ptr<dungeon::Dungeon> &dungeon,
-             const Vector2d &center) {
+             const Vector2d &center, const float &animation_progress) {
     // load static textures
     const std::string map_path = "map/";
     static bool is_loaded = false;
@@ -44,11 +44,22 @@ void drawMap(const std::shared_ptr<graphics::Renderer> &renderer, const std::sha
     std::vector<std::shared_ptr<dungeon::Cell>> cells = d->getCells();
     std::shared_ptr<dungeon::Cell> current = d->getCurrentCell().lock();
     std::shared_ptr<dungeon::Room> m_target_room = d->getTargetRoom().lock();
+    std::shared_ptr<dungeon::Cell> m_next_cell = d->getNextCell().lock();
 
     float cx = static_cast<float>(current->getPosition().first) * cfg::CELL_SIZE;
     float cy = static_cast<float>(current->getPosition().second) * cfg::CELL_SIZE;
-    float x_offset = cx - center.x();
-    float y_offset = cy - center.y();
+    float dx = 0;
+    float dy = 0;
+    float nw = (current->isRoom() ? 3 : 1) * cfg::CELL_SIZE;
+    if (m_next_cell) {
+        dx = (m_next_cell->getPosition().first - current->getPosition().first);
+        dy = (m_next_cell->getPosition().second - current->getPosition().second);
+        nw = (m_next_cell->isRoom() ? 3 : 1) * cfg::CELL_SIZE;
+    }
+    dx *= cfg::CELL_SIZE * animation_progress;
+    dy *= cfg::CELL_SIZE * animation_progress;
+    float x_offset = cx - center.x() + dx;
+    float y_offset = cy - center.y() + dy;
     cx -= x_offset;
     cy -= y_offset;
 
@@ -60,8 +71,6 @@ void drawMap(const std::shared_ptr<graphics::Renderer> &renderer, const std::sha
         std::shared_ptr<graphics::Sprite> marker_sprite = nullptr;
 
         if (cell->isRoom()) {
-            x -= cfg::CELL_SIZE;
-            y -= cfg::CELL_SIZE;
             w = cfg::CELL_SIZE * 3;
             base_sprite = m_room_sprites[cell->getType()];
             if (cell->isVisited()) {
@@ -76,7 +85,9 @@ void drawMap(const std::shared_ptr<graphics::Renderer> &renderer, const std::sha
             }
         }
         base_sprite->toSize(w, w);
-        float alpha_distance = (cx - x) * (cx - x) + (cy - y) * (cy - y);
+        x -= w / 2;
+        y -= w / 2;
+        float alpha_distance = (center.x() - x) * (center.x() - x) + (center.y() - y) * (center.y() - y);
         alpha_distance = 1 - alpha_distance / (cfg::CELL_SIZE * cfg::CELL_SIZE * 168);
         alpha_distance *= 255;
         alpha_distance = std::max(0, std::min(255, static_cast<int>(alpha_distance)));
@@ -87,15 +98,20 @@ void drawMap(const std::shared_ptr<graphics::Renderer> &renderer, const std::sha
             marker_sprite->setColor({255, 255, 255, (uint8_t) alpha_distance});
             r->draw(*marker_sprite, x, y);
         }
-        if (cell == current) {
-            m_current_cell_sprite->toSize(w, w);
-            r->draw(*m_current_cell_sprite, x, y);
-        }
         if (cell == m_target_room) {
             m_selected_room_sprite->toSize(w, w);
             r->draw(*m_selected_room_sprite, x, y);
         }
     }
+    float x = cx + dx;
+    float y = cy + dy;
+    float w = cfg::CELL_SIZE;
+    if (current->isRoom()) {
+        w = cfg::CELL_SIZE * 3;
+    }
+    w = ((float) nw - w) * animation_progress + w;
+    m_current_cell_sprite->toSize(w, w);
+    r->draw(*m_current_cell_sprite, x - w / 2, y - w / 2);
 }
 }   // namespace utils
 }   // namespace gui
