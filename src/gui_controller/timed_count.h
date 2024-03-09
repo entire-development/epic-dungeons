@@ -3,7 +3,7 @@
 
 class TimedCount {
 public:
-    TimedCount(
+    void init(
         double from, double to, uint64_t time, std::function<double(double)> f = [](double x) {
             return x;
         });
@@ -14,8 +14,8 @@ public:
     double get();
 
 private:
-    double from, to;
-    uint64_t time;
-    uint64_t cur_time;
-    std::function<double(double)> f;
+    double _from, _to;
+    uint64_t _time;
+    uint64_t _cur_time;
+    std::function<double(double)> _f;
 };

@@ -1,19 +1,24 @@
 #include "timed_count.h"
+#include <utility>
 
-TimedCount::TimedCount(double from, double to, uint64_t time, std::function<double(double)> f) :
-    from(from), to(to), time(time), f(f) {}
+void TimedCount::init(double from, double to, uint64_t time, std::function<double(double)> f) {
+    _from = from;
+    _to = to;
+    _time = time;
+    _f = std::move(f);
+}
 
 void TimedCount::start() {
-    cur_time = 0;
+    _cur_time = 0;
 }
 
 void TimedCount::update(uint64_t delta_time) {
-    cur_time += delta_time;
-    if (cur_time > time) {
-        cur_time = time;
+    _cur_time += delta_time;
+    if (_cur_time > _time) {
+        _cur_time = _time;
     }
 }
 
 double TimedCount::get() {
-    return (cur_time / time) * (to - from);
+    return _f(static_cast<double>(_cur_time) / static_cast<double>(_time)) * (_to - _from);
 }
