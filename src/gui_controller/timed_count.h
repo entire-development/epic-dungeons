@@ -4,6 +4,8 @@
 namespace gui {
 class TimedCount {
 public:
+    void init(double from, double to, uint64_t time);
+
     void init(
         double from, double to, uint64_t time, std::function<double(double)> f = [](double x) {
             return x;
@@ -15,9 +17,9 @@ public:
     double get() const;
 
 private:
-    double _from, _to;
-    uint64_t _time;
-    uint64_t _cur_time;
-    std::function<double(double)> _f;
+    double m_from, m_to;
+    uint64_t m_time;
+    uint64_t m_cur_time;
+    std::function<double(double)> m_f;
 };
 }   // namespace gui

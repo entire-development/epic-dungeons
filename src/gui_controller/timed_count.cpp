@@ -2,25 +2,34 @@
 #include <utility>
 
 namespace gui {
+void TimedCount::init(double from, double to, uint64_t time) {
+    m_from = from;
+    m_to = to;
+    m_time = time;
+    m_f = [](double x) {
+        return x;
+    };
+}
+
 void TimedCount::init(double from, double to, uint64_t time, std::function<double(double)> f) {
-    _from = from;
-    _to = to;
-    _time = time;
-    _f = std::move(f);
+    m_from = from;
+    m_to = to;
+    m_time = time;
+    m_f = std::move(f);
 }
 
 void TimedCount::start() {
-    _cur_time = 0;
+    m_cur_time = 0;
 }
 
 void TimedCount::update(uint64_t delta_time) {
-    _cur_time += delta_time;
-    if (_cur_time > _time) {
-        _cur_time = _time;
+    m_cur_time += delta_time;
+    if (m_cur_time > m_time) {
+        m_cur_time = m_time;
     }
 }
 
 double TimedCount::get() const {
-    return _f(static_cast<double>(_cur_time) / static_cast<double>(_time)) * (_to - _from);
+    return m_f(static_cast<double>(m_cur_time) / static_cast<double>(m_time)) * (m_to - m_from);
 }
 }   // namespace gui
