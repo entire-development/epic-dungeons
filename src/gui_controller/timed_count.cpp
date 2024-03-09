@@ -1,6 +1,7 @@
 #include "timed_count.h"
 #include <utility>
 
+namespace gui {
 void TimedCount::init(double from, double to, uint64_t time, std::function<double(double)> f) {
     _from = from;
     _to = to;
@@ -22,3 +23,4 @@ void TimedCount::update(uint64_t delta_time) {
 double TimedCount::get() {
     return _f(static_cast<double>(_cur_time) / static_cast<double>(_time)) * (_to - _from);
 }
+}   // namespace gui

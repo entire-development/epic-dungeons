@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 
+namespace gui {
 class TimedCount {
 public:
     void init(
@@ -19,3 +20,4 @@ private:
     uint64_t _cur_time;
     std::function<double(double)> _f;
 };
+}   // namespace gui
