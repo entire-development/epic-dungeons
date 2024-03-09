@@ -80,6 +80,7 @@ public:
                 animation = true;
                 m_direction = -1;
             }
+            return;
         }
 
         if (!(pressed_right || pressed_left || pressed_enter || pressed_up || pressed_down))
@@ -119,10 +120,13 @@ public:
         r->clear();
         float background_x = 0;
         if (!is_in_room) {
-            background_x = 1 - (distance_to_target - animation_progress) / (float) hall_length;
-            background_x = (m_hall_background_width - (float) cfg::WINDOW_WIDTH) * background_x;
+            background_x = ((float) ((hall_length - distance_to_target) % 4) + animation_progress) / 4;
+            background_x = m_hall_background_width * background_x;
         }
         r->draw(*m_background, -background_x, 0);
+        r->draw(*m_background, m_hall_background_width - background_x - 5, 0);
+        r->draw(*m_background, m_hall_background_width + background_x + 5, 0);
+
         r->draw(*m_gradient, -(cfg::WINDOW_WIDTH / 2), cfg::WINDOW_HEIGHT);
         utils::drawMap(r, d, Vector2d(cfg::WINDOW_WIDTH * 4 / 5, cfg::WINDOW_HEIGHT / 2));
         r->display();
@@ -134,7 +138,7 @@ public:
 
 private:
     uint64_t m_timer = 0;
-    uint64_t m_duration = 300;
+    uint64_t m_duration = 500;
     bool animation = false;
     int m_direction = 1;
 
