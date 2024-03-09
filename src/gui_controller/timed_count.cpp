@@ -20,7 +20,7 @@ void TimedCount::update(uint64_t delta_time) {
     }
 }
 
-double TimedCount::get() {
+double TimedCount::get() const {
     return _f(static_cast<double>(_cur_time) / static_cast<double>(_time)) * (_to - _from);
 }
 }   // namespace gui

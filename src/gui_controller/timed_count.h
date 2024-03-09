@@ -12,7 +12,7 @@ public:
     void start();
     void update(uint64_t delta_time);
 
-    double get();
+    double get() const;
 
 private:
     double _from, _to;
