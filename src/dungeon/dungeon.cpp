@@ -36,4 +36,30 @@ std::vector<std::weak_ptr<Room>> Dungeon::getRoomNeighbours(const std::weak_ptr<
     return neighbours;
 }
 
+std::weak_ptr<Cell> Dungeon::getNextOnPath() {
+    std::shared_ptr<Cell> current = m_current_cell.lock();
+    std::shared_ptr<Room> target = m_target_room.lock();
+
+    for (auto &cell : current->getNeighbours()) {
+        if (findNextRoom(current, cell).lock() == target)
+            return cell;
+    }
+    throw std::runtime_error("No path to target room");
+}
+
+std::weak_ptr<Cell> Dungeon::getPrevOnPath() {
+    std::shared_ptr<Cell> current = m_current_cell.lock();
+    std::shared_ptr<Room> target = m_target_room.lock();
+
+    if (current->isRoom()) {
+        throw std::runtime_error("Current cell is room");
+    }
+
+    for (auto &cell : current->getNeighbours()) {
+        if (findNextRoom(current, cell).lock() != target)
+            return cell;
+    }
+    throw std::runtime_error("No path to target room");
+}
+
 }   // namespace dungeon

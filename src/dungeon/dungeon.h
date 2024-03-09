@@ -43,6 +43,9 @@ public:
         return m_target_room;
     }
 
+    std::weak_ptr<Cell> getNextOnPath();
+    std::weak_ptr<Cell> getPrevOnPath();
+
     // find rooms which are connected with given room by corridor(cells)
     static std::vector<std::weak_ptr<Room>> getRoomNeighbours(const std::weak_ptr<Room> &room);
 

@@ -35,10 +35,19 @@ public:
     virtual void enter(GameMachine *gm) {
         is_key_pressed = true;
         std::shared_ptr<dungeon::Dungeon> d = gm->m_engine.lock().get()->getDungeon();
-        neighbours = d->getRoomNeighbours(std::dynamic_pointer_cast<dungeon::Room>(d->getCurrentCell().lock()));
-        while (neighbours[r_selected].expired()) {
-            r_selected = (r_selected + 1) % 4;
+        std::shared_ptr<dungeon::Cell> current = d->getCurrentCell().lock();
+        is_in_room = current->isRoom();
+
+        if (is_in_room) {
+            neighbours = d->getRoomNeighbours(std::dynamic_pointer_cast<dungeon::Room>(current));
+            while (neighbours[r_selected].expired()) {
+                r_selected = (r_selected + 1) % 4;
+            }
+            m_target_room = neighbours[r_selected];
+        } else {
+            m_target_room = d->getTargetRoom();
         }
+
         std::shared_ptr<graphics::Renderer> r = gm->m_renderer.lock();
         render(r, d);
     }
@@ -50,28 +59,43 @@ public:
         bool pressed_down = keyboard::isPressed(keyboard::KEY_DOWN) || keyboard::isPressed(keyboard::KEY_S);
         bool pressed_right = keyboard::isPressed(keyboard::KEY_RIGHT) || keyboard::isPressed(keyboard::KEY_D);
         bool pressed_left = keyboard::isPressed(keyboard::KEY_LEFT) || keyboard::isPressed(keyboard::KEY_A);
-        bool pressed_enter = keyboard::isPressed(keyboard::KEY_ENTER);
+        bool pressed_enter = keyboard::isPressed(keyboard::KEY_ENTER) || keyboard::isPressed(keyboard::KEY_SPACE);
 
         if (!(pressed_right || pressed_left || pressed_enter || pressed_up || pressed_down))
             is_key_pressed = false;
-
         if (is_key_pressed)
             return;
-        if (pressed_up && !neighbours[0].expired()) {
-            is_key_pressed = true;
-            r_selected = 0;
-        } else if (pressed_right && !neighbours[1].expired()) {
-            is_key_pressed = true;
-            r_selected = 1;
-        } else if (pressed_down && !neighbours[2].expired()) {
-            is_key_pressed = true;
-            r_selected = 2;
-        } else if (pressed_left && !neighbours[3].expired()) {
-            is_key_pressed = true;
-            r_selected = 3;
-        } else if (pressed_enter) {
-            is_key_pressed = true;
-            gm->changeState(GUIGameState::kEvent);
+        if (is_in_room) {
+            if (pressed_up && !neighbours[0].expired()) {
+                is_key_pressed = true;
+                r_selected = 0;
+                m_target_room = neighbours[r_selected];
+            } else if (pressed_right && !neighbours[1].expired()) {
+                is_key_pressed = true;
+                r_selected = 1;
+                m_target_room = neighbours[r_selected];
+            } else if (pressed_down && !neighbours[2].expired()) {
+                is_key_pressed = true;
+                r_selected = 2;
+                m_target_room = neighbours[r_selected];
+            } else if (pressed_left && !neighbours[3].expired()) {
+                is_key_pressed = true;
+                r_selected = 3;
+                m_target_room = neighbours[r_selected];
+            } else if (pressed_enter) {
+                is_key_pressed = true;
+                gm->changeState(GUIGameState::kEvent);
+            }
+        } else {
+            if (pressed_right) {
+                is_key_pressed = true;
+                m_next_cell = d->getNextOnPath();
+                gm->changeState(GUIGameState::kEvent);
+            } else if (pressed_left) {
+                is_key_pressed = true;
+                m_next_cell = d->getPrevOnPath();
+                gm->changeState(GUIGameState::kEvent);
+            }
         }
         render(r, d);
     }
@@ -126,7 +150,7 @@ public:
                 m_current_cell_sprite->toSize(w, w);
                 r->draw(*m_current_cell_sprite, x, y);
             }
-            if (cell == neighbours[r_selected].lock()) {
+            if (cell == m_target_room.lock()) {
                 m_selected_room_sprite->toSize(w, w);
                 r->draw(*m_selected_room_sprite, x, y);
             }
@@ -135,14 +159,20 @@ public:
     }
 
     void exit(GameMachine *gm) {
-        // gm->m_engine.lock().get()->getDungeon()->setTargetRoom(neighbours[r_selected]);
-        gm->m_engine.lock()->getDungeon()->setCurrentCell(neighbours[r_selected].lock());
+        if (is_in_room) {
+            gm->m_engine.lock()->getDungeon()->setTargetRoom(neighbours[r_selected].lock());
+            m_next_cell = gm->m_engine.lock()->getDungeon()->getNextOnPath();
+        }
+        gm->m_engine.lock()->getDungeon()->setCurrentCell(m_next_cell.lock());
     }
 
 private:
+    bool is_in_room = true;
     bool is_key_pressed = false;
     int r_selected = 0;
     std::vector<std::weak_ptr<dungeon::Room>> neighbours;
+    std::weak_ptr<dungeon::Room> m_target_room;
+    std::weak_ptr<dungeon::Cell> m_next_cell;
 
     std::map<dungeon::CellType, std::shared_ptr<graphics::Sprite>> m_room_sprites;
     std::map<dungeon::CellType, std::shared_ptr<graphics::Sprite>> m_hall_sprites;
