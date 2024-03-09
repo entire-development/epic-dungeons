@@ -58,7 +58,6 @@ class RoomSelection : public GameState {
                 x -= cfg::CELL_SIZE;
                 y -= cfg::CELL_SIZE;
                 w = cfg::CELL_SIZE * 3;
-                printf("cell type: %d\n", cell->getType());
                 if (cell->getType() == dungeon::CellType::FIGHT)
                     color = "#cc2e0e";
                 if (cell->getType() == dungeon::CellType::SHOP)
