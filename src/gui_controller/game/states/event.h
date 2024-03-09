@@ -14,7 +14,8 @@ class Event : public GameState {
         GUIGameState next_state = GUIGameState::kRoomSelection;
         switch (type) {
             case dungeon::CellType::NOTHING:
-                next_state = GUIGameState::kEmpty;
+                if (!cell->isVisited())
+                    next_state = GUIGameState::kEmpty;
                 break;
             case dungeon::CellType::FIGHT:
                 if (!cell->isVisited())

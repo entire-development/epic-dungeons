@@ -34,9 +34,11 @@ public:
 
     virtual void enter(GameMachine *gm) {
         is_key_pressed = true;
-        r_selected = 0;
         std::shared_ptr<dungeon::Dungeon> d = gm->m_engine.lock().get()->getDungeon();
         neighbours = d->getRoomNeighbours(std::dynamic_pointer_cast<dungeon::Room>(d->getCurrentCell().lock()));
+        while (neighbours[r_selected].expired()) {
+            r_selected = (r_selected + 1) % 4;
+        }
         std::shared_ptr<graphics::Renderer> r = gm->m_renderer.lock();
         render(r, d);
     }
@@ -44,36 +46,50 @@ public:
     virtual void update(GameMachine *gm) {
         std::shared_ptr<graphics::Renderer> r = gm->m_renderer.lock();
         std::shared_ptr<dungeon::Dungeon> d = gm->m_engine.lock().get()->getDungeon();
+        bool pressed_up = keyboard::isPressed(keyboard::KEY_UP) || keyboard::isPressed(keyboard::KEY_W);
+        bool pressed_down = keyboard::isPressed(keyboard::KEY_DOWN) || keyboard::isPressed(keyboard::KEY_S);
         bool pressed_right = keyboard::isPressed(keyboard::KEY_RIGHT) || keyboard::isPressed(keyboard::KEY_D);
         bool pressed_left = keyboard::isPressed(keyboard::KEY_LEFT) || keyboard::isPressed(keyboard::KEY_A);
         bool pressed_enter = keyboard::isPressed(keyboard::KEY_ENTER);
 
-        if (!(pressed_right || pressed_left || pressed_enter))
+        if (!(pressed_right || pressed_left || pressed_enter || pressed_up || pressed_down))
             is_key_pressed = false;
 
         if (is_key_pressed)
             return;
-
-        if (pressed_right) {
-            r_selected = (r_selected + 1) % neighbours.size();
+        if (pressed_up && !neighbours[0].expired()) {
             is_key_pressed = true;
-            render(r, d);
-        } else if (pressed_left) {
-            r_selected = (r_selected - 1 + neighbours.size()) % neighbours.size();
+            r_selected = 0;
+        } else if (pressed_right && !neighbours[1].expired()) {
             is_key_pressed = true;
-            render(r, d);
+            r_selected = 1;
+        } else if (pressed_down && !neighbours[2].expired()) {
+            is_key_pressed = true;
+            r_selected = 2;
+        } else if (pressed_left && !neighbours[3].expired()) {
+            is_key_pressed = true;
+            r_selected = 3;
         } else if (pressed_enter) {
-            // next state
+            is_key_pressed = true;
             gm->changeState(GUIGameState::kEvent);
         }
+        render(r, d);
     }
 
     void render(std::shared_ptr<graphics::Renderer> r, std::shared_ptr<dungeon::Dungeon> d) {
         r->clear();
         std::vector<std::shared_ptr<dungeon::Cell>> cells = d->getCells();
+        auto current = d->getCurrentCell().lock();
+        float cx = static_cast<float>(current->getPosition().first) * cfg::CELL_SIZE;
+        float cy = static_cast<float>(current->getPosition().second) * cfg::CELL_SIZE;
+        float x_offset = cx - cfg::WINDOW_WIDTH / 2;
+        float y_offset = cy - cfg::WINDOW_HEIGHT / 2;
+        cx -= x_offset;
+        cy -= y_offset;
+
         for (auto cell : cells) {
-            float x = static_cast<float>(cell->getPosition().first) * cfg::CELL_SIZE;
-            float y = static_cast<float>(cell->getPosition().second) * cfg::CELL_SIZE;
+            float x = static_cast<float>(cell->getPosition().first) * cfg::CELL_SIZE - x_offset;
+            float y = static_cast<float>(cell->getPosition().second) * cfg::CELL_SIZE - y_offset;
             float w = cfg::CELL_SIZE;
             std::shared_ptr<graphics::Sprite> base_sprite = nullptr;
             std::shared_ptr<graphics::Sprite> marker_sprite = nullptr;
@@ -95,9 +111,15 @@ public:
                 }
             }
             base_sprite->toSize(w, w);
+            float alpha_distance = (cx - x) * (cx - x) + (cy - y) * (cy - y);
+            alpha_distance = 1 - alpha_distance / (cfg::CELL_SIZE * cfg::CELL_SIZE * 168);
+            alpha_distance *= 255;
+            alpha_distance = std::max(0, std::min(255, static_cast<int>(alpha_distance)));
+            base_sprite->setColor({255, 255, 255, (uint8_t) alpha_distance});
             r->draw(*base_sprite, x, y);
             if (marker_sprite) {
                 marker_sprite->toSize(w, w);
+                marker_sprite->setColor({255, 255, 255, (uint8_t) alpha_distance});
                 r->draw(*marker_sprite, x, y);
             }
             if (cell == d->getCurrentCell().lock()) {
