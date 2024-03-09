@@ -4,6 +4,7 @@
 #include "gui_controller/utils.h"
 #include "keyboard/keyboard.h"
 #include "static_data/game_config.h"
+#include <cmath>
 #include <map>
 #include <memory>
 
@@ -53,7 +54,9 @@ public:
                 animation = false;
                 gm->changeState(GUIGameState::kEvent);
             }
-            render(r, d, m_timer / (float) m_duration * m_direction);
+            float progress = (float) m_timer / m_duration;
+            progress = 1 / (1 + std::exp(-10 * (progress - 0.5)));
+            render(r, d, progress * m_direction);
             return;
         }
 
