@@ -1,5 +1,4 @@
 #pragma once
-#include "gui_controller/controller.h"
 #include "keyboard/keyboard.h"
 #include <vector>
 
@@ -13,10 +12,10 @@ public:
             m_cur_state[i] = keyboard::isPressed(keyboard::Key(i));
         }
     }
-    bool isPressed(const keyboard::Key &key) {
+    bool isPressed(const keyboard::Key &key) const {
         return m_cur_state[key];
     }
-    bool isClicked(const keyboard::Key &key) {
+    bool isClicked(const keyboard::Key &key) const {
         return m_cur_state[key] && !m_prev_state[key];
     }
 private:
