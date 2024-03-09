@@ -13,7 +13,7 @@ void DungeonMaker::build() {
     for (int room_id = 0; room_id < mat->rooms_count(); room_id++) {
         coords room_coords = mat->get_room(room_id);
         std::shared_ptr<Room> room = std::make_shared<Room>(room_coords);
-        CellType type = (rand() % 2) ? CellType::SHOP : CellType::FIGHT;
+        CellType type = (rand() % 2) ? CellType::NOTHING : CellType::FIGHT;
         setCellType(room, type);
         dungeon->m_cells.push_back(room);
         dungeon->m_rooms.push_back(room);

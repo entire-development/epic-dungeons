@@ -7,15 +7,15 @@
 
 namespace gui {
 namespace game {
-class Shop : public GameState {
+class Empty : public GameState {
     virtual void enter(GameMachine *gm) {
         is_pressed = true;
         std::shared_ptr<graphics::Renderer> r = gm->m_renderer.lock();
         r->clear();
         if (gm->m_engine.lock()->getDungeon()->getCurrentCell().lock()->isVisited()) {
-            r->drawText(50, 50, "You are in a shop");
+            r->drawText(50, 50, "You are in an empty room");
         } else {
-            r->drawText(50, 50, "First time in a shop");
+            r->drawText(50, 50, "You are first time in this empty room");
         }
         r->drawText(50, 100, "Press Enter to continue");
         r->display();

@@ -11,7 +11,7 @@ enum class GUIGameState {
     kRoomSelection,
     kEvent,
     kFight,
-    kShop,
+    kEmpty,
     kPostEvent,
     kGameOver,
 };

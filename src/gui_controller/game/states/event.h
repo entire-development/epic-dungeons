@@ -14,13 +14,11 @@ class Event : public GameState {
         GUIGameState next_state = GUIGameState::kRoomSelection;
         switch (type) {
             case dungeon::CellType::NOTHING:
+                next_state = GUIGameState::kEmpty;
                 break;
             case dungeon::CellType::FIGHT:
                 if (!cell->isVisited())
                     next_state = GUIGameState::kFight;
-                break;
-            case dungeon::CellType::SHOP:
-                next_state = GUIGameState::kShop;
                 break;
             default:
                 break;

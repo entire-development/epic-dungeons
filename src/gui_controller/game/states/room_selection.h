@@ -3,11 +3,35 @@
 #include "gui_controller/game/game_machine.h"
 #include "keyboard/keyboard.h"
 #include "static_data/game_config.h"
+#include <map>
 #include <memory>
 
 namespace gui {
 namespace game {
 class RoomSelection : public GameState {
+public:
+    RoomSelection() : GameState(), m_hall_sprites(), m_room_sprites() {
+        const std::string map_path = "map/";
+        m_hall_sprites = {
+            {dungeon::CellType::NOTHING, std::make_shared<graphics::Sprite>(map_path + "hall/clear.png")},
+            {dungeon::CellType::FIGHT, std::make_shared<graphics::Sprite>(map_path + "hall/battle.png")},
+            {dungeon::CellType::TREASURE, std::make_shared<graphics::Sprite>(map_path + "hall/curio.png")},
+            {dungeon::CellType::TRAP, std::make_shared<graphics::Sprite>(map_path + "hall/trap.png")},
+        };
+        m_room_sprites = {
+            {dungeon::CellType::NOTHING, std::make_shared<graphics::Sprite>(map_path + "room/empty.png")},
+            {dungeon::CellType::FIGHT, std::make_shared<graphics::Sprite>(map_path + "room/battle.png")},
+            {dungeon::CellType::BOSS, std::make_shared<graphics::Sprite>(map_path + "room/boss.png")},
+            {dungeon::CellType::TREASURE, std::make_shared<graphics::Sprite>(map_path + "room/treasure.png")},
+        };
+
+        m_visited_room_sprite = std::make_shared<graphics::Sprite>(map_path + "room/marker_visited.png");
+        m_not_visited_room_sprite = std::make_shared<graphics::Sprite>(map_path + "room/unknown.png");
+        m_not_visited_hall_sprite = std::make_shared<graphics::Sprite>(map_path + "hall/dark.png");
+        m_selected_room_sprite = std::make_shared<graphics::Sprite>(map_path + "room/marker_moving.png");
+        m_current_cell_sprite = std::make_shared<graphics::Sprite>(map_path + "indicator.png");
+    }
+
     virtual void enter(GameMachine *gm) {
         is_key_pressed = true;
         r_selected = 0;
@@ -46,30 +70,44 @@ class RoomSelection : public GameState {
 
     void render(std::shared_ptr<graphics::Renderer> r, std::shared_ptr<dungeon::Dungeon> d) {
         r->clear();
-        r->drawText(50, 50, "Select a room");
         std::vector<std::shared_ptr<dungeon::Cell>> cells = d->getCells();
         for (auto cell : cells) {
             float x = static_cast<float>(cell->getPosition().first) * cfg::CELL_SIZE;
             float y = static_cast<float>(cell->getPosition().second) * cfg::CELL_SIZE;
             float w = cfg::CELL_SIZE;
-            graphics::Color color = "#edaf1c";
-            graphics::Color stroke_color = "#000000";
+            std::shared_ptr<graphics::Sprite> base_sprite = nullptr;
+            std::shared_ptr<graphics::Sprite> marker_sprite = nullptr;
+
             if (cell->isRoom()) {
                 x -= cfg::CELL_SIZE;
                 y -= cfg::CELL_SIZE;
                 w = cfg::CELL_SIZE * 3;
-                if (cell->getType() == dungeon::CellType::FIGHT)
-                    color = "#cc2e0e";
-                if (cell->getType() == dungeon::CellType::SHOP)
-                    color = "#0ecc14";
-                if (!cell->isVisited())
-                    color = "#8c8c8c";
+                base_sprite = m_room_sprites[cell->getType()];
+                if (cell->isVisited()) {
+                    marker_sprite = m_visited_room_sprite;
+                } else {
+                    base_sprite = m_not_visited_room_sprite;
+                }
+            } else {
+                base_sprite = m_hall_sprites[cell->getType()];
+                if (!cell->isVisited()) {
+                    base_sprite = m_not_visited_hall_sprite;
+                }
             }
-            if (cell == neighbours[r_selected].lock())
-                stroke_color = "#ffffff";
-            if (cell == d->getCurrentCell().lock())
-                stroke_color = "#140ecc";
-            r->drawRec({x, y, w, w, color, -1, stroke_color});
+            base_sprite->toSize(w, w);
+            r->draw(*base_sprite, x, y);
+            if (marker_sprite) {
+                marker_sprite->toSize(w, w);
+                r->draw(*marker_sprite, x, y);
+            }
+            if (cell == d->getCurrentCell().lock()) {
+                m_current_cell_sprite->toSize(w, w);
+                r->draw(*m_current_cell_sprite, x, y);
+            }
+            if (cell == neighbours[r_selected].lock()) {
+                m_selected_room_sprite->toSize(w, w);
+                r->draw(*m_selected_room_sprite, x, y);
+            }
         }
         r->display();
     }
@@ -83,6 +121,16 @@ private:
     bool is_key_pressed = false;
     int r_selected = 0;
     std::vector<std::weak_ptr<dungeon::Room>> neighbours;
+
+    std::map<dungeon::CellType, std::shared_ptr<graphics::Sprite>> m_room_sprites;
+    std::map<dungeon::CellType, std::shared_ptr<graphics::Sprite>> m_hall_sprites;
+
+    std::shared_ptr<graphics::Sprite> m_selected_room_sprite;
+    std::shared_ptr<graphics::Sprite> m_current_cell_sprite;
+
+    std::shared_ptr<graphics::Sprite> m_visited_room_sprite;
+    std::shared_ptr<graphics::Sprite> m_not_visited_room_sprite;
+    std::shared_ptr<graphics::Sprite> m_not_visited_hall_sprite;
 };
 }   // namespace game
 }   // namespace gui

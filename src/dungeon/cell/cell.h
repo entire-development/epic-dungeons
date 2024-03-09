@@ -14,7 +14,7 @@ enum class CellType {
     FIGHT,
     TREASURE,
     // Room types
-    SHOP,
+    // SHOP,
     BOSS,
     EXIT,
     ENTRANCE,
