@@ -36,7 +36,7 @@ std::vector<std::weak_ptr<Room>> Dungeon::getRoomNeighbours(const std::weak_ptr<
     return neighbours;
 }
 
-std::weak_ptr<Cell> Dungeon::getNextOnPath() {
+std::weak_ptr<Cell> Dungeon::getNextOnPath() const {
     std::shared_ptr<Cell> current = m_current_cell.lock();
     std::shared_ptr<Room> target = m_target_room.lock();
 
@@ -47,7 +47,7 @@ std::weak_ptr<Cell> Dungeon::getNextOnPath() {
     throw std::runtime_error("No path to target room");
 }
 
-std::weak_ptr<Cell> Dungeon::getPrevOnPath() {
+std::weak_ptr<Cell> Dungeon::getPrevOnPath() const {
     std::shared_ptr<Cell> current = m_current_cell.lock();
     std::shared_ptr<Room> target = m_target_room.lock();
 
@@ -60,6 +60,22 @@ std::weak_ptr<Cell> Dungeon::getPrevOnPath() {
             return cell;
     }
     throw std::runtime_error("No path to target room");
+}
+
+uint32_t Dungeon::getDistanceToTarget() const {
+    std::shared_ptr<Cell> from_shared = m_current_cell.lock();
+    std::shared_ptr<Cell> to_shared = m_target_room.lock();
+    std::shared_ptr<Cell> next = getNextOnPath().lock();
+
+    uint32_t distance = 1;
+    while (next != to_shared) {
+        int next_idx = next->getNeighbours()[0].lock() == from_shared;
+        from_shared = next;
+        next = next->getNeighbours()[next_idx].lock();
+        distance++;
+    }
+
+    return distance;
 }
 
 }   // namespace dungeon
