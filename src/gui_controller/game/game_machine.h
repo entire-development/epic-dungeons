@@ -9,6 +9,11 @@ class GameState;
 enum class GUIGameState {
     kMain,
     kRoomSelection,
+    kEvent,
+    kFight,
+    kShop,
+    kPostEvent,
+    kGameOver,
 };
 
 class GameState {

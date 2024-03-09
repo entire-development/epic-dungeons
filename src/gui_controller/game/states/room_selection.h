@@ -9,6 +9,8 @@ namespace gui {
 namespace game {
 class RoomSelection : public GameState {
     virtual void enter(GameMachine *gm) {
+        is_key_pressed = true;
+        r_selected = 0;
         std::shared_ptr<dungeon::Dungeon> d = gm->m_engine.lock().get()->getDungeon();
         neighbours = d->getRoomNeighbours(std::dynamic_pointer_cast<dungeon::Room>(d->getCurrentCell().lock()));
         std::shared_ptr<graphics::Renderer> r = gm->m_renderer.lock();
@@ -22,7 +24,7 @@ class RoomSelection : public GameState {
         bool pressed_left = keyboard::isPressed(keyboard::KEY_LEFT) || keyboard::isPressed(keyboard::KEY_A);
         bool pressed_enter = keyboard::isPressed(keyboard::KEY_ENTER);
 
-        if (!(pressed_right || pressed_left))
+        if (!(pressed_right || pressed_left || pressed_enter))
             is_key_pressed = false;
 
         if (is_key_pressed)
@@ -38,6 +40,7 @@ class RoomSelection : public GameState {
             render(r, d);
         } else if (pressed_enter) {
             // next state
+            gm->changeState(GUIGameState::kEvent);
         }
     }
 
@@ -55,7 +58,13 @@ class RoomSelection : public GameState {
                 x -= cfg::CELL_SIZE;
                 y -= cfg::CELL_SIZE;
                 w = cfg::CELL_SIZE * 3;
-                color = "#cc2e0e";
+                printf("cell type: %d\n", cell->getType());
+                if (cell->getType() == dungeon::CellType::FIGHT)
+                    color = "#cc2e0e";
+                if (cell->getType() == dungeon::CellType::SHOP)
+                    color = "#0ecc14";
+                if (!cell->isVisited())
+                    color = "#8c8c8c";
             }
             if (cell == neighbours[r_selected].lock())
                 stroke_color = "#ffffff";
@@ -67,7 +76,8 @@ class RoomSelection : public GameState {
     }
 
     void exit(GameMachine *gm) {
-        gm->m_engine.lock().get()->getDungeon()->setTargetRoom(neighbours[r_selected]);
+        // gm->m_engine.lock().get()->getDungeon()->setTargetRoom(neighbours[r_selected]);
+        gm->m_engine.lock()->getDungeon()->setCurrentCell(neighbours[r_selected].lock());
     }
 
 private:

@@ -23,8 +23,8 @@ public:
         return m_cells;
     }
 
-    void setTargetRoom(std::weak_ptr<Room> room) {
-        m_target_room = std::move(room);
+    void setTargetRoom(std::shared_ptr<Room> room) {
+        m_target_room = room;
     }
 
     [[nodiscard]] std::vector<std::weak_ptr<Room>> getRooms() const {
@@ -35,8 +35,16 @@ public:
         return m_current_cell;
     }
 
+    void setCurrentCell(std::shared_ptr<Cell> cell) {
+        m_current_cell = cell;
+    }
+
+    [[nodiscard]] std::weak_ptr<Room> getTargetRoom() const {
+        return m_target_room;
+    }
+
     // find rooms which are connected with given room by corridor(cells)
-    static std::vector<std::weak_ptr<Room>> getRoomNeighbours(const std::weak_ptr<Room>& room);
+    static std::vector<std::weak_ptr<Room>> getRoomNeighbours(const std::weak_ptr<Room> &room);
 
     friend class IDungeonMaker;
     friend class MockDungeonMaker;

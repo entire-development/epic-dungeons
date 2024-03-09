@@ -1,6 +1,5 @@
 #pragma once
 
-#include "events/event.h"
 #include <memory>
 #include <utility>
 #include <vector>
@@ -8,6 +7,25 @@
 namespace dungeon {
 typedef std::pair<int, int> Position;
 class Room;
+
+enum class CellType {
+    // Both corridor and room types
+    NOTHING,
+    FIGHT,
+    TREASURE,
+    // Room types
+    SHOP,
+    BOSS,
+    EXIT,
+    ENTRANCE,
+    // Corridor types
+    TRAP,
+    DOOR,
+    // Storyline types
+    FIRST_FIGHT,
+    FIRST_TREASURE,
+    FIRST_SHOP,
+};
 
 class Cell {
     friend class Dungeon;
@@ -32,15 +50,24 @@ public:
         return m_is_discovered;
     }
 
-    std::shared_ptr<events::Event> getEvent() {
-        return m_event;
-    }
-
     std::vector<std::weak_ptr<Cell>> getNeighbours() {
         return m_neighbours;
     }
 
+    CellType getType() const {
+        return m_type;
+    }
+
+    void visit() {
+        m_is_visited = true;
+    }
+
+    void discover() {
+        m_is_discovered = true;
+    }
+
     friend void connectCells(std::weak_ptr<Cell> cell1, std::weak_ptr<Cell> cell2);
+    friend void setCellType(std::weak_ptr<Cell> cell, const CellType &type);
 
 private:
     const Position m_position;
@@ -49,7 +76,7 @@ private:
     bool m_is_visited = false;
     bool m_is_discovered = false;
 
-    std::shared_ptr<events::Event> m_event = nullptr;
+    CellType m_type = CellType::NOTHING;
     std::vector<std::weak_ptr<Cell>> m_neighbours;
 };
 

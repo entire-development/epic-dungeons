@@ -20,7 +20,7 @@ std::weak_ptr<Room> findNextRoom(std::weak_ptr<Cell> prev, std::weak_ptr<Cell> c
     return std::weak_ptr<Room>();
 }
 
-std::vector<std::weak_ptr<Room>> Dungeon::getRoomNeighbours(const std::weak_ptr<Room>& room) {
+std::vector<std::weak_ptr<Room>> Dungeon::getRoomNeighbours(const std::weak_ptr<Room> &room) {
     std::vector<std::weak_ptr<Room>> neighbours;
     std::shared_ptr<Room> room_shared = room.lock();
 

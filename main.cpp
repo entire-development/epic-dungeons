@@ -24,7 +24,9 @@ int main() {
     gui::Controller controller;
     controller.bindEngine(engine);
     controller.bindRenderer(renderer);
-    uint64_t last_time = 0;
+    uint64_t last_time =
+        std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())
+            .count();
     while (window.isOpen()) {
         uint64_t current_time =
             std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())
