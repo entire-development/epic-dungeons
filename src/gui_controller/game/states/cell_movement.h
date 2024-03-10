@@ -18,10 +18,10 @@ public:
         m_gradient->setRotation(-90);
         m_gradient->toSize(cfg::WINDOW_HEIGHT, cfg::WINDOW_WIDTH * 1.5);
 
-        auto exp = [](float x) {
+        auto sigm = [](float x) {
             return 1 / (1 + std::exp(-10 * (x - 0.5)));
         };
-        m_prev_anim.init(255, 0, 500, exp);
+        m_prev_anim.init(255, 0, 500, sigm);
     }
 
     virtual void enter(GameMachine *gm) {
@@ -65,6 +65,7 @@ public:
             m_keyboard_manager.isPressed(keyboard::KEY_LEFT) || m_keyboard_manager.isPressed(keyboard::KEY_A);
         bool clicked_enter =
             m_keyboard_manager.isClicked(keyboard::KEY_ENTER) || m_keyboard_manager.isClicked(keyboard::KEY_SPACE);
+        bool is_clicked = clicked_up || clicked_down || clicked_right || clicked_left || clicked_enter;
 
         if (!is_in_room) {
             if (pressed_right) {
@@ -79,21 +80,20 @@ public:
 
         if (clicked_up && !neighbours[0].expired()) {
             r_selected = 0;
-            d->setTargetRoom(neighbours[r_selected].lock());
         } else if (clicked_right && !neighbours[1].expired()) {
             r_selected = 1;
-            d->setTargetRoom(neighbours[r_selected].lock());
         } else if (clicked_down && !neighbours[2].expired()) {
             r_selected = 2;
-            d->setTargetRoom(neighbours[r_selected].lock());
         } else if (clicked_left && !neighbours[3].expired()) {
             r_selected = 3;
-            d->setTargetRoom(neighbours[r_selected].lock());
         } else if (clicked_enter) {
             d->setNextCell(d->getNextOnPath().lock());
             gm->changeState(GUIGameState::kMoveTransition);
         }
-        render(r, d);
+        if (is_clicked) {
+            d->setTargetRoom(neighbours[r_selected].lock());
+            render(r, d);
+        }
     }
 
     void render(std::shared_ptr<graphics::Renderer> r, std::shared_ptr<dungeon::Dungeon> d,
@@ -122,7 +122,6 @@ private:
     KeyboardManager m_keyboard_manager;
 
     bool is_in_room = true;
-    bool is_key_pressed = false;
 
     int r_selected = 0;
     std::vector<std::weak_ptr<dungeon::Room>> neighbours;
