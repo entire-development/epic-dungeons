@@ -30,15 +30,13 @@ public:
         std::shared_ptr<dungeon::Cell> current = d->getCurrentCell().lock();
         is_in_room = current->isRoom();
         if (is_in_room) {
-            m_background = m_room_background;
+            pre_animation = true;
+            m_timer = 0;
             neighbours = d->getRoomNeighbours(std::dynamic_pointer_cast<dungeon::Room>(current));
             while (neighbours[r_selected].expired()) {
                 r_selected = (r_selected + 1) % 4;
             }
             d->setTargetRoom(neighbours[r_selected].lock());
-        } else {
-            distance_to_target = d->getDistanceToTarget();
-            m_background = m_hall_background;
         }
         std::shared_ptr<graphics::Renderer> r = gm->m_renderer.lock();
         render(r, d);
@@ -48,14 +46,18 @@ public:
         std::shared_ptr<graphics::Renderer> r = gm->m_renderer.lock();
         std::shared_ptr<dungeon::Dungeon> d = gm->m_engine.lock().get()->getDungeon();
 
-        if (animation) {
+        if (post_animation || pre_animation) {
             m_timer += gm->getDeltaTime();
-            if (m_timer >= m_duration) {
-                animation = false;
-                gm->changeState(GUIGameState::kEvent);
-            }
             float progress = (float) m_timer / m_duration;
             progress = 1 / (1 + std::exp(-10 * (progress - 0.5)));
+            if (m_timer >= m_duration) {
+                if (post_animation)
+                    gm->changeState(GUIGameState::kEvent);
+                post_animation = false;
+                if (pre_animation)
+                    progress = 0;
+                pre_animation = false;
+            }
             render(r, d, progress);
             return;
         }
@@ -71,14 +73,12 @@ public:
                 is_key_pressed = true;
                 d->setNextCell(d->getNextOnPath().lock());
                 m_timer = 0;
-                animation = true;
-                m_direction = 1;
+                post_animation = true;
             } else if (pressed_left) {
                 is_key_pressed = true;
                 d->setNextCell(d->getPrevOnPath().lock());
                 m_timer = 0;
-                animation = true;
-                m_direction = -1;
+                post_animation = true;
             }
             return;
         }
@@ -107,11 +107,8 @@ public:
         } else if (pressed_enter) {
             is_key_pressed = true;
             d->setNextCell(d->getNextOnPath().lock());
-            hall_length = gm->m_engine.lock()->getDungeon()->getDistanceToTarget() - 1;
             m_timer = 0;
-            animation = true;
-            m_direction = 1;
-            // gm->changeState(GUIGameState::kEvent);
+            post_animation = true;
         }
 
         if (is_key_pressed)
@@ -120,36 +117,38 @@ public:
 
     void render(std::shared_ptr<graphics::Renderer> r, std::shared_ptr<dungeon::Dungeon> d,
                 float animation_progress = 0.0f) {
+        std::shared_ptr<dungeon::Cell> current = d->getCurrentCell().lock();
+        std::shared_ptr<dungeon::Cell> next_cell = d->getNextCell().lock();
         r->clear();
-        float background_x = 0;
-        if (!is_in_room) {
-            background_x = ((float) ((hall_length - distance_to_target) % 4) + animation_progress * m_direction) / 4;
-            background_x = m_hall_background_width * background_x;
+        utils::cellView(r, d, pre_animation ? 0 : animation_progress);
+        if (pre_animation) {
+            uint8_t alpha = 255 * (1 - animation_progress);
+            r->drawRec({0, 0, cfg::WINDOW_WIDTH, cfg::WINDOW_HEIGHT, {0, 0, 0, alpha}});
         }
-        r->draw(*m_background, -background_x, 0);
-        r->draw(*m_background, m_hall_background_width - background_x - 5, 0);
-        r->draw(*m_background, -m_hall_background_width - background_x + 5, 0);
-
         r->draw(*m_gradient, -(cfg::WINDOW_WIDTH / 2), cfg::WINDOW_HEIGHT);
-        utils::drawMap(r, d, Vector2d(cfg::WINDOW_WIDTH * 4 / 5, cfg::WINDOW_HEIGHT / 2), animation_progress);
+        utils::drawMap(r, d, Vector2d(cfg::WINDOW_WIDTH * 4 / 5, cfg::WINDOW_HEIGHT / 2),
+                       pre_animation ? 0 : animation_progress);
         r->display();
     }
 
     void exit(GameMachine *gm) {
+        if (is_in_room) {
+            pre_animation = true;
+            m_timer = 0;
+        }
         gm->m_engine.lock()->getDungeon()->setCurrentCell(gm->m_engine.lock()->getDungeon()->getNextCell().lock());
     }
 
 private:
     uint64_t m_timer = 0;
     uint64_t m_duration = 500;
-    bool animation = false;
-    int m_direction = 1;
+    bool post_animation = false;
+    bool pre_animation = false;
 
     bool is_in_room = true;
     bool is_key_pressed = false;
+
     int r_selected = 0;
-    uint32_t hall_length = 0;
-    uint32_t distance_to_target = 0;
     std::vector<std::weak_ptr<dungeon::Room>> neighbours;
 
     std::shared_ptr<graphics::Sprite> m_background;
