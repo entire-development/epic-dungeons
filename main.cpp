@@ -11,7 +11,7 @@ int main() {
                                     cfg::WINDOW_NAME,
                                     sf::Style::Titlebar | sf::Style::Close};
     window.setFramerateLimit(cfg::FRAMERATE);
-    window.setVerticalSyncEnabled(true);
+    // window.setVerticalSyncEnabled(true);
 
     auto renderer = std::make_shared<graphics::Renderer>(window);
     auto engine = std::make_shared<engine::Engine>();

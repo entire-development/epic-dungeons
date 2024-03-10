@@ -11,16 +11,15 @@ class Event : public GameState {
     virtual void enter(GameMachine *gm) {
         auto cell = gm->m_engine.lock()->getDungeon()->getCurrentCell().lock();
         dungeon::CellType type = cell->getType();
-        GUIGameState next_state = GUIGameState::kRoomSelection;
+        GUIGameState next_state = GUIGameState::kPostEvent;
         switch (type) {
             case dungeon::CellType::NOTHING:
+                // if (!cell->isVisited())
+                //     next_state = GUIGameState::kEmpty;
                 break;
             case dungeon::CellType::FIGHT:
-                if (!cell->isVisited())
-                    next_state = GUIGameState::kFight;
-                break;
-            case dungeon::CellType::SHOP:
-                next_state = GUIGameState::kShop;
+                // if (!cell->isVisited())
+                //     next_state = GUIGameState::kFight;
                 break;
             default:
                 break;

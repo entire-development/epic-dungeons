@@ -17,7 +17,7 @@ class Main : public GameState {
 
     void update(GameMachine *gm) override {
         if (!is_pressed && keyboard::isPressed(keyboard::KEY_ENTER)) {
-            gm->changeState(GUIGameState::kRoomSelection);
+            gm->changeState(GUIGameState::kCellMovement);
             return;
         }
         is_pressed = keyboard::isPressed(keyboard::KEY_ENTER);

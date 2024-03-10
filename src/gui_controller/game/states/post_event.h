@@ -11,7 +11,7 @@ class PostEvent : public GameState {
     virtual void enter(GameMachine *gm) {
         auto cell = gm->m_engine.lock()->getDungeon()->getCurrentCell().lock();
         cell->visit();
-        gm->changeState(GUIGameState::kRoomSelection);
+        gm->changeState(GUIGameState::kCellMovement);
     }
 };
 }   // namespace game

@@ -8,10 +8,11 @@ class GameState;
 
 enum class GUIGameState {
     kMain,
-    kRoomSelection,
+    kCellMovement,
+    kMoveTransition,
     kEvent,
     kFight,
-    kShop,
+    kEmpty,
     kPostEvent,
     kGameOver,
 };
@@ -48,6 +49,7 @@ public:
     }
 
     void update(Controller *controller) {
+        m_delta_time = controller->getDeltaTime();
         if (m_next_state) {
             m_current_state = m_next_state;
             m_next_state = nullptr;
@@ -86,12 +88,17 @@ public:
         }
     }
 
+    uint64_t getDeltaTime() {
+        return m_delta_time;
+    }
+
     std::weak_ptr<engine::Engine> m_engine;
     std::weak_ptr<graphics::Renderer> m_renderer;
 
 protected:
     std::shared_ptr<GameState> m_current_state, m_next_state;
     std::map<GUIGameState, std::shared_ptr<GameState>> m_states;
+    uint64_t m_delta_time;
 };
 
 }   // namespace game

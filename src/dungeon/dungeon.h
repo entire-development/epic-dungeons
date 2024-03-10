@@ -19,7 +19,7 @@ public:
     // dungeon may be built only by DungeonMaker
     Dungeon() : m_rooms(), m_cells() {}
 
-    [[nodiscard]] std::vector<std::shared_ptr<Cell>> getCells() const {
+    [[nodiscard]] const std::vector<std::shared_ptr<Cell>> &getCells() const {
         return m_cells;
     }
 
@@ -43,6 +43,18 @@ public:
         return m_target_room;
     }
 
+    void setNextCell(std::shared_ptr<Cell> cell) {
+        m_next_cell = cell;
+    }
+
+    [[nodiscard]] std::weak_ptr<Cell> getNextCell() const {
+        return m_next_cell;
+    }
+
+    std::weak_ptr<Cell> getNextOnPath() const;
+    std::weak_ptr<Cell> getPrevOnPath() const;
+    uint32_t getDistanceToTarget() const;
+
     // find rooms which are connected with given room by corridor(cells)
     static std::vector<std::weak_ptr<Room>> getRoomNeighbours(const std::weak_ptr<Room> &room);
 
@@ -56,5 +68,6 @@ private:
 
     std::weak_ptr<Cell> m_current_cell;
     std::weak_ptr<Room> m_target_room;
+    std::weak_ptr<Cell> m_next_cell;
 };
 }   // namespace dungeon

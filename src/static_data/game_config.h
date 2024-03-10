@@ -4,9 +4,9 @@
 
 namespace cfg {
 const int FRAMERATE = 30;
-const unsigned WINDOW_WIDTH = 800;
-const unsigned WINDOW_HEIGHT = 600;
-const unsigned CELL_SIZE = 10;
+const unsigned WINDOW_WIDTH = 1280;
+const unsigned WINDOW_HEIGHT = 800;
+const unsigned CELL_SIZE = 20;
 const std::string WINDOW_NAME = "*EPIC DUNGEONS*";
 const std::string FONTS_PATH = "res/fonts/";
 const std::string SPRITES_PATH = "res/sprites/";
