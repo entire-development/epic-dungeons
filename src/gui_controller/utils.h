@@ -7,10 +7,10 @@
 namespace gui {
 namespace utils {
 void drawMap(const std::shared_ptr<graphics::Renderer> &renderer, const std::shared_ptr<dungeon::Dungeon> &dungeon,
-             const Vector2d &center, const float &animation_progress);
+             const Vector2d &center, const float &cell_size, const float &animation_progress = 0.0f);
 
 void cellView(const std::shared_ptr<graphics::Renderer> &renderer, const std::shared_ptr<dungeon::Dungeon> &dungeon,
-              const float &animation_progress);
+              const float &animation_progress = 0.0f);
 
 }   // namespace utils
 }   // namespace gui

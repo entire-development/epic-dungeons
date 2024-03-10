@@ -2,16 +2,16 @@
 #include <utility>
 
 namespace gui {
-void TimedCount::init(double from, double to, uint64_t time) {
+void TimedCount::init(float from, float to, uint64_t time) {
     m_from = from;
     m_to = to;
     m_time = time;
-    m_f = [](double x) {
+    m_f = [](float x) {
         return x;
     };
 }
 
-void TimedCount::init(double from, double to, uint64_t time, std::function<double(double)> f) {
+void TimedCount::init(float from, float to, uint64_t time, std::function<float(float)> f) {
     m_from = from;
     m_to = to;
     m_time = time;
@@ -29,8 +29,8 @@ void TimedCount::update(uint64_t delta_time) {
     }
 }
 
-double TimedCount::get() const {
-    return m_from + m_f(static_cast<double>(m_cur_time) / static_cast<double>(m_time)) * (m_to - m_from);
+float TimedCount::get() const {
+    return m_from + m_f(static_cast<float>(m_cur_time) / static_cast<float>(m_time)) * (m_to - m_from);
 }
 
 bool TimedCount::isEnded() const {

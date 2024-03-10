@@ -8,7 +8,8 @@ class GameState;
 
 enum class GUIGameState {
     kMain,
-    kRoomSelection,
+    kCellMovement,
+    kMoveTransition,
     kEvent,
     kFight,
     kEmpty,
