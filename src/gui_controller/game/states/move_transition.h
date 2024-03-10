@@ -56,16 +56,6 @@ public:
 
 private:
     TimedCount m_anim;
-
-    KeyboardManager m_keyboard_manager;
-
-    bool is_in_room = true;
-    bool is_key_pressed = false;
-
-    int r_selected = 0;
-    std::vector<std::weak_ptr<dungeon::Room>> neighbours;
-
-    float m_hall_background_width;
     std::shared_ptr<graphics::Sprite> m_gradient;
 };
 }   // namespace game
