@@ -30,6 +30,10 @@ void TimedCount::update(uint64_t delta_time) {
 }
 
 double TimedCount::get() const {
-    return m_f(static_cast<double>(m_cur_time) / static_cast<double>(m_time)) * (m_to - m_from);
+    return m_from + m_f(static_cast<double>(m_cur_time) / static_cast<double>(m_time)) * (m_to - m_from);
+}
+
+bool TimedCount::isEnded() const {
+    return m_cur_time == m_time;
 }
 }   // namespace gui

@@ -16,6 +16,8 @@ public:
 
     double get() const;
 
+    bool isEnded() const;
+
 private:
     double m_from, m_to;
     uint64_t m_time;
