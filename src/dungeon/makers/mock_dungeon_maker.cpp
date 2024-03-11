@@ -1,4 +1,4 @@
-#include "MockDungeonMaker.h"
+#include "mock_dungeon_maker.h"
 #include <assert.h>
 #include <memory>
 

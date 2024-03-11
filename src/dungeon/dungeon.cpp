@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include "dungeon.h"
 
 namespace dungeon {

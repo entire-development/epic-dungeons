@@ -1,6 +1,6 @@
 #pragma once
 #include "dungeon/dungeon.h"
-#include "dungeon-matrix.h"
+#include "dungeon_matrix.h"
 #include "randint.h"
 #include <utility>
 #include <memory>

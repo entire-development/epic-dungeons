@@ -1,4 +1,4 @@
-#include "dungeon/makers/dungeon-maker.h"
+#include "dungeon/makers/dungeon_maker.h"
 #include "gui_controller/controller.h"
 #include "keyboard/keyboard.h"
 #include "renderer/graphics.h"

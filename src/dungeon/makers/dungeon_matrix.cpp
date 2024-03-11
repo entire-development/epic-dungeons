@@ -1,4 +1,4 @@
-#include "dungeon-matrix.h"
+#include "dungeon_matrix.h"
 
 using namespace dungeon_matrix;
 

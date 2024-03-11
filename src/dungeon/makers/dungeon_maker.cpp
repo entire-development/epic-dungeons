@@ -1,4 +1,4 @@
-#include "dungeon-maker.h"
+#include "dungeon_maker.h"
 #include <ctime>
 
 using namespace dungeon_matrix;
