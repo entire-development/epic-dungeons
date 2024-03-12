@@ -14,6 +14,9 @@ enum class GUIState {
     kDirectionChoice,
     kGameOver,
     kExit,
+
+    // development GUIstates:
+    kDialogueDemo
 };
 
 class State {
