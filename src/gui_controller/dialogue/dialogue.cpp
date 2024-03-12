@@ -48,7 +48,6 @@ DialogueWindow::DialogueWindow(std::string content, std::string sprite) :
     m_current_index(0),
     m_current_line(0),
     m_font_size(cfg::DIALOGUE_FONT_SIZE),
-    m_font_speed(cfg::DIALOGUE_FONT_SPEED),
     m_is_finished(false),
     m_demo_sprite(std::make_shared<graphics::Sprite>("test1.png")) { }
 
@@ -59,7 +58,6 @@ DialogueWindow::DialogueWindow() :
         m_current_index(0),
         m_current_line(0),
         m_font_size(cfg::DIALOGUE_FONT_SIZE),
-        m_font_speed(cfg::DIALOGUE_FONT_SPEED),
         m_is_finished(false),
         m_demo_sprite(std::make_shared<graphics::Sprite>("test1.png")) { }
 
@@ -70,9 +68,6 @@ void DialogueWindow::changeQuote(std::string new_content, std::string new_sprite
     m_content_len = new_content.length();
     m_current_line = 0;
     m_current_index = 0;
-    m_font_size = 0;
-    m_font_speed = 0;
-    m_is_finished = 0;
 };
 
 void DialogueWindow::finishCurrentQuote() {
@@ -94,11 +89,17 @@ void DialogueWindow::drawQuote(graphics::Renderer* renderer) const {
     renderer->draw(*m_demo_sprite, WINDOW_MARGIN, cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN);
 
     // TEXT
+    uint32_t current_len = 0;
     for (int i = 0; i < m_content.size(); i++) {
         renderer->drawText(
                 WINDOW_MARGIN + PORTRAIT_SIZE + WINDOW_PADDING,
                 cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN + WINDOW_PADDING + LINE_HEIGHT * i,
-                m_content[i]);
+                current_len > m_current_index ? "" : current_len + m_content[i].length() > m_current_index ?
+                m_content[i].substr(0, m_current_index - current_len) : m_content[i]);
+        current_len += m_content[i].length();
     }
+}
 
+void DialogueWindow::update(uint32_t current_character) {
+    m_current_index = current_character;
 }

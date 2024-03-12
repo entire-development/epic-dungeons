@@ -3,6 +3,8 @@
 #include <vector>
 #include "static_data/game_config.h"
 #include "renderer/graphics.h"
+#include <functional>
+#include <numeric>
 
 namespace dl {
 const uint32_t DIALOGUE_WINDOW_WIDTH = cfg::WINDOW_WIDTH;
@@ -24,13 +26,18 @@ public:
     void changeQuote(std::string new_content, std::string new_sprite);
     void finishCurrentQuote();
     void drawQuote(graphics::Renderer* renderer) const;
+    void update(uint32_t current_character);
+    size_t getCurrentQuoteLength() {
+        return std::accumulate(m_content.begin(), m_content.end(), 0, [](size_t a, std::string& b) {
+            return a + b.length();
+        });
+    }
 private:
     std::vector<std::string> m_content;
     std::string m_sprite;
     uint32_t m_current_index;
     uint32_t m_content_len;
     uint32_t m_current_line;
-    uint32_t m_font_speed;
     uint32_t m_font_size;
     bool m_is_finished;
 
