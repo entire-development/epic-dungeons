@@ -46,7 +46,7 @@ public:
         std::shared_ptr<dungeon::Dungeon> d = gm->m_engine.lock().get()->getDungeon();
         m_prev_anim.update(gm->getDeltaTime());
         if (!m_prev_anim.isEnded()) {
-            render(r, d, m_prev_anim.get());
+            render(r, gm->m_engine.lock(), m_prev_anim.get());
             return;
         }
 
@@ -92,17 +92,18 @@ public:
         }
         if (is_clicked) {
             d->setTargetRoom(neighbours[r_selected].lock());
-            render(r, d);
+            render(r, gm->m_engine.lock());
         }
     }
 
-    void render(std::shared_ptr<graphics::Renderer> r, std::shared_ptr<dungeon::Dungeon> d,
+    void render(std::shared_ptr<graphics::Renderer> r, std::shared_ptr<engine::Engine> e,
                 float animation_progress = 0.0f) {
+        std::shared_ptr<dungeon::Dungeon> d = e->getDungeon();
         std::shared_ptr<dungeon::Cell> current = d->getCurrentCell().lock();
         std::shared_ptr<dungeon::Cell> next_cell = d->getNextCell().lock();
         r->clear();
         utils::cellView(r, d);
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 8; i++) {
             utils::drawEntity(r, std::make_shared<engine::entities::Entity>("demo"), i, 0);
         }
         uint8_t alpha = std::round(m_prev_anim.get());
@@ -110,6 +111,7 @@ public:
         r->draw(*m_gradient, -(cfg::WINDOW_WIDTH / 2), cfg::WINDOW_HEIGHT);
         Vector2d center = {cfg::WINDOW_WIDTH * 4 / 5, cfg::WINDOW_HEIGHT / 2};
         utils::drawMap(r, d, center, cfg::CELL_SIZE);
+        utils::drawGUI(r, e);
         r->display();
     }
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "dungeon/dungeon.h"
+#include "engine/engine.h"
 #include "engine/entity.h"
 #include "renderer/graphics.h"
 #include "vector2d/vector2d.h"
@@ -16,6 +17,8 @@ void cellView(const std::shared_ptr<graphics::Renderer> &renderer, const std::sh
 void drawEntity(const std::shared_ptr<graphics::Renderer> &renderer,
                 const std::shared_ptr<engine::entities::Entity> &entity, const uint8_t &position,
                 const float &animation_progress = 0.0f);
+
+void drawGUI(const std::shared_ptr<graphics::Renderer> &renderer, const std::shared_ptr<engine::Engine> &engine);
 
 }   // namespace utils
 }   // namespace gui
