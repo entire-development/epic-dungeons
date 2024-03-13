@@ -102,6 +102,9 @@ public:
         std::shared_ptr<dungeon::Cell> next_cell = d->getNextCell().lock();
         r->clear();
         utils::cellView(r, d);
+        for (int i = 0; i < 4; i++) {
+            utils::drawEntity(r, std::make_shared<engine::entities::Entity>("demo"), i, 0);
+        }
         uint8_t alpha = std::round(m_prev_anim.get());
         r->drawRec({0, 0, cfg::WINDOW_WIDTH, cfg::WINDOW_HEIGHT, {0, 0, 0, alpha}});
         r->draw(*m_gradient, -(cfg::WINDOW_WIDTH / 2), cfg::WINDOW_HEIGHT);

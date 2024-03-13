@@ -44,6 +44,14 @@ public:
         float animation_progress = m_anim.get();
         r->clear();
         utils::cellView(r, d, animation_progress);
+        for (int i = 0; i < 4; i++) {
+            utils::drawEntity(r, std::make_shared<engine::entities::Entity>("demo"), i, 0);
+        }
+
+        if (d->getCurrentCell().lock()->isRoom() || d->getNextCell().lock()->isRoom()) {
+            uint8_t alpha = 255 * animation_progress;
+            r->drawRec({0, 0, cfg::WINDOW_WIDTH, cfg::WINDOW_HEIGHT, {0, 0, 0, alpha}});
+        }
         r->draw(*m_gradient, -(cfg::WINDOW_WIDTH / 2), cfg::WINDOW_HEIGHT);
         Vector2d center = {cfg::WINDOW_WIDTH * 4 / 5, cfg::WINDOW_HEIGHT / 2};
         utils::drawMap(r, d, center, cfg::CELL_SIZE, animation_progress);

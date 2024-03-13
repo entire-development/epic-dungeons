@@ -16,8 +16,12 @@ public:
         this->m_dungeon = dungeon;
     }
 
-    std::shared_ptr<dungeon::Dungeon> getDungeon() {
+    std::shared_ptr<dungeon::Dungeon> getDungeon() const {
         return m_dungeon;
+    }
+
+    std::shared_ptr<entities::Party> getParty() const {
+        return m_party;
     }
 
 private:
