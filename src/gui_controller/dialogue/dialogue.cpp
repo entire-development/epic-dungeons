@@ -6,7 +6,25 @@
 
 using namespace dl;
 
-std::vector<std::string> splitByLines(std::string str) {
+std::string preprocessString (const std::string& str) {
+    std::string result  = "";
+    size_t last_index = 0;
+    for (int i = 0; i < str.length(); i++) {
+        if (i != 0 && str[i - 1] != '$') continue; // preprocess ignore character.
+        if (str[i] == ',') {
+            result += str.substr(last_index, i - last_index) + "[pause=5]";
+            last_index = i;
+        }
+        if (str[i] == '.') {
+            result += str.substr(last_index, i - last_index) + "[pause=15]";
+            last_index = i;
+        }
+    }
+    result += str.substr(last_index);
+    return result;
+}
+
+std::vector<std::string> splitByLines(const std::string& str) {
     std::vector<std::string> result;
     std::string current_line = "";
     uint32_t current_characters = 0;
@@ -42,7 +60,7 @@ std::vector<std::string> splitByLines(std::string str) {
 }
 
 DialogueWindow::DialogueWindow(std::string content, std::string sprite) :
-    m_content(splitByLines(content)),
+    m_content(splitByLines(preprocessString(content))),
     m_sprite(sprite),
     m_content_len(content.length()),
     m_current_index(0),
@@ -63,7 +81,7 @@ DialogueWindow::DialogueWindow() :
 
 void DialogueWindow::changeQuote(std::string new_content, std::string new_sprite) {
     std::cout << "123" << std::endl;
-    m_content = splitByLines(new_content);
+    m_content = splitByLines(preprocessString(new_content));
     m_sprite = new_sprite;
     m_content_len = new_content.length();
     m_current_line = 0;
@@ -90,13 +108,18 @@ void DialogueWindow::drawQuote(graphics::Renderer* renderer) const {
 
     // TEXT
     uint32_t current_len = 0;
+    uint32_t char_pos = 0;
     for (int i = 0; i < m_content.size(); i++) {
-        renderer->drawText(
-                WINDOW_MARGIN + PORTRAIT_SIZE + WINDOW_PADDING,
-                cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN + WINDOW_PADDING + LINE_HEIGHT * i,
-                current_len > m_current_index ? "" : current_len + m_content[i].length() > m_current_index ?
-                m_content[i].substr(0, m_current_index - current_len) : m_content[i]);
-        current_len += m_content[i].length();
+        std::string line = m_content[i];
+        char_pos = 0;
+        for (int j = 0; j < line.length(); j++) { // I can explain this
+            renderer->drawText(
+                    WINDOW_MARGIN + PORTRAIT_SIZE + WINDOW_PADDING + char_pos * CHAR_WIDTH,
+                    cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN + WINDOW_PADDING + LINE_HEIGHT * i,
+                    std::string(&line[j], &line[j + 1]), 25);
+            current_len += 1;
+            char_pos += 1;
+        }
     }
 }
 

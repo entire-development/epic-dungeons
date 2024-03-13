@@ -24,7 +24,7 @@ void Renderer::drawSprite(int x, int y, const std::string &sprite_id) {
     window.draw(shape);
 }
 
-void Renderer::drawText(int x, int y, const std::string &line) {
+void Renderer::drawText(int x, int y, const std::string &line, uint32_t font_size) {
     sf::Font font;
     if (!font.loadFromFile(cfg::FONT_PATH)) {
         std::cerr << "Font not found!" << std::endl;
@@ -33,7 +33,7 @@ void Renderer::drawText(int x, int y, const std::string &line) {
     sf::Text text;
     text.setFont(font);
     text.setString(line);
-    text.setCharacterSize(24);
+    text.setCharacterSize(font_size);
     text.setFillColor(sf::Color::White);
     text.setPosition(x, y);
     window.draw(text);

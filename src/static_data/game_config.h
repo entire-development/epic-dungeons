@@ -21,6 +21,7 @@ const keyboard::Key CONTROLS_SECONDARY = keyboard::Key::KEY_C;
 
 const uint32_t DIALOGUE_FONT_SIZE = 24;
 const uint32_t DIALOGUE_FONT_SPEED = 15;
+const std::string FONT_PATH = "res/fonts/courier.ttf";
 
 // !! Later put fonts into epic-dungeons/res/fonts !!
 #ifdef _WIN32
@@ -28,7 +29,7 @@ const std::string FONT_PATH = "C:/Windows/Fonts/arial.ttf";
 #elif __linux__
 const std::string FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf";
 #elif __APPLE__
-const std::string FONT_PATH = "/Library/Fonts/Arial Unicode.ttf";
+//const std::string FONT_PATH = "/Library/Fonts/Arial Unicode.ttf";
 #endif
 
 }   // namespace cfg

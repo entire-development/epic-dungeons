@@ -33,7 +33,7 @@ public:
 
     void drawRec(const Rectangle &rectangle);
 
-    void drawText(int x, int y, const std::string &line);
+    void drawText(int x, int y, const std::string &line, uint32_t font_size = cfg::DIALOGUE_FONT_SIZE);
 
     void draw(const Text &text, int x, int y);
 

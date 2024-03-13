@@ -13,7 +13,8 @@ const uint32_t WINDOW_MARGIN = 32;
 const uint32_t WINDOW_PADDING = 16;
 const uint32_t PORTRAIT_SIZE = DIALOGUE_WINDOW_HEIGHT - WINDOW_MARGIN * 2;
 const uint32_t LINE_HEIGHT = 40; // pixels
-const uint32_t LINE_LENGTH = 78; // characters
+const uint32_t LINE_LENGTH = 45; // characters
+const uint32_t CHAR_WIDTH = 18; // pixels
 
 class DialogueManager { // to manage dialogue branches, meta-actions etc
 
