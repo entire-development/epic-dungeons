@@ -22,6 +22,7 @@ namespace dungeon {
         void corridor_noise(const std::shared_ptr<dungeon_matrix::DungeonMatrix>& old);
 
         void generate_room_events(const std::weak_ptr<Room>& start);
+        void generate_corridor_events();
     public:
         [[nodiscard]] unsigned int getSeed() const;
         void setSeed(unsigned int value);

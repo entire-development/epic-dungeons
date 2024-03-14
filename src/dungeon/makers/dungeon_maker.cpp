@@ -227,6 +227,7 @@ void DungeonMaker::generate_room_events(const std::weak_ptr<Room>& start) {
         size_t dist = dists[cur.lock()->getPosition()];
 
         for (const std::weak_ptr<Room>& next : Dungeon::getRoomNeighbours(cur)) {
+            if (next.expired()) continue;
             if (dists.contains(next.lock()->getPosition())) continue;
             queue.push(next);
             dists[next.lock()->getPosition()] = dist + 1;
@@ -255,5 +256,28 @@ void DungeonMaker::generate_room_events(const std::weak_ptr<Room>& start) {
 
         if (types.empty()) setCellType(rooms[i].second, CellType::NOTHING);
         else setCellType(rooms[i].second, types[randint(0, (int)types.size() - 1)]);
+    }
+}
+
+void DungeonMaker::generate_corridor_events() {
+    std::map<CellType, size_t> weights = {
+            {CellType::NOTHING, 5},
+            {CellType::FIGHT, 1},
+            {CellType::TREASURE, 1},
+            {CellType::TRAP, 1},
+            {CellType::DOOR, 1},
+    };
+
+    std::vector<CellType> types;
+    for (std::pair<CellType, size_t> p : weights) {
+        for (int j = 0; j < p.second; j++)
+            types.push_back(p.first);
+    }
+
+    for (const std::shared_ptr<Cell>& cell : dungeon->getCells()) {
+        if (cell->isRoom()) continue;
+
+        if (types.empty()) setCellType(cell, CellType::NOTHING);
+        else setCellType(cell, types[randint(0, (int)types.size() - 1)]);
     }
 }
