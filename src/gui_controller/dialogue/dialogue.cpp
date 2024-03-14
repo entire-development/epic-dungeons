@@ -1,6 +1,7 @@
 #include "dialogue.h"
 #include "static_data/game_config.h"
 #include "renderer/graphics.h"
+#include "gui_controller/timed_count.h"
 #include <iostream>
 #include <string>
 
@@ -85,7 +86,7 @@ std::vector<std::string> splitByLines(const std::string& str) {
     return result;
 }
 
-DialogueWindow::DialogueWindow(std::string content, std::string sprite) :
+DialogueWindow::DialogueWindow(const std::string& content, const std::string& sprite) :
     m_content(splitByLines(preprocessString(content))),
     m_sprite(sprite),
     m_content_len(content.length()),
@@ -94,6 +95,7 @@ DialogueWindow::DialogueWindow(std::string content, std::string sprite) :
     m_font_size(cfg::DIALOGUE_FONT_SIZE),
     m_is_finished(false),
     m_demo_sprite(std::make_shared<graphics::Sprite>("test1.png")) { }
+
 
 DialogueWindow::DialogueWindow() :
     m_content(std::vector<std::string>()),
@@ -105,20 +107,23 @@ DialogueWindow::DialogueWindow() :
     m_is_finished(false),
     m_demo_sprite(std::make_shared<graphics::Sprite>("test1.png")) { }
 
-void DialogueWindow::changeQuote(std::string new_content, std::string new_sprite) {
+
+void DialogueWindow::changeQuote(const std::string& new_content, const std::string& new_sprite) {
     std::string preprocessed_str = preprocessString(new_content);
     m_content = (splitByLines(preprocessed_str));
     m_sprite = new_sprite;
     m_content_len = preprocessed_str.length();
     m_current_line = 0;
     m_current_index = 0;
+    m_is_finished = false;
 };
 
-void DialogueWindow::finishCurrentQuote() {
-
+void DialogueWindow::forceFinish() {
+    m_current_index = m_content_len;
+    m_is_finished = true;
 }
 
-void DialogueWindow::drawQuote(graphics::Renderer* renderer) const {
+void DialogueWindow::drawQuote(graphics::Renderer* renderer) {
     // CONTAINER
     renderer->drawRec({
         .x = WINDOW_MARGIN, .y = cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN,
@@ -170,11 +175,63 @@ void DialogueWindow::drawQuote(graphics::Renderer* renderer) const {
             if (display && current_len < m_current_index) renderer->draw(graphics::Text(std::string(&line[j], &line[j + 1])),
                                WINDOW_MARGIN + PORTRAIT_SIZE + WINDOW_PADDING + char_pos * CHAR_WIDTH,
                                10 + cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN + WINDOW_PADDING + LINE_HEIGHT * i);
-            current_len++;
+            if (current_len < m_current_index) current_len++;
+            else m_is_finished = true;
         }
     }
 }
 
 void DialogueWindow::update(uint32_t current_character) {
     m_current_index = current_character;
+}
+
+DialogueManager::DialogueManager(script::QuoteNode entry_point) :
+    m_current_quote(entry_point),
+    m_dialogue_window(DialogueWindow()),
+    m_character_anim(gui::TimedCount()),
+    m_is_active(true)
+{
+    m_dialogue_window.changeQuote(entry_point.content, entry_point.sprite);
+    size_t str_len = dl::preprocessString(entry_point.content).length();
+    m_character_anim.init(0, str_len, str_len * cfg::DIALOGUE_FONT_SPEED);
+    m_character_anim.start();
+}
+
+void DialogueManager::nextQuote() {
+    if (m_current_quote.next == nullptr) {
+        m_is_active = false;
+        return;
+    }
+    m_current_quote = *m_current_quote.next;
+    m_dialogue_window.changeQuote(m_current_quote.content, m_current_quote.sprite);
+    size_t str_len = dl::preprocessString(m_current_quote.content).length();
+    m_character_anim.init(0, str_len, str_len * cfg::DIALOGUE_FONT_SPEED);
+    m_character_anim.start();
+    m_is_active = true;
+}
+
+inline void DialogueManager::skip() {
+    m_dialogue_window.forceFinish();
+    m_is_active = false;
+}
+
+void DialogueManager::handleActionKeyPressed() {
+    if (m_is_active) {
+        skip();
+    }
+    else {
+        nextQuote();
+    }
+}
+
+void DialogueManager::update(uint64_t delta_time) {
+    m_character_anim.update(delta_time);
+    m_dialogue_window.update(std::round(m_character_anim.get()));
+    if (m_dialogue_window.isFinished()) m_is_active = false;
+}
+
+void DialogueManager::setEntryPoint(script::QuoteNode entry_point) {}
+
+inline bool DialogueManager::isFinished() const {
+    return m_is_active;
 }

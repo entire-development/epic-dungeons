@@ -4,6 +4,24 @@
 #include "gui_controller/dialogue/dialogue.h"
 #include "gui_controller/timed_count.h"
 
+dl::script::BranchNode quote_3 = {
+        .content = "Quote 3!",
+        .sprite = "123",
+        .next = nullptr
+};
+
+dl::script::BranchNode quote_2 = {
+        .content = "Quote 2!",
+        .sprite = "123",
+        .next = &quote_3
+};
+
+dl::script::BranchNode quote_1 = {
+        .content = "Quote 1!",
+        .sprite = "123",
+        .next = &quote_2
+};
+
 namespace gui {
     // TEMPORARY STATE. LATER WILL BE REFACTORED INTO DIALOGUE MANAGER CLASS.
     class DialogueDemo : public State {
