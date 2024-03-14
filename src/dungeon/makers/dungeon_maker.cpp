@@ -1,6 +1,9 @@
 #include "dungeon_maker.h"
 #include "static_data/generation_config.h"
 #include <ctime>
+#include <map>
+#include <queue>
+#include <algorithm>
 
 using namespace dungeon_matrix;
 using namespace dungeon;
@@ -37,7 +40,7 @@ void DungeonMaker::build() {
         }
     }
 
-    generate_room_events();
+    generate_room_events(dungeon->m_rooms[0]);
     dungeon->m_current_cell = dungeon->m_rooms[0];
 }
 
@@ -195,6 +198,62 @@ void DungeonMaker::setRandomSeed() {
     seed = std::time(nullptr);
 }
 
-void DungeonMaker::generate_room_events() {
+void DungeonMaker::generate_room_events(const std::weak_ptr<Room>& start) {
+    std::map<CellType, size_t> weights = {
+            {CellType::NOTHING, 0},
+            {CellType::FIGHT, 1},
+            {CellType::TREASURE, 1},
+            {CellType::BOSS, 2}
+    };
+    std::map<CellType, double> limits = {
+            {CellType::NOTHING, 0},
+            {CellType::FIGHT, 0},
+            {CellType::TREASURE, 0},
+            {CellType::BOSS, .5}
+    };
+    double exit_limit = .7;
 
+    std::vector<std::pair<size_t, std::weak_ptr<Room>>> rooms;
+    std::map<coords, size_t> dists;
+
+    std::queue<std::weak_ptr<Room>> queue;
+    queue.push(start);
+    dists[start.lock()->getPosition()] = 0;
+    rooms.emplace_back(0, start);
+
+    while (!queue.empty()) {
+        std::weak_ptr<Room> cur = queue.front();
+        queue.pop();
+        size_t dist = dists[cur.lock()->getPosition()];
+
+        for (const std::weak_ptr<Room>& next : Dungeon::getRoomNeighbours(cur)) {
+            if (dists.contains(next.lock()->getPosition())) continue;
+            queue.push(next);
+            dists[next.lock()->getPosition()] = dist + 1;
+            rooms.emplace_back(dist + 1, next);
+        }
+    }
+
+    std::sort(rooms.begin(), rooms.end(), [](
+            const std::pair<size_t, std::weak_ptr<Room>> &a,
+            const std::pair<size_t, std::weak_ptr<Room>> &b)
+    {
+        return a.first < b.first;
+    });
+
+    setCellType(rooms[0].second, CellType::ENTRANCE);
+    size_t count = rooms.size();
+
+    for (int i = 1; i < count; i++) {
+        std::vector<CellType> types;
+        for (std::pair<CellType, size_t> p : weights) {
+            if (limits.contains(p.first) && limits[p.first] > (double)i / count)
+                continue;
+            for (int j = 0; j < p.second; j++)
+                types.push_back(p.first);
+        }
+
+        if (types.empty()) setCellType(rooms[i].second, CellType::NOTHING);
+        else setCellType(rooms[i].second, types[randint(0, (int)types.size() - 1)]);
+    }
 }
