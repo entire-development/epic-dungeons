@@ -15,8 +15,6 @@ void DungeonMaker::build() {
     for (int room_id = 0; room_id < mat->rooms_count(); room_id++) {
         coords room_coords = mat->get_room(room_id);
         std::shared_ptr<Room> room = std::make_shared<Room>(room_coords);
-        CellType type = (randint(0, 1)) ? CellType::NOTHING : CellType::FIGHT;
-        setCellType(room, type);
         dungeon->m_cells.push_back(room);
         dungeon->m_rooms.push_back(room);
 
@@ -39,6 +37,7 @@ void DungeonMaker::build() {
         }
     }
 
+    generate_room_events();
     dungeon->m_current_cell = dungeon->m_rooms[0];
 }
 
@@ -194,4 +193,8 @@ void DungeonMaker::setSeed(unsigned int value) {
 
 void DungeonMaker::setRandomSeed() {
     seed = std::time(nullptr);
+}
+
+void DungeonMaker::generate_room_events() {
+
 }
