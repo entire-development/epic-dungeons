@@ -127,6 +127,9 @@ void DungeonMaker::room_noise(const std::shared_ptr<DungeonMatrix> &old) {
             return;
         if (mat->get_end(pair.first.first, pair.first.second) != pair.second)
             return;
+        size_t path_length = mat->get_path_length(pair.first.first, pair.first.second);
+        if (path_length < generation_cfg::MIN_CORRIDORS_LENGTH || path_length > generation_cfg::MAX_CORRIDORS_LENGTH)
+            return;
     }
 
     *old = *mat;
@@ -172,6 +175,10 @@ void DungeonMaker::corridor_noise(const std::shared_ptr<dungeon_matrix::DungeonM
         return;
     coords end = mat->get_end(y, x);
     if (end != start && end != (*path)[path->size() - 1])
+        return;
+
+    size_t path_length = mat->get_path_length(start.first, start.second);
+    if (path_length < generation_cfg::MIN_CORRIDORS_LENGTH || path_length > generation_cfg::MAX_CORRIDORS_LENGTH)
         return;
 
     *old = *mat;

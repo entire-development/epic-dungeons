@@ -8,8 +8,8 @@ namespace generation_cfg {
     static const size_t ROOMS_COUNT = 15;
 
     static const size_t INITIAL_CORRIDOR_LENGTH = 3;
-    // static const size_t MIN_CORRIDORS_LENGTH = 2;
-    // static const size_t MAX_CORRIDORS_LENGTH = 12;
+    static const size_t MIN_CORRIDORS_LENGTH = 2;
+    static const size_t MAX_CORRIDORS_LENGTH = 12;
 
     // number of attempts to move room
     static const size_t ROOMS_NOISE_ITERATIONS = 50;
