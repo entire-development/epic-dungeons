@@ -24,7 +24,7 @@ void drawMap(const std::shared_ptr<graphics::Renderer> &renderer, const std::sha
             {dungeon::CellType::FIGHT, std::make_shared<graphics::Sprite>(map_path + "hall/battle.png")},
             {dungeon::CellType::TREASURE, std::make_shared<graphics::Sprite>(map_path + "hall/curio.png")},
             {dungeon::CellType::TRAP, std::make_shared<graphics::Sprite>(map_path + "hall/trap.png")},
-            {dungeon::CellType::DOOR, std::make_shared<graphics::Sprite>(map_path + "hall/door.png")},
+            {dungeon::CellType::DOOR, std::make_shared<graphics::Sprite>(map_path + "hall/secret.png")},
         };
         m_room_sprites = {
             {dungeon::CellType::NOTHING, std::make_shared<graphics::Sprite>(map_path + "room/empty.png")},
