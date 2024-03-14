@@ -5,17 +5,38 @@
 #include <vector>
 
 namespace engine {
-namespace actions {
-class Action;
-class Attack;
-struct AttackReuslt;
-}   // namespace actions
+namespace skills {
+struct Skill;
+}   // namespace skills
 
 namespace items {
-class Weapon;
+struct Weapon;
+struct Armor;
 }   // namespace items
 
 namespace entities {
+struct Stats {
+    int32_t max_health = 20;
+    int32_t defense = 0;
+    int32_t protection = 0;
+    int32_t speed = 0;
+    int32_t min_damage = 0;
+    int32_t max_damage = 0;
+    int32_t critical_chance = 0;
+    int32_t attack = 0;
+};
+
+struct Resistances {
+    int32_t stun = 30;   // 30% chance to resist
+    int32_t poison = 30;
+    int32_t bleed = 30;
+    int32_t disease = 30;
+    int32_t move = 30;
+    int32_t debuff = 30;
+    int32_t death_blow = 67;
+    int32_t trap = 40;
+};
+
 class Entity : public std::enable_shared_from_this<Entity> {
 public:
     Entity(const std::string &name) : m_name(name) {}
@@ -38,7 +59,16 @@ public:
         m_weapon = weapon;
     }
 
-    virtual actions::AttackReuslt takeAttack(std::shared_ptr<Entity> attacker, std::shared_ptr<actions::Attack> attack);
+    void setArmor(std::shared_ptr<items::Armor> armor) {
+        m_armor = armor;
+    }
+
+    template<typename skill>
+    void addSkill() {
+        m_skills.push_back(std::make_shared<skill>());
+    }
+
+    virtual skills::AttackResult takeAttack(std::shared_ptr<Entity> attacker, std::shared_ptr<skills::Attack> attack);
 
     uint8_t getPosition() const {
         return 0;
@@ -54,6 +84,9 @@ protected:
     uint32_t m_max_health = 20;
     uint32_t m_health = 20;
     std::shared_ptr<items::Weapon> m_weapon = nullptr;
+    std::shared_ptr<items::Armor> m_armor = nullptr;
+    std::vector<std::shared_ptr<skills::Skill>> m_skills;
+    Resistances m_resistances;
 };
 
 class Party {

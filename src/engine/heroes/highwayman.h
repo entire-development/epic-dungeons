@@ -6,12 +6,12 @@
 namespace engine {
 namespace entities {
 
-class Gangster : public Hero {
+class Highwayman : public Hero {
 public:
-    Gangster() : Hero("Lamar") {
-        m_health = 20;
-        m_max_health = 20;
-        setWeapon(std::make_shared<items::Pistol>());
+    Highwayman() : Hero("Highwayman") {
+        m_health = 23;
+        m_max_health = 23;
+        
     }
 };
 

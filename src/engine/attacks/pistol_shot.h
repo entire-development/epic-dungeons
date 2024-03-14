@@ -1,20 +1,19 @@
 #pragma once
-#include "attack.h"
+#include "engine/skill.h"
 
 namespace engine {
-namespace actions {
-
-class PistolShot : public Attack {
-public:
-    std::vector<uint8_t> usablePositions = {0, 1, 2, 3};
-    std::vector<uint8_t> targetablePositions = {0, 1, 2, 3};
-
-protected:
-    int32_t m_min_damage = 3;
-    int32_t m_max_damage = 6;
-    int32_t m_accuracy = 80;
-    int32_t m_critical_chance = 10;
+namespace skills {
+struct PistolShot : public CombatSkill {
+    const std::string id = "pistol_shot";
+    const uint8_t level = 0;
+    const Type type = Type::kRanged;
+    const TargetType targetType = TargetType::kIndividual;
+    const std::vector<uint8_t> launchablePositions = {4, 3, 2};
+    const std::vector<uint8_t> targetablePositions = {2, 3, 4};
+    const int32_t attackMod = 85;
+    const int32_t damageMod = -15;
+    const int32_t criticalChanceMod = 7.5;
 };
 
-}   // namespace actions
+}   // namespace skills
 }   // namespace engine

@@ -1,18 +1,17 @@
 #pragma once
-#include <engine/attacks/melee.h>
-#include <engine/attacks/pistol_shot.h>
-#include <engine/weapon.h>
+#include "engine/item.h"
 #include <memory>
 
 namespace engine {
 namespace items {
 
-class Pistol : public Weapon {
-public:
-    Pistol() : Weapon() {
-        m_attack = std::make_shared<actions::PistolShot>();
-        m_secondary_attack = std::make_shared<actions::Melee>();
-    }
+struct Pistol : public Weapon {
+    const std::string name = "Pistol";
+    const int32_t attackMod = 0;
+    const int32_t minDamage = 5;
+    const int32_t maxDamage = 10;
+    const int32_t criticalChanceMod = 5;
+    const int32_t speedMod = 5;
 };
 
 }   // namespace items
