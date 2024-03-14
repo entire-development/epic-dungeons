@@ -13,8 +13,10 @@ const uint32_t WINDOW_MARGIN = 32;
 const uint32_t WINDOW_PADDING = 16;
 const uint32_t PORTRAIT_SIZE = DIALOGUE_WINDOW_HEIGHT - WINDOW_MARGIN * 2;
 const uint32_t LINE_HEIGHT = 40; // pixels
-const uint32_t LINE_LENGTH = 45; // characters
+const uint32_t LINE_LENGTH = 47; // characters
 const uint32_t CHAR_WIDTH = 18; // pixels
+
+std::string preprocessString(const std::string& str);
 
 class DialogueManager { // to manage dialogue branches, meta-actions etc
 
@@ -40,6 +42,7 @@ private:
     uint32_t m_content_len;
     uint32_t m_current_line;
     uint32_t m_font_size;
+    mutable int m_delay = 0;
     bool m_is_finished;
 
     // TODO: REFACTOR LATER

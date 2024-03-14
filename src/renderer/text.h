@@ -9,7 +9,7 @@ class Color;
 
 class Text {
 public:
-    Text(const std::string &text, const std::string &font_name, const size_t &size);
+    Text(const std::string &text, const std::string &font_name = cfg::FONT_PATH, const size_t &size = cfg::DIALOGUE_FONT_SIZE);
 
     Text &setColor(const graphics::Color &color);
     Text &setOutlineColor(const Color &color);

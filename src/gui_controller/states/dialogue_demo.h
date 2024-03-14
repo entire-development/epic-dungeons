@@ -12,7 +12,8 @@ namespace gui {
 
         void enter(Controller *controller) {
             dialogue_window.changeQuote(quoteTexts[0], "123");
-            m_char_anim.init(0, quoteTexts[0].length(), quoteTexts[0].length() * 30);
+            size_t str_len = dl::preprocessString(quoteTexts[0]).length();
+            m_char_anim.init(0, str_len, str_len * cfg::DIALOGUE_FONT_SPEED);
             m_char_anim.start();
             render(controller->m_renderer.get());
         }
@@ -20,6 +21,17 @@ namespace gui {
         void update(Controller *controller) {
             m_char_anim.update(controller->getDeltaTime());
             dialogue_window.update(std::round(m_char_anim.get()));
+
+            bool action = keyboard::isPressed(cfg::CONTROLS_ACTION);
+
+            if (action && current_quote < quoteTexts.size() - 1 && m_char_anim.isEnded()) {
+                current_quote++;
+                dialogue_window.changeQuote(quoteTexts[current_quote], "123");
+                size_t str_len = dl::preprocessString(quoteTexts[current_quote]).length();
+                m_char_anim.init(0, str_len, str_len * cfg::DIALOGUE_FONT_SPEED);
+                m_char_anim.start();
+            }
+
             render(controller->m_renderer.get());
         };
 
@@ -28,7 +40,7 @@ namespace gui {
         void render(graphics::Renderer *renderer) {
             renderer->clear();
             dialogue_window.drawQuote(renderer);
-            m_char_anim.get();
+            renderer->draw(graphics::Text(std::to_string(m_char_anim.get())), 100, 100);
             renderer->display();
         }
 
@@ -36,8 +48,11 @@ namespace gui {
         std::string m_text = "Hello world";
         bool is_key_pressed = false;
         TimedCount m_char_anim;
+        mutable uint32_t current_quote = 0;
         std::vector<std::string> quoteTexts = {
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris."
+                "Hello there",
+                "Quote 21!!!!!!!!!!!!!",
+                "This. Is. Dot. Test.",
         };
     };
 
