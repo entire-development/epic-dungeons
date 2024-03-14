@@ -74,14 +74,14 @@ void drawMap(const std::shared_ptr<graphics::Renderer> &renderer, const std::sha
             w = cell_size * 3;
             base_sprite = m_room_sprites[cell->getType()];
             if (cell->isVisited()) {
-                marker_sprite = m_visited_room_sprite;
+                // marker_sprite = m_visited_room_sprite;
             } else {
-                base_sprite = m_not_visited_room_sprite;
+                // base_sprite = m_not_visited_room_sprite;
             }
         } else {
             base_sprite = m_hall_sprites[cell->getType()];
             if (!cell->isVisited()) {
-                base_sprite = m_not_visited_hall_sprite;
+                // base_sprite = m_not_visited_hall_sprite;
             }
         }
         base_sprite->toSize(w, w);
