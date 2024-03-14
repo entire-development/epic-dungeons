@@ -45,7 +45,7 @@ public:
         r->clear();
         utils::cellView(r, d, animation_progress);
         for (int i = 0; i < 4; i++) {
-            utils::drawEntity(r, std::make_shared<engine::entities::Entity>("demo"), i, 0);
+            utils::drawEntity(r, std::make_shared<engine::entities::Entity>("demo"), i, animation_progress);
         }
 
         if (d->getCurrentCell().lock()->isRoom() || d->getNextCell().lock()->isRoom()) {

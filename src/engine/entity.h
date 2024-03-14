@@ -68,7 +68,7 @@ public:
         m_skills.push_back(std::make_shared<skill>());
     }
 
-    virtual skills::AttackResult takeAttack(std::shared_ptr<Entity> attacker, std::shared_ptr<skills::Attack> attack);
+    // virtual skills::AttackResult takeAttack(std::shared_ptr<Entity> attacker, std::shared_ptr<skills::Attack> attack);
 
     uint8_t getPosition() const {
         return 0;

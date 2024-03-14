@@ -18,10 +18,15 @@ public:
     sf::Sprite toSF() const;
     Vector2d getSize() const;
 
+    static const std::shared_ptr<graphics::Sprite> load(const std::string &path);
+
 private:
     std::string m_path;
     float m_x_scale = 1.0f, m_y_scale = 1.0f, m_angle = 0;
     graphics::Color m_color = "#FFFFFF";
     mutable sf::Texture m_texture;
 };
+
+typedef std::shared_ptr<graphics::Sprite> SpritePtr;
+
 }   // namespace graphics

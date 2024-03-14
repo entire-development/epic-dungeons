@@ -10,32 +10,34 @@ void drawMap(const std::shared_ptr<graphics::Renderer> &renderer, const std::sha
     // load static textures
     const std::string map_path = "map/";
     static bool is_loaded = false;
-    static std::map<dungeon::CellType, std::shared_ptr<graphics::Sprite>> m_hall_sprites;
-    static std::map<dungeon::CellType, std::shared_ptr<graphics::Sprite>> m_room_sprites;
-    static std::shared_ptr<graphics::Sprite> m_visited_room_sprite;
-    static std::shared_ptr<graphics::Sprite> m_not_visited_room_sprite;
-    static std::shared_ptr<graphics::Sprite> m_not_visited_hall_sprite;
-    static std::shared_ptr<graphics::Sprite> m_selected_room_sprite;
-    static std::shared_ptr<graphics::Sprite> m_current_cell_sprite;
+    static std::map<dungeon::CellType, graphics::SpritePtr> m_hall_sprites;
+    static std::map<dungeon::CellType, graphics::SpritePtr> m_room_sprites;
+    static graphics::SpritePtr m_visited_room_sprite;
+    static graphics::SpritePtr m_not_visited_room_sprite;
+    static graphics::SpritePtr m_not_visited_hall_sprite;
+    static graphics::SpritePtr m_selected_room_sprite;
+    static graphics::SpritePtr m_current_cell_sprite;
     if (!is_loaded) {
         printf("Loading map textures\n");
+        // clang-format off
         m_hall_sprites = {
-            {dungeon::CellType::NOTHING, std::make_shared<graphics::Sprite>(map_path + "hall/clear.png")},
-            {dungeon::CellType::FIGHT, std::make_shared<graphics::Sprite>(map_path + "hall/battle.png")},
-            {dungeon::CellType::TREASURE, std::make_shared<graphics::Sprite>(map_path + "hall/curio.png")},
-            {dungeon::CellType::TRAP, std::make_shared<graphics::Sprite>(map_path + "hall/trap.png")},
+            {dungeon::CellType::NOTHING,    graphics::Sprite::load(map_path + "hall/clear.png")},
+            {dungeon::CellType::FIGHT,      graphics::Sprite::load(map_path + "hall/battle.png")},
+            {dungeon::CellType::TREASURE,   graphics::Sprite::load(map_path + "hall/curio.png")},
+            {dungeon::CellType::TRAP,       graphics::Sprite::load(map_path + "hall/trap.png")},
         };
         m_room_sprites = {
-            {dungeon::CellType::NOTHING, std::make_shared<graphics::Sprite>(map_path + "room/empty.png")},
-            {dungeon::CellType::FIGHT, std::make_shared<graphics::Sprite>(map_path + "room/battle.png")},
-            {dungeon::CellType::BOSS, std::make_shared<graphics::Sprite>(map_path + "room/boss.png")},
-            {dungeon::CellType::TREASURE, std::make_shared<graphics::Sprite>(map_path + "room/treasure.png")},
+            {dungeon::CellType::NOTHING,    graphics::Sprite::load(map_path + "room/empty.png")},
+            {dungeon::CellType::FIGHT,      graphics::Sprite::load(map_path + "room/battle.png")},
+            {dungeon::CellType::BOSS,       graphics::Sprite::load(map_path + "room/boss.png")},
+            {dungeon::CellType::TREASURE,   graphics::Sprite::load(map_path + "room/treasure.png")},
         };
-        m_visited_room_sprite = std::make_shared<graphics::Sprite>(map_path + "room/marker_visited.png");
-        m_not_visited_room_sprite = std::make_shared<graphics::Sprite>(map_path + "room/unknown.png");
-        m_not_visited_hall_sprite = std::make_shared<graphics::Sprite>(map_path + "hall/dark.png");
-        m_selected_room_sprite = std::make_shared<graphics::Sprite>(map_path + "room/marker_moving.png");
-        m_current_cell_sprite = std::make_shared<graphics::Sprite>(map_path + "indicator.png");
+        m_visited_room_sprite =             graphics::Sprite::load(map_path + "room/marker_visited.png");
+        m_not_visited_room_sprite =         graphics::Sprite::load(map_path + "room/unknown.png");
+        m_not_visited_hall_sprite =         graphics::Sprite::load(map_path + "hall/dark.png");
+        m_selected_room_sprite =            graphics::Sprite::load(map_path + "room/marker_moving.png");
+        m_current_cell_sprite =             graphics::Sprite::load(map_path + "indicator.png");
+        // clang-format on
         is_loaded = true;
     }
     std::shared_ptr<graphics::Renderer> r = renderer;
@@ -67,8 +69,8 @@ void drawMap(const std::shared_ptr<graphics::Renderer> &renderer, const std::sha
         float x = static_cast<float>(cell->getPosition().first) * cell_size - x_offset;
         float y = static_cast<float>(cell->getPosition().second) * cell_size - y_offset;
         float w = cell_size;
-        std::shared_ptr<graphics::Sprite> base_sprite = nullptr;
-        std::shared_ptr<graphics::Sprite> marker_sprite = nullptr;
+        graphics::SpritePtr base_sprite = nullptr;
+        graphics::SpritePtr marker_sprite = nullptr;
 
         if (cell->isRoom()) {
             w = cell_size * 3;
