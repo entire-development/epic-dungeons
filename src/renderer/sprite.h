@@ -18,7 +18,9 @@ public:
     sf::Sprite toSF() const;
     Vector2d getSize() const;
 
-    static const std::shared_ptr<graphics::Sprite> load(const std::string &path);
+    static const std::shared_ptr<graphics::Sprite> load(const std::string &path) {
+        return std::make_shared<graphics::Sprite>(path);
+    }
 
 private:
     std::string m_path;

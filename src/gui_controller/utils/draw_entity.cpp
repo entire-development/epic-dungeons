@@ -32,9 +32,7 @@ void drawEntity(const std::shared_ptr<graphics::Renderer> &renderer,
                 const std::shared_ptr<engine::entities::Entity> &entity, const uint8_t &position,
                 const float &animation_progress) {
     static std::shared_ptr<graphics::Sprite> sprite = std::make_shared<graphics::Sprite>("heroes/gangster.png");
-    float anim = animation_progress * 4 - (3 - position);
-    anim = anim < 0 ? 0 : (anim > 1 ? 1 : anim);
-    sprite->setRotation(anim * 360);
+    sprite->setRotation(animation_progress * 360);
 
     Vector2d bottom_center = getPosition(position);
     static const float entity_width = cfg::WINDOW_WIDTH / (8);
@@ -43,7 +41,6 @@ void drawEntity(const std::shared_ptr<graphics::Renderer> &renderer,
 
     Vector2d size = {entity_width, entity_height};
     Vector2d top_left = bottom_center - Vector2d {size.x() / 2, size.y()};
-    // top_left = top_left - Vector2d {0, size.y() * static_cast<float>(sin(anim * M_PI) / 2)};
     renderer->draw(*sprite, top_left.x(), top_left.y());
 }
 }   // namespace utils

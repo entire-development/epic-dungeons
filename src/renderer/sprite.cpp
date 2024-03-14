@@ -59,4 +59,5 @@ Sprite &Sprite::toSize(const float &x, const float &y) {
     setScale(x / m_texture.getSize().x, y / m_texture.getSize().y);
     return *this;
 }
+
 }   // namespace graphics
