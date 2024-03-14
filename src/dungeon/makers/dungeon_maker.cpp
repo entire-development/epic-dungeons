@@ -41,6 +41,7 @@ void DungeonMaker::build() {
     }
 
     generate_room_events(dungeon->m_rooms[0]);
+    generate_corridor_events();
     dungeon->m_current_cell = dungeon->m_rooms[0];
 }
 
