@@ -7,6 +7,8 @@
 namespace engine {
 namespace skills {
 struct Skill;
+struct AttackResult;
+struct CombatSkill;
 }   // namespace skills
 
 namespace items {
@@ -15,16 +17,7 @@ struct Armor;
 }   // namespace items
 
 namespace entities {
-struct Stats {
-    int32_t max_health = 20;
-    int32_t defense = 0;
-    int32_t protection = 0;
-    int32_t speed = 0;
-    int32_t min_damage = 0;
-    int32_t max_damage = 0;
-    int32_t critical_chance = 0;
-    int32_t attack = 0;
-};
+class Party;
 
 struct Resistances {
     int32_t stun = 30;   // 30% chance to resist
@@ -38,6 +31,8 @@ struct Resistances {
 };
 
 class Entity : public std::enable_shared_from_this<Entity> {
+    friend class Party;
+
 public:
     Entity(const std::string &name) : m_name(name) {}
 
@@ -55,27 +50,47 @@ public:
         return m_is_alive;
     }
 
-    void setWeapon(std::shared_ptr<items::Weapon> weapon) {
+    void setWeapon(const std::shared_ptr<items::Weapon> &weapon) {
         m_weapon = weapon;
     }
 
-    void setArmor(std::shared_ptr<items::Armor> armor) {
+    const std::shared_ptr<items::Weapon> &getWeapon() const {
+        return m_weapon;
+    }
+
+    void setArmor(const std::shared_ptr<items::Armor> &armor) {
         m_armor = armor;
     }
+
+    const std::shared_ptr<items::Armor> &getArmor() const {
+        return m_armor;
+    }
+
+    void updateHealth(const int32_t &amount);
 
     template<typename skill>
     void addSkill() {
         m_skills.push_back(std::make_shared<skill>());
     }
 
-    // virtual skills::AttackResult takeAttack(std::shared_ptr<Entity> attacker, std::shared_ptr<skills::Attack> attack);
+    virtual const skills::AttackResult takeAttack(const std::shared_ptr<Entity> &attacker,
+                                                  const std::shared_ptr<skills::CombatSkill> &skill);
 
-    uint8_t getPosition() const {
-        return 0;
-    }
+    virtual const int32_t calculateHitChance(const std::shared_ptr<Entity> &target,
+                                             const std::shared_ptr<skills::CombatSkill> &skill) const;
+
+    virtual const int32_t calculateCritChance(const std::shared_ptr<skills::CombatSkill> &skill) const;
+
+    virtual const int32_t calculateDamage(const std::shared_ptr<skills::CombatSkill> &skill) const;
+
+    const uint8_t getPosition() const;
 
     std::string getName() const {
         return m_name;
+    }
+
+    const Resistances &getResistances() const {
+        return m_resistances;
     }
 
 protected:
@@ -87,20 +102,41 @@ protected:
     std::shared_ptr<items::Armor> m_armor = nullptr;
     std::vector<std::shared_ptr<skills::Skill>> m_skills;
     Resistances m_resistances;
+    std::weak_ptr<Party> m_party;
 };
 
-class Party {
+class Party : public std::enable_shared_from_this<Party> {
 public:
     Party() : m_members() {
         m_members.reserve(4);   // 4 is the max party size
     }
 
-    void addMember(std::shared_ptr<Entity> member) {
+    void addMember(const std::shared_ptr<Entity> &member) {
+        if (m_members.size() == 4) {
+            throw std::runtime_error("Party is full");
+            return;
+        }
+        if (member->m_party.lock() != nullptr) {
+            throw std::runtime_error("Entity is already in a party");
+            return;
+        }
+        member->m_party = shared_from_this();
         m_members.push_back(member);
     }
 
-    std::shared_ptr<Entity> getMember(uint8_t index) {
-        return m_members[index];
+    void removeMember(const std::shared_ptr<Entity> &member) {
+        auto it = std::find(m_members.begin(), m_members.end(), member);
+        if (it != m_members.end()) {
+            m_members.erase(it);
+            member->m_party.reset();
+        }
+    }
+
+    std::shared_ptr<Entity> getMember(const uint8_t &index) {
+        if (index < m_members.size()) {
+            return m_members[index];
+        }
+        return nullptr;
     }
 
     std::vector<std::shared_ptr<Entity>> getMembers() {
@@ -111,13 +147,32 @@ public:
         return m_members.size();
     }
 
-    uint8_t getMemberPosition(std::shared_ptr<Entity> member) {
+    uint8_t getMemberPosition(const std::shared_ptr<const Entity> &member) {
         for (uint8_t i = 0; i < m_members.size(); i++) {
             if (m_members[i] == member) {
                 return i;
             }
         }
         return 0;
+    }
+
+    void swapMembers(const uint8_t &index1, const uint8_t &index2) {
+        if (index1 < m_members.size() && index2 < m_members.size()) {
+            std::swap(m_members[index1], m_members[index2]);
+        } else {
+            throw std::runtime_error("Index out of range");
+        }
+    }
+
+    void clear() {
+        for (auto &member : m_members) {
+            member->m_party.reset();
+        }
+        m_members.clear();
+    }
+
+    void memberDied(const std::shared_ptr<Entity> &member) {
+        removeMember(member);
     }
 
 protected:

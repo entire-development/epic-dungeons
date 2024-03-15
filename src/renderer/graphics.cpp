@@ -18,12 +18,14 @@ void Renderer::display() {
     window.display();
 }
 
+/// @deprecated
 void Renderer::drawSprite(int x, int y, const std::string &sprite_id) {
     sf::CircleShape shape(50);
     shape.setFillColor(sf::Color(100, 250, 50));
     window.draw(shape);
 }
 
+/// @deprecated Use draw instead
 void Renderer::drawText(int x, int y, const std::string &line) {
     sf::Font font;
     if (!font.loadFromFile(cfg::FONT_PATH)) {

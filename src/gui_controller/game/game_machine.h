@@ -11,7 +11,7 @@ enum class GUIGameState {
     kCellMovement,
     kMoveTransition,
     kEvent,
-    kFight,
+    kBattle,
     kEmpty,
     kPostEvent,
     kGameOver,

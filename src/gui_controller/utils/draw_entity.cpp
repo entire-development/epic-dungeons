@@ -31,7 +31,7 @@ const Vector2d getPosition(uint8_t position) {
 void drawEntity(const std::shared_ptr<graphics::Renderer> &renderer,
                 const std::shared_ptr<engine::entities::Entity> &entity, const uint8_t &position,
                 const float &animation_progress) {
-    static std::shared_ptr<graphics::Sprite> sprite = std::make_shared<graphics::Sprite>("heroes/gangster.png");
+    static std::shared_ptr<graphics::Sprite> sprite = std::make_shared<graphics::Sprite>("heroes/highwayman.png");
     sprite->setRotation(animation_progress * 360);
 
     Vector2d bottom_center = getPosition(position);

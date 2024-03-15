@@ -1,24 +1,17 @@
 #pragma once
 #include "dungeon/dungeon.h"
 #include "gui_controller/game/game_machine.h"
+#include "gui_controller/utils.h"
 #include "keyboard/keyboard.h"
 #include "static_data/game_config.h"
 #include <memory>
 
 namespace gui {
 namespace game {
-class Fight : public GameState {
+class Battle : public GameState {
     virtual void enter(GameMachine *gm) {
         is_pressed = true;
         std::shared_ptr<graphics::Renderer> r = gm->m_renderer.lock();
-        r->clear();
-        if (gm->m_engine.lock()->getDungeon()->getCurrentCell().lock()->isVisited()) {
-            r->drawText(50, 50, "You already fought here");
-        } else {
-            r->drawText(50, 50, "Fight");
-        }
-        r->drawText(50, 100, "Press Enter to continue");
-        r->display();
     }
 
     virtual void update(GameMachine *gm) {
@@ -29,6 +22,14 @@ class Fight : public GameState {
     }
 
     bool is_pressed;
+
+    void render(GameMachine *gm) {
+        std::shared_ptr<graphics::Renderer> r = gm->m_renderer.lock();
+        std::shared_ptr<dungeon::Cell> cell = gm->m_engine.lock()->getDungeon()->getCurrentCell().lock();
+        std::shared_ptr<dungeon::Dungeon> dungeon = gm->m_engine.lock()->getDungeon();
+        r->clear();
+        utils::cellView(r, dungeon);
+    }
 };
 }   // namespace game
 }   // namespace gui

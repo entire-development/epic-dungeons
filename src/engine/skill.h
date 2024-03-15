@@ -22,7 +22,7 @@ struct Skill {
     const uint8_t level = 0;
     const Type type;
     const TargetType targetType;
-    const const std::vector<uint8_t> launchablePositions;
+    const std::vector<uint8_t> launchablePositions;
     const std::vector<uint8_t> targetablePositions;
 
     bool isUsable(const uint8_t position) const {
@@ -43,6 +43,12 @@ struct CombatSkill : public Skill {
     const float damageMod = 0;
     const float attackMod = 0;
     const float criticalChanceMod = 0;
+};
+
+struct AttackResult {
+    bool isHit = false;
+    bool isCritical = false;
+    int32_t damage = 0;
 };
 
 }   // namespace skills
