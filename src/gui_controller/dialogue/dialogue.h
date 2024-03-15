@@ -5,6 +5,7 @@
 #include "static_data/game_config.h"
 #include "renderer/graphics.h"
 #include "gui_controller/timed_count.h"
+#include "gui_controller/game/game_machine.h"
 
 namespace dl {
 const uint32_t DIALOGUE_WINDOW_WIDTH = cfg::WINDOW_WIDTH;
@@ -19,20 +20,20 @@ const uint32_t CHAR_WIDTH = 18;     // pixels
 std::string preprocessString(const std::string& str);
 
 namespace script {
-    struct ScriptNode {
-        std::function<void(void)> meta_action;
-    };
+    struct ScriptNode { };
 
-    struct QuoteNode : public ScriptNode {
+    struct QuoteNode : ScriptNode {
         std::string content;
         std::string sprite;
         QuoteNode* next;
+        std::function<void(gui::game::GameMachine* gm)> meta_action;
     };
 
-    struct ChoiseNode : public ScriptNode {
+    struct ChoiseNode : ScriptNode {
         std::vector<ScriptNode*> next_pool;
         std::vector<std::string> string_pool;
         uint32_t timer;
+        std::function<void(gui::game::GameMachine* gm)> meta_action;
     };
 }
 
@@ -41,7 +42,7 @@ public:
     DialogueWindow();
     DialogueWindow(const std::string& content, const std::string& sprite);
     void changeQuote(const std::string& new_content, const std::string& new_sprite);
-    void drawQuote(graphics::Renderer* renderer);
+    void drawQuote(std::shared_ptr<graphics::Renderer> renderer);
     void update(uint32_t current_character);
     void forceFinish();
     bool isFinished();
@@ -61,16 +62,17 @@ private:
 class DialogueManager { // to manage dialogue branches, meta-actions etc
 public:
     DialogueManager();
-    explicit DialogueManager(script::QuoteNode entry_point);
-    void setEntryPoint(script::QuoteNode entry_point);
-    void nextQuote();
+    explicit DialogueManager(script::QuoteNode* entry_point);
+    void setEntryPoint(script::QuoteNode* entry_point, gui::game::GameMachine* gm);
+    void nextQuote(gui::game::GameMachine* gm);
     void skip();
-    void update(uint64_t delta_time, graphics::Renderer* renderer);
-    bool isFinished() const;
+    void update(uint64_t delta_time);
+    void draw(std::shared_ptr<graphics::Renderer> renderer);
+    bool isActive() const;
     void handleActionKeyPressed(); // nextQuote() or skip() call depending of text animation status
 private:
     bool m_is_active;
-    script::QuoteNode m_current_quote;
+    script::QuoteNode* m_current_quote;
     DialogueWindow m_dialogue_window;
     gui::TimedCount m_character_anim;
 };

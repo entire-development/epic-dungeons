@@ -17,7 +17,7 @@ GameMachine::GameMachine() {
     addState<Empty>(GUIGameState::kEmpty);
     addState<Event>(GUIGameState::kEvent);
     addState<PostEvent>(GUIGameState::kPostEvent);
-    changeState(GUIGameState::kMain);
+    //changeState(GUIGameState::kMain);
 }
 
 }   // namespace game

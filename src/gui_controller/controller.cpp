@@ -4,7 +4,7 @@
 #include "states/game.h"
 #include "states/main_menu.h"
 #include "states/settings.h"
-#include "states/dialogue_demo.h"
+#include "gui_controller/game/states/dialogue_demo.h"
 
 namespace gui {
 
