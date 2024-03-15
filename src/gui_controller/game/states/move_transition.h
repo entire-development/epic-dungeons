@@ -35,17 +35,25 @@ public:
         if (m_anim.isEnded()) {
             gm->changeState(GUIGameState::kEvent);
         }
-        render(r, d);
+        render(r, gm->m_engine.lock());
     }
 
-    void render(std::shared_ptr<graphics::Renderer> r, std::shared_ptr<dungeon::Dungeon> d) {
+    void render(std::shared_ptr<graphics::Renderer> r, std::shared_ptr<engine::Engine> e) {
+        std::shared_ptr<dungeon::Dungeon> d = e->getDungeon();
         std::shared_ptr<dungeon::Cell> current = d->getCurrentCell().lock();
         std::shared_ptr<dungeon::Cell> next_cell = d->getNextCell().lock();
+        std::shared_ptr<engine::entities::Party> party = e->getParty();
         float animation_progress = m_anim.get();
+
+        int direction = 1;
+        if (next_cell && next_cell != d->getNextOnPath().lock()) {
+            direction = -1;
+        }
+
         r->clear();
         utils::cellView(r, d, animation_progress);
-        for (int i = 0; i < 4; i++) {
-            utils::drawEntity(r, std::make_shared<engine::entities::Entity>("demo"), i, animation_progress);
+        for (size_t i = 0; i < party->getMembersCount(); i++) {
+            utils::drawEntity(r, party->getMember(i), 3 - i, animation_progress * direction);
         }
 
         if (d->getCurrentCell().lock()->isRoom() || d->getNextCell().lock()->isRoom()) {

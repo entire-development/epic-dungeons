@@ -34,7 +34,14 @@ sf::Sprite Sprite::toSF() const {
     sprite.setTexture(m_texture);
     sprite.setColor(m_color.toSF());
     sprite.setRotation(m_angle);
-    sprite.setScale(m_x_scale, m_y_scale);
+    float x_scale = m_flipped_x ? -m_x_scale : m_x_scale;
+    float y_scale = m_flipped_y ? -m_y_scale : m_y_scale;
+    float origin_x = 0;
+    float origin_y = 0;
+    if (m_flipped_x)
+        origin_x = m_texture.getSize().x;
+    sprite.setOrigin(origin_x, origin_y);
+    sprite.setScale(x_scale, y_scale);
     return sprite;
 }
 
@@ -52,6 +59,22 @@ Sprite &Sprite::toSizeX(const float &x) {
 
 Sprite &Sprite::toSizeY(const float &y) {
     setScale(y / m_texture.getSize().y);
+    return *this;
+}
+
+Sprite &Sprite::flipX() {
+    m_flipped_x = !m_flipped_x;
+    return *this;
+}
+
+Sprite &Sprite::flipY() {
+    m_flipped_y = !m_flipped_y;
+    return *this;
+}
+
+Sprite &Sprite::setFlip(bool flipX, bool flipY) {
+    m_flipped_x = flipX;
+    m_flipped_y = flipY;
     return *this;
 }
 

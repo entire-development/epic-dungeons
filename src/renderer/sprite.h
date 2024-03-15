@@ -15,6 +15,9 @@ public:
     Sprite &toSizeY(const float &y);
     Sprite &toSizeX(const float &x);
     Sprite &toSize(const float &x, const float &y);
+    Sprite &flipX();
+    Sprite &flipY();
+    Sprite &setFlip(bool flipX, bool flipY);
     sf::Sprite toSF() const;
     Vector2d getSize() const;
 
@@ -24,6 +27,7 @@ public:
 
 private:
     std::string m_path;
+    bool m_flipped_x = false, m_flipped_y = false;
     float m_x_scale = 1.0f, m_y_scale = 1.0f, m_angle = 0;
     graphics::Color m_color = "#FFFFFF";
     mutable sf::Texture m_texture;

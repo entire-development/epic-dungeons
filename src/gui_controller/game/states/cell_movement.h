@@ -50,6 +50,10 @@ public:
             return;
         }
 
+        if (m_keyboard_manager.isClicked(keyboard::KEY_F)) {
+            gm->changeState(GUIGameState::kBattle);
+            return;
+        }
         m_keyboard_manager.update();
         bool clicked_up =
             m_keyboard_manager.isClicked(keyboard::KEY_UP) || m_keyboard_manager.isClicked(keyboard::KEY_W);
@@ -101,10 +105,11 @@ public:
         std::shared_ptr<dungeon::Dungeon> d = e->getDungeon();
         std::shared_ptr<dungeon::Cell> current = d->getCurrentCell().lock();
         std::shared_ptr<dungeon::Cell> next_cell = d->getNextCell().lock();
+        std::shared_ptr<engine::entities::Party> party = e->getParty();
         r->clear();
         utils::cellView(r, d);
-        for (int i = 0; i < 8; i++) {
-            utils::drawEntity(r, std::make_shared<engine::entities::Entity>("demo"), i, 0);
+        for (size_t i = 0; i < party->getMembersCount(); i++) {
+            utils::drawEntity(r, party->getMember(i), 3 - i, 0);
         }
         uint8_t alpha = std::round(m_prev_anim.get());
         r->drawRec({0, 0, cfg::WINDOW_WIDTH, cfg::WINDOW_HEIGHT, {0, 0, 0, alpha}});

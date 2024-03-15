@@ -1,4 +1,5 @@
 #include "text.h"
+#include "vector2d/vector2d.h"
 
 namespace graphics {
 
@@ -47,6 +48,12 @@ Text &Text::setScale(float factorX, float factorY) {
 std::string Text::getFont(const std::string &name) const {
     std::string font = cfg::FONTS_PATH + name + ".ttf";
     return font;
+}
+
+Vector2d Text::getSize() const {
+    sf::Text text = toSF();
+    sf::FloatRect rect = text.getLocalBounds();
+    return Vector2d(rect.width, rect.height);
 }
 
 sf::Text Text::toSF() const {
