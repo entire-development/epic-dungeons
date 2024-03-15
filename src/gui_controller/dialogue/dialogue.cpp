@@ -11,6 +11,8 @@ using namespace dl;
 namespace METADATA {
     std::string SHORTPAUSE = "$p$p$p$p$p$p$p$p$p$p$p";
     std::string LONGPAUSE = "$p$p$p$p$p$p$p$p$p$p$p$p$p$p$p$p$p$p";
+    const int COLOR_TAG_LENGTH = 7;
+    const int CHAR_SIZE_TAG_LENGTH = 6;
 };
 
 std::string dl::preprocessString(const std::string& str) {
@@ -154,24 +156,24 @@ void DialogueWindow::drawQuote(graphics::Renderer* renderer) {
                 display = false;
             } 
             else if (line[j] == '[' && line[j+1] == '/') {
-                if (line.substr(j, 7) == "[/color") {
+                if (line.substr(j, METADATA::COLOR_TAG_LENGTH) == "[/color") {
                     m_text_color = "#ffffff";
-                    j+=7;
-                } if (line.substr(j, 6) == "[/size") {
+                    j += METADATA::COLOR_TAG_LENGTH;
+                } if (line.substr(j, METADATA::CHAR_SIZE_TAG_LENGTH) == "[/size") {
                     m_font_size = 24;
-                    j+=6;
+                    j += METADATA::CHAR_SIZE_TAG_LENGTH;
                 }
                 continue;
             }
             else if (line[j] == '[') { // handle metadata
-                if (line.substr(j, 7) == "[color=") {
-                    j+=7;
-                    m_text_color = line.substr(j, 7);
-                    j+=8;
-                } if (line.substr(j, 6) == "[size=") {
-                    j+=6;
+                if (line.substr(j, METADATA::COLOR_TAG_LENGTH) == "[color=") {
+                    j += METADATA::COLOR_TAG_LENGTH;
+                    m_text_color = line.substr(j, METADATA::COLOR_TAG_LENGTH);
+                    j += METADATA::COLOR_TAG_LENGTH + 1;
+                } if (line.substr(j, METADATA::CHAR_SIZE_TAG_LENGTH) == "[size=") {
+                    j += METADATA::CHAR_SIZE_TAG_LENGTH;
                     m_font_size = std::stoi(line.substr(j, line.find(']') - j));
-                    j+=std::to_string(m_font_size).length() + 1;
+                    j += std::to_string(m_font_size).length() + 1;
                 }
                 // handle actions
                 // TODO handle actions
