@@ -8,7 +8,6 @@ file(GLOB_RECURSE SOURCES src/*.cpp)
 add_executable(EpicDungeons main.cpp ${SOURCES})
 target_include_directories(EpicDungeons PRIVATE src)
 
-
 # add spdlog
 find_package(spdlog 1.8.1 REQUIRED)
 target_link_libraries(EpicDungeons PRIVATE spdlog::spdlog)

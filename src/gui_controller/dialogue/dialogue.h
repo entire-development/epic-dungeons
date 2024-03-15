@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <memory>
 #include "static_data/game_config.h"
 #include "renderer/graphics.h"
 #include "gui_controller/timed_count.h"
@@ -63,14 +64,14 @@ private:
 
 class DialogueManager { // to manage dialogue branches, meta-actions etc
 public:
-    DialogueManager(script::QuoteNode entry_point);
+    DialogueManager();
+    explicit DialogueManager(script::QuoteNode entry_point);
     void setEntryPoint(script::QuoteNode entry_point);
     void nextQuote();
     void skip();
-    void update(uint64_t delta_time);
+    void update(uint64_t delta_time, graphics::Renderer* renderer);
     bool isFinished() const;
     void handleActionKeyPressed(); // nextQuote() or skip() call depending of text animation status
-
 private:
     bool m_is_active;
     script::QuoteNode m_current_quote;
