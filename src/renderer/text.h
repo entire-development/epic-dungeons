@@ -18,6 +18,7 @@ public:
     Text &setRotation(float angle);
     Text &setLetterSpacing(float spacingFactor);
     Text &setScale(float factorX, float factorY);
+    Text &setFontSize(int size);
     std::string getFont(const std::string &name) const;
     sf::Text toSF() const;
 

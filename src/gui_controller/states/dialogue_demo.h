@@ -3,20 +3,21 @@
 #include "keyboard/keyboard.h"
 #include "gui_controller/dialogue/dialogue.h"
 #include "gui_controller/timed_count.h"
+#include <cmath>
 
-dl::script::BranchNode quote_3 = {
+dl::script::QuoteNode quote_3 = {
         .content = "Quote 3!",
         .sprite = "123",
         .next = nullptr
 };
 
-dl::script::BranchNode quote_2 = {
+dl::script::QuoteNode quote_2 = {
         .content = "Quote 2!",
         .sprite = "123",
         .next = &quote_3
 };
 
-dl::script::BranchNode quote_1 = {
+dl::script::QuoteNode quote_1 = {
         .content = "Quote 1!",
         .sprite = "123",
         .next = &quote_2
@@ -68,8 +69,8 @@ namespace gui {
         TimedCount m_char_anim;
         mutable uint32_t current_quote = 0;
         std::vector<std::string> quoteTexts = {
-                "Hello there",
-                "Quote 21!!!!!!!!!!!!!",
+                "[color=#fa8072][size=18]HIHIHIH[/size][/color]. HHUHUHU Hahahahah",
+                "Zdarova [color=#ff0000]chelik, kak tvoi dela???[/color]",
                 "This. Is. Dot. Test.",
         };
     };

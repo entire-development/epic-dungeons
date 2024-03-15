@@ -6,6 +6,7 @@
 #include "gui_controller/timed_count.h"
 #include <functional>
 #include <numeric>
+#include <memory>
 
 namespace dl {
 const uint32_t DIALOGUE_WINDOW_WIDTH = cfg::WINDOW_WIDTH;
@@ -49,6 +50,7 @@ public:
 private:
     std::vector<std::string> m_content;
     std::string m_sprite;
+    graphics::Color m_text_color = "#ffffff";
     uint32_t m_current_index;
     uint32_t m_content_len;
     uint32_t m_current_line;
