@@ -7,6 +7,14 @@
 #include <chrono>
 
 int main() {
+    graphics::Rectangle fps_rect;
+    fps_rect.x = 0;
+    fps_rect.y = 0;
+    fps_rect.w = 100;
+    fps_rect.h = 30;
+    fps_rect.color = graphics::Color("#000000");
+    bool fps_enabled = false;
+
     auto window = sf::RenderWindow {{cfg::WINDOW_WIDTH, cfg::WINDOW_HEIGHT},
                                     cfg::WINDOW_NAME,
                                     sf::Style::Titlebar | sf::Style::Close};
@@ -32,6 +40,7 @@ int main() {
             std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())
                 .count();
         uint64_t delta_time = current_time - last_time;
+        float fps = 1000.0f/delta_time;
         last_time = current_time;
 
         controller.setDeltaTime(delta_time);
@@ -47,8 +56,12 @@ int main() {
                 keyboard::setKeyState(event.key.code, false);
             }
         }
-
         controller.update();
+        if (fps_enabled) {
+            renderer->drawRec(fps_rect);
+            renderer->draw(graphics::Text(std::to_string(fps), "arial", 20), 0, 0);
+            renderer->display();
+        }
     }
     return 0;
 }
