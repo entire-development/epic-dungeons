@@ -9,8 +9,8 @@
 using namespace dl;
 
 namespace METADATA {
-    std::string SHORTPAUSE = "$p$p$p$p$p$p$p$p$p$p$p";
-    std::string LONGPAUSE = "$p$p$p$p$p$p$p$p$p$p$p$p$p$p$p$p$p$p";
+    std::string SHORTPAUSE = "$p$p$p$p$p$p$p$p";
+    std::string LONGPAUSE = "$p$p$p$p$p$p$p$p$p$p$p$p$p$p$p";
 };
 
 std::string dl::preprocessString(const std::string& str) {
@@ -33,9 +33,9 @@ std::string dl::preprocessString(const std::string& str) {
 
 std::vector<std::string> preprocessVector(const std::vector<std::string>& vec) {
     std::vector<std::string> result;
-    for (std::string item : vec) {
-        result.push_back(preprocessString(item));
-    }
+    std::transform(vec.begin(), vec.end(), std::back_inserter(result), [](std::string item) {
+        return preprocessString(item);
+    });
     return result;
 }
 
@@ -122,6 +122,10 @@ void DialogueWindow::changeQuote(const std::string& new_content, const std::stri
 void DialogueWindow::forceFinish() {
     m_current_index = m_content_len;
     m_is_finished = true;
+}
+
+inline bool DialogueWindow::isFinished() {
+    return m_is_finished;
 }
 
 void DialogueWindow::drawQuote(graphics::Renderer* renderer) {
@@ -233,14 +237,23 @@ void DialogueManager::handleActionKeyPressed() {
     }
 }
 
-void DialogueManager::update(uint64_t delta_time) {
+void DialogueManager::update(uint64_t delta_time, graphics::Renderer* renderer) {
     m_character_anim.update(delta_time);
     m_dialogue_window.update(std::round(m_character_anim.get()));
-    if (m_is_active) m_is_active = false;
+    if (m_dialogue_window.isFinished()) m_is_active = false;
+
+    if (m_is_active) m_dialogue_window.drawQuote(renderer);
 }
 
-void DialogueManager::setEntryPoint(script::QuoteNode entry_point) {}
+void DialogueManager::setEntryPoint(script::QuoteNode entry_point) {
+    m_current_quote = entry_point;
+    m_dialogue_window.changeQuote(entry_point.content, entry_point.sprite);
+    size_t str_len = dl::preprocessString(entry_point.content).length();
+    m_character_anim.init(0, str_len, str_len * cfg::DIALOGUE_FONT_SPEED);
+    m_character_anim.start();
+}
 
 inline bool DialogueManager::isFinished() const {
-    return m_is_active;
+    return !m_is_active;
 }
+
