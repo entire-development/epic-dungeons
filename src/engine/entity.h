@@ -73,6 +73,10 @@ public:
         m_skills.push_back(std::make_shared<skill>());
     }
 
+    const std::vector<std::shared_ptr<skills::Skill>> &getSkills() {
+        return m_skills;
+    }
+
     virtual const skills::AttackResult takeAttack(const std::shared_ptr<Entity> &attacker,
                                                   const std::shared_ptr<skills::CombatSkill> &skill);
 

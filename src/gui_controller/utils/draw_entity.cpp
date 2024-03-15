@@ -1,3 +1,4 @@
+#include "engine/skill.h"
 #include "gui_controller/utils.h"
 #include "renderer/text.h"
 #include "static_data/game_config.h"

@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include <vector>
 
 namespace engine {
@@ -18,10 +19,10 @@ enum class TargetType {
 };
 
 struct Skill {
-    const std::string id;
+    const std::string name;
     const uint8_t level = 0;
-    const Type type;
-    const TargetType targetType;
+    const Type type = Type::kMelee;
+    const TargetType targetType = TargetType::kIndividual;
     const std::vector<uint8_t> launchablePositions;
     const std::vector<uint8_t> targetablePositions;
 
@@ -35,8 +36,11 @@ struct Skill {
 };
 
 struct Move : public Skill {
-    const std::string id = "move";
-    const uint8_t distance = 0;
+    const std::string name = "Move";
+    const Type type = Type::kMove;
+    const TargetType targetType = TargetType::kIndividual;
+
+    uint8_t distance = 0;
 };
 
 struct CombatSkill : public Skill {
