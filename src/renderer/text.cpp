@@ -44,6 +44,11 @@ Text &Text::setScale(float factorX, float factorY) {
     return *this;
 }
 
+Text &Text::setFontSize(int size) {
+    character_size = size;
+    return *this;
+}
+
 std::string Text::getFont(const std::string &name) const {
     std::string font = cfg::FONTS_PATH + name + ".ttf";
     return font;

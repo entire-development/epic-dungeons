@@ -3,6 +3,7 @@
 #include "keyboard/keyboard.h"
 #include "gui_controller/dialogue/dialogue.h"
 #include "gui_controller/timed_count.h"
+#include <cmath>
 
 dl::script::QuoteNode quote_3 = {
         .content = "Quote 3!",
@@ -70,6 +71,8 @@ namespace gui {
         TimedCount m_char_anim;
         mutable uint32_t current_quote = 0;
         std::vector<std::string> quoteTexts = {
+                "[color=#fa8072][size=18]HIHIHIH[/size][/color]. HHUHUHU Hahahahah",
+                "Zdarova [color=#ff0000]chelik, kak tvoi dela???[/color]",
                 "Hello there. Sample text here, some amazing content. IDK what to write here.",
                 "Quote 21!!!!!!!!!!!!!",
                 "This. Is. Dot. Test.",

@@ -4,6 +4,7 @@
 #include "gui_controller/timed_count.h"
 #include <iostream>
 #include <string>
+#include <cmath>
 
 using namespace dl;
 
@@ -145,38 +146,46 @@ void DialogueWindow::drawQuote(graphics::Renderer* renderer) {
     uint32_t current_len = 0;
     uint32_t char_pos = 0;
     bool display = true;
+
     for (int i = 0; i < m_content.size(); i++) {
         std::string line = m_content[i];
         char_pos = 0;
+
         for (int j = 0; j < line.length(); j++) { // I will explain this later
             // parse metadata
             display = true;
             if (line[j] == '$' || line[j - 1] == '$') {
                 display = false;
+            } 
+            else if (line[j] == '[' && line[j+1] == '/') {
+                if (line.substr(j, 7) == "[/color") {
+                    m_text_color = "#ffffff";
+                    j+=7;
+                } if (line.substr(j, 6) == "[/size") {
+                    m_font_size = 24;
+                    j+=6;
+                }
+                continue;
             }
             else if (line[j] == '[') { // handle metadata
-                std::string property = "";
-                std::string value = "";
-                bool is_property = true;
-                int temp_index;
-                for (temp_index = j; line[temp_index] != ']'; temp_index++){
-                    if (line[temp_index] == ' ') continue;
-                    if (line[temp_index == '=']) {
-                        is_property = false;
-                        continue;
-                    }
-                    if (is_property) property.push_back(line[temp_index]);
-                    else value.push_back(line[temp_index]);
+                if (line.substr(j, 7) == "[color=") {
+                    j+=7;
+                    m_text_color = line.substr(j, 7);
+                    j+=8;
+                } if (line.substr(j, 6) == "[size=") {
+                    j+=6;
+                    m_font_size = std::stoi(line.substr(j, line.find(']') - j));
+                    j+=std::to_string(m_font_size).length() + 1;
                 }
                 // handle actions
                 // TODO handle actions
-            }
+            } 
             else {
                 char_pos++;
             }
 
             // draw character
-            if (display && current_len < m_current_index) renderer->draw(graphics::Text(std::string(&line[j], &line[j + 1])),
+            if (display && current_len < m_current_index) renderer->draw(graphics::Text(std::string(&line[j], &line[j + 1])).setColor(m_text_color).setFontSize(m_font_size),
                                WINDOW_MARGIN + PORTRAIT_SIZE + WINDOW_PADDING + char_pos * CHAR_WIDTH,
                                10 + cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN + WINDOW_PADDING + LINE_HEIGHT * i);
             if (current_len < m_current_index) current_len++;
