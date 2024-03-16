@@ -41,13 +41,13 @@ public:
                 attacker_selection(gm);
                 break;
             case BattleState::kSkillSelection:
-                skill_selection(gm);
+                // skill_selection(gm);
                 break;
             case BattleState::kDefenderSelection:
-                defender_selection(gm);
+                // defender_selection(gm);
                 break;
             case BattleState::kAttack:
-                attack(gm);
+                // attack(gm);
                 break;
         }
     }
