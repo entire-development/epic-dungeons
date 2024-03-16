@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Window/Keyboard.hpp>
+//#include "gui_controller/keyboard_manager/keyboard_manager.h"
 #include <string>
 #include <vector>
 
@@ -66,6 +67,7 @@ public:
 
     void setKeyState(const Key &key, bool state);
     const bool isPressed(const Key &key) const;
+    const bool isClicked(const Key &key) const;
 
     // Prevent copying and assignment
     KeyboardController(const KeyboardController &) = delete;
