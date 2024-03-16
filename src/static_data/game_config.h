@@ -4,6 +4,7 @@
 
 namespace cfg {
 const int FRAMERATE = 30;
+inline bool FPS_COUNTER = false;
 const unsigned WINDOW_WIDTH = 1280;
 const unsigned WINDOW_HEIGHT = 800;
 const unsigned CELL_SIZE = 20;

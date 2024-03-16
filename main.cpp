@@ -13,7 +13,6 @@ int main() {
     fps_rect.w = 100;
     fps_rect.h = 30;
     fps_rect.color = graphics::Color("#000000");
-    bool fps_enabled = false;
 
     auto window = sf::RenderWindow {{cfg::WINDOW_WIDTH, cfg::WINDOW_HEIGHT},
                                     cfg::WINDOW_NAME,
@@ -57,7 +56,7 @@ int main() {
             }
         }
         controller.update();
-        if (fps_enabled) {
+        if (cfg::FPS_COUNTER) {
             renderer->drawRec(fps_rect);
             renderer->draw(graphics::Text(std::to_string(fps), "arial", 20), 0, 0);
             renderer->display();

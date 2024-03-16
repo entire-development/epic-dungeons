@@ -40,12 +40,14 @@ public:
         renderer->drawText(100, 400, "Action: " + keyboard::keyToString(cfg::CONTROLS_ACTION));
         renderer->drawText(100, 430, "Close: " + keyboard::keyToString(cfg::CONTROLS_CLOSE));
         renderer->drawText(100, 460, "Secondary: " + keyboard::keyToString(cfg::CONTROLS_SECONDARY));
+        renderer->drawText(100, 490, std::string("FPS Counter: ") + (cfg::FPS_COUNTER ? "ON" : "OFF"));
 
         // Back
-        renderer->drawText(100, 500, "Press ESC to go back");
-        renderer->drawText(100, 530, "Press F to pay respects");
+        renderer->drawText(100, 530, "Press ESC to go back");
+        renderer->drawText(100, 560, "Press F to pay respects and on/off fps counter");
         if (keyboard::isPressed(keyboard::KEY_F)) {
             renderer->drawText(80, 530, "F");
+            cfg::FPS_COUNTER ^= true;
         }
         renderer->display();
     }
