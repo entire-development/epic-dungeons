@@ -38,7 +38,7 @@ public:
         m_keyboard.update();
         switch (m_state) {
             case BattleState::kAttackerSelection:
-                attacker_selection(gm);
+                // attacker_selection(gm);
                 break;
             case BattleState::kSkillSelection:
                 // skill_selection(gm);
@@ -52,15 +52,15 @@ public:
         }
     }
 
-    void attacker_selection(GameMachine *gm) {
-        std::shared_ptr<engine::entities::Party> party = gm->m_engine.lock()->getParty();
-        if (m_keyboard.isClicked(keyboard::Key::KEY_A)) {
-            m_selected = (m_selected + 1) % party->getMembersCount();
-            render(gm);
-        }
-        if (m_keyboard.isClicked(keyboard::Key::KEY_D)) {
-            m_selected = (m_selected - 1 + party->getMembersCount()) % party->getMembersCount();
-            render(gm);
+    void attack(GameMachine *gm) {
+        auto attacker = m_attacker.lock();
+        auto skill = m_skill.lock();
+        if (attacker && skill) {
+            for (auto &defender : m_defenders) {
+                if (defender.lock()) {
+                    defender.lock()->takeAttack(attacker, skill);
+                }
+            }
         }
     }
 
@@ -82,6 +82,11 @@ private:
     std::shared_ptr<engine::entities::Party> m_enemy_party;
     KeyboardManager m_keyboard;
     uint8_t m_selected = 0;
+
+    std::weak_ptr<engine::entities::Entity> m_attacker;
+    std::vector<std::weak_ptr<engine::entities::Entity>> m_defenders;
+    std::weak_ptr<engine::skills::CombatSkill> m_skill;
+
     BattleState m_state = BattleState::kAttackerSelection;
 };
 
