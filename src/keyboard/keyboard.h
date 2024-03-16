@@ -67,7 +67,6 @@ public:
 
     void setKeyState(const Key &key, bool state);
     const bool isPressed(const Key &key) const;
-    const bool isClicked(const Key &key) const;
 
     // Prevent copying and assignment
     KeyboardController(const KeyboardController &) = delete;
