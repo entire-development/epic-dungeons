@@ -6,6 +6,7 @@ namespace engine {
 namespace items {
 
 struct HighwaymanArmor : public Armor {
+    const std::string id = "highwayman_armor";
     const std::string name = "Highwayman Armor";
     const int32_t defenseMod = 5;
     const int32_t protectionMod = 5;

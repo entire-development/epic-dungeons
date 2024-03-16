@@ -19,6 +19,7 @@ enum class TargetType {
 };
 
 struct Skill {
+    const std::string id;
     const std::string name;
     const uint8_t level = 0;
     const Type type = Type::kMelee;
@@ -36,6 +37,7 @@ struct Skill {
 };
 
 struct Move : public Skill {
+    const std::string id = "move";
     const std::string name = "Move";
     const Type type = Type::kMove;
     const TargetType targetType = TargetType::kIndividual;

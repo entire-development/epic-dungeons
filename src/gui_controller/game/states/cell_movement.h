@@ -109,7 +109,7 @@ public:
         r->clear();
         utils::cellView(r, d);
         for (size_t i = 0; i < party->getMembersCount(); i++) {
-            utils::drawEntity(r, party->getMember(i), 3 - i, 0);
+            utils::drawEntity(r, party->getMember(i), 3 - i);
         }
         uint8_t alpha = std::round(m_prev_anim.get());
         r->drawRec({0, 0, cfg::WINDOW_WIDTH, cfg::WINDOW_HEIGHT, {0, 0, 0, alpha}});

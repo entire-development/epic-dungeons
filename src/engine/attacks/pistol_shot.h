@@ -4,6 +4,7 @@
 namespace engine {
 namespace skills {
 struct PistolShot : public CombatSkill {
+    const std::string id = "pistol_shot";
     const std::string name = "Pistol Shot";
     const uint8_t level = 0;
     const Type type = Type::kRanged;

@@ -4,6 +4,7 @@
 namespace engine {
 namespace skills {
 struct WickedSlice : public CombatSkill {
+    const std::string id = "wicked_slice";
     const std::string name = "Wicked Slice";
     const uint8_t level = 0;
     const Type type = Type::kMelee;

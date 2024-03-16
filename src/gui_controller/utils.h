@@ -16,7 +16,7 @@ void cellView(const std::shared_ptr<graphics::Renderer> &renderer, const std::sh
 
 void drawEntity(const std::shared_ptr<graphics::Renderer> &renderer,
                 const std::shared_ptr<engine::entities::Entity> &entity, const uint8_t &position,
-                const float &animation_progress = 0.0f);
+                bool is_selected = false, const float &animation_progress = 0.0f);
 
 void drawGUI(const std::shared_ptr<graphics::Renderer> &renderer, const std::shared_ptr<engine::Engine> &engine);
 

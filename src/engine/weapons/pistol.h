@@ -6,6 +6,7 @@ namespace engine {
 namespace items {
 
 struct Pistol : public Weapon {
+    const std::string id = "pistol";
     const std::string name = "Pistol";
     const int32_t attackMod = 0;
     const int32_t minDamage = 5;

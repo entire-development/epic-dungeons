@@ -53,7 +53,7 @@ public:
         r->clear();
         utils::cellView(r, d, animation_progress);
         for (size_t i = 0; i < party->getMembersCount(); i++) {
-            utils::drawEntity(r, party->getMember(i), 3 - i, animation_progress * direction);
+            utils::drawEntity(r, party->getMember(i), 3 - i, false, animation_progress * direction);
         }
 
         if (d->getCurrentCell().lock()->isRoom() || d->getNextCell().lock()->isRoom()) {

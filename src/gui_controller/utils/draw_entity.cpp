@@ -49,7 +49,7 @@ void drawHealthBar(const std::shared_ptr<graphics::Renderer> &renderer, Vector2d
 }
 
 void drawEntity(const std::shared_ptr<graphics::Renderer> &renderer,
-                const std::shared_ptr<engine::entities::Entity> &entity, const uint8_t &position,
+                const std::shared_ptr<engine::entities::Entity> &entity, const uint8_t &position, bool is_selected,
                 const float &animation_progress) {
     static std::shared_ptr<graphics::Sprite> sprite = std::make_shared<graphics::Sprite>("heroes/highwayman.png");
     if (position <= 3)
@@ -83,6 +83,11 @@ void drawEntity(const std::shared_ptr<graphics::Renderer> &renderer,
 
     renderer->draw(name, bottom_left.x() + name_offset, bottom_left.y());
     renderer->draw(health, bottom_left.x() + health_offset, bottom_left.y() + 20);
+    if (is_selected) {
+        Vector2d bottom_center = getPosition(position);
+        renderer->draw(graphics::Text("/\\", "arial", 20).setStyle(sf::Text::Bold), bottom_center.x(),
+                       bottom_center.y() + 40);
+    }
     // renderer->drawRec({top_left.x(), top_left.y(), size.x(), size.y(), {0, 0, 0, 0}, -2, {255, 255, 255, 255}});
 }
 }   // namespace utils

@@ -6,6 +6,7 @@ namespace entities {}   // namespace entities
 
 namespace items {
 struct Weapon {
+    const std::string id;
     const std::string name;
     const int32_t attackMod = 0;
     const int32_t minDamage = 0;
@@ -15,6 +16,7 @@ struct Weapon {
 };
 
 struct Armor {
+    const std::string id;
     const std::string name;
     const int32_t defenseMod = 0;
     const int32_t protectionMod = 0;
