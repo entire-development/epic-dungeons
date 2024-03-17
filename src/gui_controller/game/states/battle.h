@@ -34,20 +34,63 @@ public:
         render(gm);
     }
 
+    void attacker_selection(GameMachine *gm) {
+        if (m_keyboard.isPressed(keyboard::KEY_ENTER)) {
+            m_attacker = gm->m_engine.lock()->getParty()->getMember(m_selected);
+            m_skills = gm->m_engine.lock()->getParty()->getMember(m_selected)->getSkills();
+            m_state = BattleState::kSkillSelection;
+        }
+        if (m_keyboard.isPressed(keyboard::KEY_RIGHT)) {
+            m_selected = (m_selected + 1) % gm->m_engine.lock()->getParty()->getMembersCount();
+        }
+        if (m_keyboard.isPressed(keyboard::KEY_LEFT)) {
+            m_selected = (m_selected - 1 + gm->m_engine.lock()->getParty()->getMembersCount()) % gm->m_engine.lock()->getParty()->getMembersCount();
+        }
+        render(gm);
+    }
+
+    void skill_selection(GameMachine *gm) {
+        if (m_keyboard.isPressed(keyboard::KEY_ENTER)) {
+            m_skill = std::dynamic_pointer_cast<engine::skills::CombatSkill>(m_skills[m_selected_skill]);
+            m_state = BattleState::kDefenderSelection;
+        }
+        if (m_keyboard.isPressed(keyboard::KEY_UP)) {
+            m_selected_skill = (m_selected_skill + 1) % m_skills.size();
+        }
+        if (m_keyboard.isPressed(keyboard::KEY_DOWN)) {
+            m_selected_skill = (m_selected_skill - 1 + m_skills.size()) % m_skills.size();
+        }
+        render(gm);
+    }
+
+    void defender_selection(GameMachine *gm) {
+        if (m_keyboard.isPressed(keyboard::KEY_ENTER)) {
+            m_defenders.push_back(m_enemy_party->getMember(m_selected_defender));
+            m_state = BattleState::kAttack;
+        }
+        if (m_keyboard.isPressed(keyboard::KEY_UP)) {
+            m_selected_defender = (m_selected_defender + 1) % m_enemy_party->getMembersCount();
+        }
+        if (m_keyboard.isPressed(keyboard::KEY_DOWN)) {
+            m_selected_defender = (m_selected_defender - 1 + m_enemy_party->getMembersCount()) % m_enemy_party->getMembersCount();
+        }
+        render(gm);
+    }
+
     virtual void update(GameMachine *gm) {
         m_keyboard.update();
         switch (m_state) {
             case BattleState::kAttackerSelection:
-                // attacker_selection(gm);
+                attacker_selection(gm);
                 break;
             case BattleState::kSkillSelection:
-                // skill_selection(gm);
+                skill_selection(gm);
                 break;
             case BattleState::kDefenderSelection:
-                // defender_selection(gm);
+                defender_selection(gm);
                 break;
             case BattleState::kAttack:
-                // attack(gm);
+                attack(gm);
                 break;
         }
     }
@@ -75,6 +118,11 @@ public:
             utils::drawEntity(r, party->getMember(i), 3 - i, m_selected == i);
         for (size_t i = 0; i < m_enemy_party->getMembersCount(); i++)
             utils::drawEntity(r, m_enemy_party->getMember(i), 4 + i);
+        if (m_state == BattleState::kSkillSelection) {
+            for (size_t i = 0; i < m_skills.size(); i++) {
+                // add rendering of skills
+            }
+        }
         r->display();
     }
 
@@ -82,10 +130,14 @@ private:
     std::shared_ptr<engine::entities::Party> m_enemy_party;
     KeyboardManager m_keyboard;
     uint8_t m_selected = 0;
+    uint8_t m_selected_skill = 0;
+    u_int8_t m_selected_defender = 0;
 
     std::weak_ptr<engine::entities::Entity> m_attacker;
     std::vector<std::weak_ptr<engine::entities::Entity>> m_defenders;
     std::weak_ptr<engine::skills::CombatSkill> m_skill;
+
+    std::vector<std::shared_ptr<engine::skills::Skill>> m_skills;
 
     BattleState m_state = BattleState::kAttackerSelection;
 };

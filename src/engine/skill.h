@@ -19,6 +19,8 @@ enum class TargetType {
 };
 
 struct Skill {
+    virtual ~Skill() = default;
+
     const std::string id;
     const std::string name;
     const uint8_t level = 0;
