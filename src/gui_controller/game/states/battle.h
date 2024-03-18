@@ -29,49 +29,55 @@ public:
     virtual void enter(GameMachine *gm) {
         m_keyboard.reset();
         std::shared_ptr<graphics::Renderer> r = gm->m_renderer.lock();
+        m_skills.resize(gm->m_engine.lock()->getParty()->getMembersCount());
+        for (int i = 0; i < gm->m_engine.lock()->getParty()->getMembersCount(); i++) {
+            auto member = gm->m_engine.lock()->getParty()->getMember(i);
+            for (auto &skill : member->getSkills()) {
+                m_skills[i].push_back(skill);
+            }
+        }
         m_selected = 0;
         m_state = BattleState::kAttackerSelection;
         render(gm);
     }
 
     void attacker_selection(GameMachine *gm) {
-        if (m_keyboard.isPressed(keyboard::KEY_ENTER)) {
+        if (m_keyboard.isClicked(keyboard::KEY_ENTER)) {
             m_attacker = gm->m_engine.lock()->getParty()->getMember(m_selected);
-            m_skills = gm->m_engine.lock()->getParty()->getMember(m_selected)->getSkills();
             m_state = BattleState::kSkillSelection;
         }
-        if (m_keyboard.isPressed(keyboard::KEY_RIGHT)) {
-            m_selected = (m_selected + 1) % gm->m_engine.lock()->getParty()->getMembersCount();
-        }
-        if (m_keyboard.isPressed(keyboard::KEY_LEFT)) {
+        if (m_keyboard.isClicked(keyboard::KEY_RIGHT)) {
             m_selected = (m_selected - 1 + gm->m_engine.lock()->getParty()->getMembersCount()) % gm->m_engine.lock()->getParty()->getMembersCount();
+        }
+        if (m_keyboard.isClicked(keyboard::KEY_LEFT)) {
+            m_selected = (m_selected + 1) % gm->m_engine.lock()->getParty()->getMembersCount();
         }
         render(gm);
     }
 
     void skill_selection(GameMachine *gm) {
-        if (m_keyboard.isPressed(keyboard::KEY_ENTER)) {
-            m_skill = std::dynamic_pointer_cast<engine::skills::CombatSkill>(m_skills[m_selected_skill]);
+        if (m_keyboard.isClicked(keyboard::KEY_ENTER)) {
+            m_skill = std::dynamic_pointer_cast<engine::skills::CombatSkill>(m_skills[m_selected][m_selected_skill]);
             m_state = BattleState::kDefenderSelection;
         }
-        if (m_keyboard.isPressed(keyboard::KEY_UP)) {
-            m_selected_skill = (m_selected_skill + 1) % m_skills.size();
-        }
-        if (m_keyboard.isPressed(keyboard::KEY_DOWN)) {
+        if (m_keyboard.isClicked(keyboard::KEY_RIGHT)) {
             m_selected_skill = (m_selected_skill - 1 + m_skills.size()) % m_skills.size();
+        }
+        if (m_keyboard.isClicked(keyboard::KEY_LEFT)) {
+            m_selected_skill = (m_selected_skill + 1) % m_skills.size();
         }
         render(gm);
     }
 
     void defender_selection(GameMachine *gm) {
-        if (m_keyboard.isPressed(keyboard::KEY_ENTER)) {
+        if (m_keyboard.isClicked(keyboard::KEY_ENTER)) {
             m_defenders.push_back(m_enemy_party->getMember(m_selected_defender));
             m_state = BattleState::kAttack;
         }
-        if (m_keyboard.isPressed(keyboard::KEY_UP)) {
+        if (m_keyboard.isClicked(keyboard::KEY_RIGHT)) {
             m_selected_defender = (m_selected_defender + 1) % m_enemy_party->getMembersCount();
         }
-        if (m_keyboard.isPressed(keyboard::KEY_DOWN)) {
+        if (m_keyboard.isClicked(keyboard::KEY_LEFT)) {
             m_selected_defender = (m_selected_defender - 1 + m_enemy_party->getMembersCount()) % m_enemy_party->getMembersCount();
         }
         render(gm);
@@ -107,6 +113,13 @@ public:
         }
     }
 
+    void drawSkill(std::shared_ptr<graphics::Renderer> r, std::shared_ptr<engine::skills::Skill> skill) {
+        if (cached_skills.find(skill->id) == cached_skills.end()) {
+            cached_skills[skill->id] = std::make_shared<graphics::Sprite>("skills/" + skill->id + ".png");
+        }
+        // todo: draw skill
+    }
+
     void render(GameMachine *gm) {
         std::shared_ptr<graphics::Renderer> r = gm->m_renderer.lock();
         std::shared_ptr<dungeon::Cell> cell = gm->m_engine.lock()->getDungeon()->getCurrentCell().lock();
@@ -114,14 +127,27 @@ public:
         std::shared_ptr<engine::entities::Party> party = gm->m_engine.lock()->getParty();
         r->clear();
         utils::cellView(r, dungeon);
-        for (size_t i = 0; i < party->getMembersCount(); i++)
-            utils::drawEntity(r, party->getMember(i), 3 - i, m_selected == i);
-        for (size_t i = 0; i < m_enemy_party->getMembersCount(); i++)
-            utils::drawEntity(r, m_enemy_party->getMember(i), 4 + i);
+        
+        if (m_state == BattleState::kAttackerSelection) {
+            for (size_t i = 0; i < party->getMembersCount(); i++)
+                utils::drawEntity(r, party->getMember(i), 3 - i, m_selected == i);
+        } else {
+            for (size_t i = 0; i < party->getMembersCount(); i++)
+                utils::drawEntity(r, party->getMember(i), 3 - i);
+        }
+
         if (m_state == BattleState::kSkillSelection) {
             for (size_t i = 0; i < m_skills.size(); i++) {
-                // add rendering of skills
+                drawSkill(r, m_skills[m_selected][i]);
             }
+        }
+
+        if (m_state == BattleState::kDefenderSelection) {
+            for (size_t i = 0; i < m_enemy_party->getMembersCount(); i++)
+                utils::drawEntity(r, m_enemy_party->getMember(i), 4 + i, m_selected_defender == i);
+        } else {
+            for (size_t i = 0; i < m_enemy_party->getMembersCount(); i++)
+                utils::drawEntity(r, m_enemy_party->getMember(i), 4 + i);
         }
         r->display();
     }
@@ -137,7 +163,8 @@ private:
     std::vector<std::weak_ptr<engine::entities::Entity>> m_defenders;
     std::weak_ptr<engine::skills::CombatSkill> m_skill;
 
-    std::vector<std::shared_ptr<engine::skills::Skill>> m_skills;
+    std::vector<std::vector<std::shared_ptr<engine::skills::Skill>>> m_skills;
+    std::map<std::string, std::shared_ptr<graphics::Sprite>> cached_skills;
 
     BattleState m_state = BattleState::kAttackerSelection;
 };
