@@ -29,10 +29,12 @@ int main() {
     uint64_t last_time =
         std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())
             .count();
-    int fps = 0;
+    int rounded_fps = 0;
     const int frames_to_average = 5;
     uint64_t accumulated_time = 0;
     int frames_counter = 0;
+    double alpha = 0.1;
+    double smoothed_fps = 0.0;
 
     while (window.isOpen()) {
         uint64_t current_time =
@@ -42,15 +44,21 @@ int main() {
         frames_counter++;
 
         accumulated_time += delta_time;
-
+        
         if (frames_counter == frames_to_average) {
             uint64_t average_time = accumulated_time / frames_to_average;
-            
+
             if (average_time != 0) {
-                fps = 1000 / average_time;
+                if (smoothed_fps == 0) {
+                    smoothed_fps = 1000 / average_time;
+                } else {
+                    smoothed_fps = alpha * (1000 / average_time) + (1 - alpha) * smoothed_fps;
+                }
             } else {
-                fps = 0;
+                smoothed_fps = 0;
             }
+            rounded_fps = std::floor(smoothed_fps + 0.5);
+
             frames_counter = 0;
             accumulated_time = 0;
         }
@@ -73,7 +81,7 @@ int main() {
         controller.update();
         if (cfg::FPS_COUNTER) {
             renderer->drawRec(fps_rect);
-            renderer->draw(graphics::Text(std::to_string(fps), "arial", 20), 0, 0);
+            renderer->draw(graphics::Text(std::to_string(rounded_fps), "arial", 20), 0, 0);
             renderer->display();
         }
     }

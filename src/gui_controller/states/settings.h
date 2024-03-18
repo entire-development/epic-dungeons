@@ -14,7 +14,7 @@ public:
 
     void update(Controller *controller) {
         k_manager.update();
-        bool pressed_f = keyboard::isPressed(keyboard::KEY_F);
+        bool pressed_f = k_manager.isClicked(keyboard::KEY_F);
         if (pressed_f != is_key_pressed) {
             is_key_pressed = pressed_f;
             render(controller->m_renderer.get());
@@ -49,8 +49,7 @@ public:
         renderer->drawText(100, 530, "Press ESC to go back");
         renderer->drawText(100, 560, "Press F to pay respects and on/off fps counter");
 
-        if (k_manager.isClicked(keyboard::KEY_F)) {
-            renderer->drawText(80, 530, "F");
+        if (is_key_pressed) {
             cfg::FPS_COUNTER ^= true;
         }
         renderer->display();
