@@ -114,10 +114,10 @@ public:
     }
 
     void drawSkill(std::shared_ptr<graphics::Renderer> r, std::shared_ptr<engine::skills::Skill> skill) {
+        std::string sprite_path = "skills/" + skill->id + ".png";
         if (cached_skills.find(skill->id) == cached_skills.end()) {
-            cached_skills[skill->id] = std::make_shared<graphics::Sprite>("skills/" + skill->id + ".png");
+            cached_skills[skill->id] = std::make_shared<graphics::Sprite>(sprite_path);
         }
-        // todo: draw skill
     }
 
     void render(GameMachine *gm) {
