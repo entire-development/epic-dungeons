@@ -19,6 +19,7 @@ enum class TargetType {
 };
 
 struct Skill {
+<<<<<<< HEAD
     virtual ~Skill() = default;
 
     const std::string id;
@@ -28,6 +29,15 @@ struct Skill {
     const TargetType targetType = TargetType::kIndividual;
     const std::vector<uint8_t> launchablePositions;
     const std::vector<uint8_t> targetablePositions;
+=======
+    std::string id;
+    std::string name;
+    uint8_t level = 0;
+    Type type = Type::kMelee;
+    TargetType targetType = TargetType::kIndividual;
+    std::vector<uint8_t> launchablePositions;
+    std::vector<uint8_t> targetablePositions;
+>>>>>>> origin/battle
 
     bool isUsable(const uint8_t position) const {
         return std::find(launchablePositions.begin(), launchablePositions.end(), position) != launchablePositions.end();
@@ -39,18 +49,18 @@ struct Skill {
 };
 
 struct Move : public Skill {
-    const std::string id = "move";
-    const std::string name = "Move";
-    const Type type = Type::kMove;
-    const TargetType targetType = TargetType::kIndividual;
+    std::string id = "move";
+    std::string name = "Move";
+    Type type = Type::kMove;
+    TargetType targetType = TargetType::kIndividual;
 
     uint8_t distance = 0;
 };
 
 struct CombatSkill : public Skill {
-    const float damageMod = 0;
-    const float attackMod = 0;
-    const float criticalChanceMod = 0;
+    float damageMod = 0;
+    float attackMod = 0;
+    float criticalChanceMod = 0;
 };
 
 struct AttackResult {
