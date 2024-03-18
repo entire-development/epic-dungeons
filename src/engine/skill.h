@@ -19,17 +19,6 @@ enum class TargetType {
 };
 
 struct Skill {
-<<<<<<< HEAD
-    virtual ~Skill() = default;
-
-    const std::string id;
-    const std::string name;
-    const uint8_t level = 0;
-    const Type type = Type::kMelee;
-    const TargetType targetType = TargetType::kIndividual;
-    const std::vector<uint8_t> launchablePositions;
-    const std::vector<uint8_t> targetablePositions;
-=======
     std::string id;
     std::string name;
     uint8_t level = 0;
@@ -37,7 +26,6 @@ struct Skill {
     TargetType targetType = TargetType::kIndividual;
     std::vector<uint8_t> launchablePositions;
     std::vector<uint8_t> targetablePositions;
->>>>>>> origin/battle
 
     bool isUsable(const uint8_t position) const {
         return std::find(launchablePositions.begin(), launchablePositions.end(), position) != launchablePositions.end();
