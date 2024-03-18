@@ -5,6 +5,7 @@
 #include "gui_controller/timed_count.h"
 #include "gui_controller/utils.h"
 #include "static_data/game_config.h"
+#include "sound_manager/sound_manager.h"
 #include <cmath>
 #include <map>
 #include <memory>
@@ -89,6 +90,7 @@ public:
         } else if (clicked_enter) {
             d->setNextCell(d->getNextOnPath().lock());
             gm->changeState(GUIGameState::kMoveTransition);
+            sound.playSound("res/sound/chime.wav");
         }
         if (is_clicked) {
             d->setTargetRoom(neighbours[r_selected].lock());
@@ -120,6 +122,8 @@ private:
     TimedCount m_prev_anim;
 
     KeyboardManager m_keyboard_manager;
+
+    sound::SoundManager& sound = sound::SoundManager::getInstance();
 
     bool is_in_room = true;
 
