@@ -6,11 +6,13 @@ namespace engine {
 namespace items {
 
 struct HighwaymanArmor : public Armor {
-    const std::string id = "highwayman_armor";
-    const std::string name = "Highwayman Armor";
-    const int32_t defenseMod = 5;
-    const int32_t protectionMod = 5;
-    const int32_t speedMod = 5;
+    HighwaymanArmor() : Armor() {
+        id = "highwayman_armor";
+        name = "Highwayman Armor";
+        defenseMod = 5;
+        protectionMod = 5;
+        speedMod = 5;
+    }
 };
 
 }   // namespace items
