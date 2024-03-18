@@ -1,4 +1,5 @@
 #include "timed_count.h"
+#include <cstdint>
 #include <utility>
 
 namespace gui {
