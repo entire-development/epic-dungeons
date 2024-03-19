@@ -9,7 +9,7 @@ public:
         static SoundManager instance;
         return instance;
     }
-    void playSound(const std::string& sound_path, float volume = 100.f) {
+    void playSound(const std::string& sound_path, const float volume) {
         sound_buffer = std::make_unique<sf::SoundBuffer>();
         sound = std::make_unique<sf::Sound>();
 
@@ -25,4 +25,8 @@ private:
     std::unique_ptr<sf::SoundBuffer> sound_buffer;
     std::unique_ptr<sf::Sound> sound;
 };
+
+static void playSound(const std::string& sound_path, float volume = 100.f) {
+    sound::SoundManager::getInstance().playSound(sound_path, volume);
+}
 }
