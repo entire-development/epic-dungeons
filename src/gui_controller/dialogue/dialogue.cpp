@@ -2,8 +2,9 @@
 #include "static_data/game_config.h"
 #include "renderer/graphics.h"
 #include "gui_controller/timed_count.h"
-#include <iostream>
+#include "gui_controller/game/game_machine.h"
 #include <string>
+#include <functional>
 #include <cmath>
 
 using namespace dl;
@@ -130,7 +131,7 @@ inline bool DialogueWindow::isFinished() {
     return m_is_finished;
 }
 
-void DialogueWindow::drawQuote(graphics::Renderer* renderer) {
+void DialogueWindow::drawQuote(std::shared_ptr<graphics::Renderer> renderer) {
     // CONTAINER
     renderer->drawRec({
         .x = WINDOW_MARGIN, .y = cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN,
@@ -158,7 +159,7 @@ void DialogueWindow::drawQuote(graphics::Renderer* renderer) {
             display = true;
             if (line[j] == '$' || line[j - 1] == '$') {
                 display = false;
-            } 
+            }
             else if (line[j] == '[' && line[j+1] == '/') {
                 if (line.substr(j, METADATA::COLOR_TAG_LENGTH) == "[/color") {
                     m_text_color = "#ffffff";
@@ -181,7 +182,7 @@ void DialogueWindow::drawQuote(graphics::Renderer* renderer) {
                 }
                 // handle actions
                 // TODO handle actions
-            } 
+            }
             else {
                 char_pos++;
             }
@@ -200,26 +201,37 @@ void DialogueWindow::update(uint32_t current_character) {
     m_current_index = current_character;
 }
 
-DialogueManager::DialogueManager(script::QuoteNode entry_point) :
+DialogueManager::DialogueManager(script::QuoteNode* entry_point) :
     m_current_quote(entry_point),
     m_dialogue_window(DialogueWindow()),
     m_character_anim(gui::TimedCount()),
     m_is_active(true)
 {
-    m_dialogue_window.changeQuote(entry_point.content, entry_point.sprite);
-    size_t str_len = dl::preprocessString(entry_point.content).length();
+    m_dialogue_window.changeQuote(entry_point->content, entry_point->sprite);
+    size_t str_len = dl::preprocessString(entry_point->content).length();
     m_character_anim.init(0, str_len, str_len * cfg::DIALOGUE_FONT_SPEED);
     m_character_anim.start();
 }
 
-void DialogueManager::nextQuote() {
-    if (m_current_quote.next == nullptr) {
+DialogueManager::DialogueManager() :
+        m_current_quote(nullptr),
+        m_dialogue_window(DialogueWindow()),
+        m_character_anim(gui::TimedCount()),
+        m_is_active(false) {
+    m_character_anim.init(0, 0, 0);
+    m_character_anim.start();
+}
+
+
+void DialogueManager::nextQuote(gui::game::GameMachine* gm) {
+    if (m_current_quote->next == nullptr) {
         m_is_active = false;
         return;
     }
-    m_current_quote = *m_current_quote.next;
-    m_dialogue_window.changeQuote(m_current_quote.content, m_current_quote.sprite);
-    size_t str_len = dl::preprocessString(m_current_quote.content).length();
+    m_current_quote = m_current_quote->next;
+    std::invoke(m_current_quote->meta_action, gm);
+    m_dialogue_window.changeQuote(m_current_quote->content, m_current_quote->sprite);
+    size_t str_len = dl::preprocessString(m_current_quote->content).length();
     m_character_anim.init(0, str_len, str_len * cfg::DIALOGUE_FONT_SPEED);
     m_character_anim.start();
     m_is_active = true;
@@ -230,32 +242,37 @@ inline void DialogueManager::skip() {
     m_is_active = false;
 }
 
-void DialogueManager::handleActionKeyPressed() {
+void DialogueManager::handleActionKeyPressed(gui::game::GameMachine* gm) {
     if (m_is_active) {
         skip();
     }
     else {
-        nextQuote();
+        nextQuote(gm);
     }
 }
 
-void DialogueManager::update(uint64_t delta_time, graphics::Renderer* renderer) {
+void DialogueManager::update(uint64_t delta_time) {
     m_character_anim.update(delta_time);
     m_dialogue_window.update(std::round(m_character_anim.get()));
-    if (m_dialogue_window.isFinished()) m_is_active = false;
-
-    if (m_is_active) m_dialogue_window.drawQuote(renderer);
+    //if (m_dialogue_window.isFinished()) m_is_active = false;
 }
 
-void DialogueManager::setEntryPoint(script::QuoteNode entry_point) {
+void DialogueManager::draw(std::shared_ptr<graphics::Renderer> renderer) {
+    if (m_is_active && m_current_quote != nullptr) {
+        m_dialogue_window.drawQuote(renderer);
+    }
+}
+
+void DialogueManager::setEntryPoint(script::QuoteNode* entry_point, gui::game::GameMachine* gm) {
     m_current_quote = entry_point;
-    m_dialogue_window.changeQuote(entry_point.content, entry_point.sprite);
-    size_t str_len = dl::preprocessString(entry_point.content).length();
+    std::invoke(m_current_quote->meta_action, gm);
+    m_dialogue_window.changeQuote(m_current_quote->content, m_current_quote->sprite);
+    size_t str_len = dl::preprocessString(entry_point->content).length();
     m_character_anim.init(0, str_len, str_len * cfg::DIALOGUE_FONT_SPEED);
     m_character_anim.start();
+    m_is_active = 1;
 }
 
-inline bool DialogueManager::isFinished() const {
+bool DialogueManager::isActive() const {
     return !m_is_active;
 }
-
