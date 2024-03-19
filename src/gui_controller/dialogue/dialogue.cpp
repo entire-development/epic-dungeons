@@ -231,12 +231,12 @@ inline void DialogueManager::skip() {
     m_is_active = false;
 }
 
-void DialogueManager::handleActionKeyPressed() {
+void DialogueManager::handleActionKeyPressed(gui::game::GameMachine* gm) {
     if (m_is_active) {
         skip();
     }
     else {
-        nextQuote();
+        nextQuote(gm);
     }
 }
 

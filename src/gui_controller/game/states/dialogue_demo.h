@@ -9,8 +9,7 @@
 namespace gui {
 namespace game {
 // TEMPORARY STATE. LATER WILL BE REFACTORED INTO DIALOGUE MANAGER CLASS.
-class DialogueDemo :
-public State {
+class DialogueDemo : public GameState {
     public:
     //dl::DialogueWindow dialogue_window = dl::DialogueWindow();
     dl::DialogueManager dialogue_manager = dl::DialogueManager();
@@ -27,7 +26,7 @@ public State {
             was_pressed = false;
         }
         if (is_key_pressed && !was_pressed) {
-            if (dialogue_manager.isActive()) dialogue_manager.setEntryPoint(&quote_1);
+            if (dialogue_manager.isActive()) dialogue_manager.setEntryPoint(&quote_1, gm);
             else dialogue_manager.nextQuote(gm);
             was_pressed = true;
         }

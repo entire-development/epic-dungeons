@@ -69,7 +69,7 @@ public:
     void update(uint64_t delta_time);
     void draw(std::shared_ptr<graphics::Renderer> renderer);
     bool isActive() const;
-    void handleActionKeyPressed(); // nextQuote() or skip() call depending of text animation status
+    void handleActionKeyPressed(gui::game::GameMachine* gm); // nextQuote() or skip() call depending of text animation status
 private:
     bool m_is_active;
     script::QuoteNode* m_current_quote;

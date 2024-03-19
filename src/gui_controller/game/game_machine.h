@@ -15,6 +15,9 @@ enum class GUIGameState {
     kEmpty,
     kPostEvent,
     kGameOver,
+
+    // DEMO
+    kDialogueDemo
 };
 
 class GameState {
