@@ -51,7 +51,8 @@ void drawHealthBar(const std::shared_ptr<graphics::Renderer> &renderer, Vector2d
 void drawEntity(const std::shared_ptr<graphics::Renderer> &renderer,
                 const std::shared_ptr<engine::entities::Entity> &entity, const uint8_t &position, bool is_selected,
                 const float &animation_progress) {
-    static std::shared_ptr<graphics::Sprite> sprite = std::make_shared<graphics::Sprite>("heroes/highwayman.png");
+    static std::shared_ptr<graphics::Animation> animation = graphics::Animation::load("heroes/highwayman.idle.gif");
+    auto sprite = animation->getFrame();
     if (position <= 3)
         sprite->setFlip(false, false);
     else
