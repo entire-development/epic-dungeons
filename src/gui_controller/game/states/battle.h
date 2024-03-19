@@ -135,11 +135,11 @@ public:
                 r->draw(graphics::Text("/\\", "arial", 15).setStyle(sf::Text::Bold), cursor_x, cursor_y);
                 r->draw(graphics::Text(skill->name, "arial", 15), 120, bottom_y);
                 r->draw(graphics::Text("ACC: " + std::to_string(skill->attackMod) + "%", "arial", 15), 120, bottom_y + 15);
-                r->draw(graphics::Text("DMG: " + std::to_string(skill->damageMod + m_weapon->minDamage) 
-                                        + " --- " + std::to_string(skill->damageMod + m_weapon->maxDamage), "arial", 15), 
+                r->draw(graphics::Text("DMG: " + std::to_string(m_weapon->minDamage + skill->damageMod / 100 * m_weapon->minDamage) 
+                                        + " --- " + std::to_string(m_weapon->maxDamage + skill->damageMod / 100 * m_weapon->maxDamage), "arial", 15), 
                                         120, bottom_y + 30);
                 r->draw(graphics::Text("CRIT: " + std::to_string(skill->criticalChanceMod + m_weapon->criticalChanceMod), "arial", 15), 120, bottom_y + 45);
-                r->draw(graphics::Text("SPD: " + std::to_string(m_weapon->speedMod), "arial", 15), 120, bottom_y + 60);
+                r->draw(graphics::Text("RNG: " + std::to_string(skill->launchablePositions.size()), "arial", 15), 120, bottom_y + 60);
             }
             r->draw(*cached_skills[skill->id], current_x, bottom_y);
             i++;
