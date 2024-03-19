@@ -13,6 +13,7 @@ int main() {
                                     cfg::WINDOW_NAME,
                                     sf::Style::Titlebar | sf::Style::Close};
     window.setFramerateLimit(cfg::FRAMERATE);
+    sf::Clock clock;
     // window.setVerticalSyncEnabled(true);
 
     auto renderer = std::make_shared<graphics::Renderer>(window);
@@ -36,6 +37,7 @@ int main() {
     double alpha = 0.1;
     double smoothed_fps = 0.0;
 
+    clock.restart();
     while (window.isOpen()) {
         uint64_t current_time =
             std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())
@@ -63,6 +65,9 @@ int main() {
             accumulated_time = 0;
         }
 
+        if (delta_time < 1000.0f / cfg::FRAMERATE) {
+            continue;
+        }
         last_time = current_time;
 
         controller.setDeltaTime(delta_time);
