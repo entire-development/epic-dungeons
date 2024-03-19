@@ -8,5 +8,5 @@ void Randint::seed(unsigned int seed) {
 
 int Randint::operator()(int le, int ri) {
     unsigned int a = random();
-    return le + (int)(a % (ri - le + 1));
+    return le + (int) (a % (ri - le + 1));
 }
