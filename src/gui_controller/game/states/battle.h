@@ -7,6 +7,7 @@
 #include "static_data/game_config.h"
 #include <gui_controller/keyboard_manager/keyboard_manager.h>
 #include <memory>
+#include <cmath>
 
 namespace gui {
 namespace game {
@@ -135,11 +136,11 @@ public:
                 r->draw(graphics::Text("/\\", "arial", 15).setStyle(sf::Text::Bold), cursor_x, cursor_y);
                 r->draw(graphics::Text(skill->name, "arial", 15), 120, bottom_y);
                 r->draw(graphics::Text("ACC: " + std::to_string(skill->attackMod) + "%", "arial", 15), 120, bottom_y + 15);
-                r->draw(graphics::Text("DMG: " + std::to_string(m_weapon->minDamage + skill->damageMod / 100 * m_weapon->minDamage) 
-                                        + " --- " + std::to_string(m_weapon->maxDamage + skill->damageMod / 100 * m_weapon->maxDamage), "arial", 15), 
+                r->draw(graphics::Text("DMG: " + std::to_string(static_cast<int>(round(m_weapon->minDamage + skill->damageMod / 100 * m_weapon->minDamage))) 
+                                        + " --- " + std::to_string(static_cast<int>(round(m_weapon->maxDamage + skill->damageMod / 100 * m_weapon->maxDamage))), "arial", 15), 
                                         120, bottom_y + 30);
-                r->draw(graphics::Text("CRIT: " + std::to_string(skill->criticalChanceMod + m_weapon->criticalChanceMod), "arial", 15), 120, bottom_y + 45);
-                r->draw(graphics::Text("RNG: " + std::to_string(skill->launchablePositions.size()), "arial", 15), 120, bottom_y + 60);
+                // r->draw(graphics::Text("PROB: " + std::to_string(engine::entities::Entity::calculateHitChance(skill)), "arial", 15), 120, bottom_y + 45);
+                r->draw(graphics::Text("CRIT: " + std::to_string(skill->criticalChanceMod + m_weapon->criticalChanceMod), "arial", 15), 120, bottom_y + 60);
             }
             r->draw(*cached_skills[skill->id], current_x, bottom_y);
             i++;
