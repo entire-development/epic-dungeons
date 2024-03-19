@@ -74,10 +74,10 @@ public:
             m_defenders.push_back(m_enemy_party->getMember(m_selected_defender));
             m_state = BattleState::kAttack;
         }
-        if (m_keyboard.isClicked(keyboard::KEY_LEFT)) {
+        if (m_keyboard.isClicked(keyboard::KEY_RIGHT)) {
             m_selected_defender = (m_selected_defender + 1) % m_enemy_party->getMembersCount();
         }
-        if (m_keyboard.isClicked(keyboard::KEY_RIGHT)) {
+        if (m_keyboard.isClicked(keyboard::KEY_LEFT)) {
             m_selected_defender = (m_selected_defender - 1 + m_enemy_party->getMembersCount()) % m_enemy_party->getMembersCount();
         }
         render(gm);
@@ -115,16 +115,26 @@ public:
 
     void drawSkills(std::shared_ptr<graphics::Renderer> r) {
         int i = 0;
+        float sprite_size = 70;
+        float bottom_x = cfg::WINDOW_WIDTH * 17 / 36;
+        float bottom_y = cfg::WINDOW_HEIGHT - cfg::WINDOW_HEIGHT / 6;
+
+        float current_x = bottom_x - (m_skills[m_selected].size() * sprite_size) / 2;
+        float cursor_x = current_x + (sprite_size / 2);
+        float cursor_y = bottom_y + sprite_size;
         for (auto &skill : m_skills[m_selected]) {
             std::string skill_name = "skills/" + skill->id + ".png";
             if (cached_skills.find(skill->id) == cached_skills.end()) {
                 cached_skills[skill->id] = std::make_shared<graphics::Sprite>(skill_name);
             }
             if (m_selected_skill == i) {
-                r->draw(graphics::Text("/\\", "arial", 20).setStyle(sf::Text::Bold), 750 + i * 70, 650 + 70); // todo fix magic numbers
+                r->draw(graphics::Text("/\\", "arial", 20).setStyle(sf::Text::Bold), cursor_x, cursor_y);
+                // todo: draw skill description
             }
-            r->draw(*cached_skills[skill->id], 720 + i * 70, 650);  // todo fix magic numbers
+            r->draw(*cached_skills[skill->id], current_x, bottom_y);
             i++;
+            current_x += sprite_size * i;
+            cursor_x += sprite_size * i;
         }
     }
 
