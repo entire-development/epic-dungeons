@@ -1,0 +1,26 @@
+#pragma once
+#include "hero.h"
+
+#include "engine/armor/hellion.h"
+#include "engine/weapons/glaive.h"
+
+#include "engine/attacks/iron_swan.h"
+#include "engine/attacks/wicked_hack.h"
+
+namespace engine {
+namespace entities {
+
+class Hellion : public Hero {
+public:
+    Hellion() : Hero("Hellion") {
+        m_health = 26;
+        m_max_health = 26;
+        m_weapon = std::make_shared<items::Glaive>();
+        m_armor = std::make_shared<items::HellionArmor>();
+        addSkill<skills::WickedHack>();
+        addSkill<skills::IronSwan>();
+    }
+};
+
+}   // namespace entities
+}   // namespace engine

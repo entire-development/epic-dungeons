@@ -3,6 +3,7 @@
 #include "static_data/game_config.h"
 #include "vector2d/vector2d.h"
 #include <iostream>
+#include <memory>
 
 namespace graphics {
 class Sprite {
