@@ -76,7 +76,7 @@ public:
                 d->setNextCell(d->getPrevOnPath().lock());
                 gm->changeState(GUIGameState::kMoveTransition);
             }
-            sound::playSound("res/sound/walking-sound.wav", 80);
+            sound::playSound("walking-sound", 80);
             return;
         }
 
@@ -89,7 +89,7 @@ public:
         } else if (clicked_left && !neighbours[3].expired()) {
             r_selected = 3;
         } else if (clicked_enter) {
-            sound::playSound("res/sound/chime.wav");
+            sound::playSound("chime");
             d->setNextCell(d->getNextOnPath().lock());
             gm->changeState(GUIGameState::kMoveTransition);
         }

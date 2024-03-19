@@ -9,11 +9,10 @@ public:
         static SoundManager instance;
         return instance;
     }
-    void playSound(const std::string& sound_path, const float volume) {
+    void playSound(const std::string& sound_name, const float volume) {
         sound_buffer = std::make_unique<sf::SoundBuffer>();
         sound = std::make_unique<sf::Sound>();
-
-        if (sound_buffer->loadFromFile(sound_path)) {
+        if (sound_buffer->loadFromFile(cfg::SOUNDS_PATH + sound_name + ".wav")) {
             sound->setBuffer(*sound_buffer);
             sound->setVolume(volume);
             sound->play();
@@ -26,7 +25,7 @@ private:
     std::unique_ptr<sf::Sound> sound;
 };
 
-static void playSound(const std::string& sound_path, float volume = 100.f) {
-    sound::SoundManager::getInstance().playSound(sound_path, volume);
+static void playSound(const std::string& sound_name, float volume = 100.f) {
+    sound::SoundManager::getInstance().playSound(sound_name, volume);
 }
 }
