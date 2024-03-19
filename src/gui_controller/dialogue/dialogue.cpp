@@ -5,12 +5,15 @@
 #include "gui_controller/game/game_machine.h"
 #include <string>
 #include <functional>
+#include <cmath>
 
 using namespace dl;
 
 namespace METADATA {
-    std::string SHORTPAUSE = "$p$p$p$p$p$p$p$p";
-    std::string LONGPAUSE = "$p$p$p$p$p$p$p$p$p$p$p$p$p$p$p";
+    std::string SHORTPAUSE = "$p$p$p$p$p$p$p$p$p$p$p";
+    std::string LONGPAUSE = "$p$p$p$p$p$p$p$p$p$p$p$p$p$p$p$p$p$p";
+    const int COLOR_TAG_LENGTH = 7;
+    const int CHAR_SIZE_TAG_LENGTH = 6;
 };
 
 std::string dl::preprocessString(const std::string& str) {
@@ -146,28 +149,36 @@ void DialogueWindow::drawQuote(std::shared_ptr<graphics::Renderer> renderer) {
     uint32_t current_len = 0;
     uint32_t char_pos = 0;
     bool display = true;
+
     for (int i = 0; i < m_content.size(); i++) {
         std::string line = m_content[i];
         char_pos = 0;
+
         for (int j = 0; j < line.length(); j++) { // I will explain this later
             // parse metadata
             display = true;
             if (line[j] == '$' || line[j - 1] == '$') {
                 display = false;
             }
+            else if (line[j] == '[' && line[j+1] == '/') {
+                if (line.substr(j, METADATA::COLOR_TAG_LENGTH) == "[/color") {
+                    m_text_color = "#ffffff";
+                    j += METADATA::COLOR_TAG_LENGTH;
+                } if (line.substr(j, METADATA::CHAR_SIZE_TAG_LENGTH) == "[/size") {
+                    m_font_size = 24;
+                    j += METADATA::CHAR_SIZE_TAG_LENGTH;
+                }
+                continue;
+            }
             else if (line[j] == '[') { // handle metadata
-                std::string property = "";
-                std::string value = "";
-                bool is_property = true;
-                int temp_index;
-                for (temp_index = j; line[temp_index] != ']'; temp_index++){
-                    if (line[temp_index] == ' ') continue;
-                    if (line[temp_index == '=']) {
-                        is_property = false;
-                        continue;
-                    }
-                    if (is_property) property.push_back(line[temp_index]);
-                    else value.push_back(line[temp_index]);
+                if (line.substr(j, METADATA::COLOR_TAG_LENGTH) == "[color=") {
+                    j += METADATA::COLOR_TAG_LENGTH;
+                    m_text_color = line.substr(j, METADATA::COLOR_TAG_LENGTH);
+                    j += METADATA::COLOR_TAG_LENGTH + 1;
+                } if (line.substr(j, METADATA::CHAR_SIZE_TAG_LENGTH) == "[size=") {
+                    j += METADATA::CHAR_SIZE_TAG_LENGTH;
+                    m_font_size = std::stoi(line.substr(j, line.find(']') - j));
+                    j += std::to_string(m_font_size).length() + 1;
                 }
                 // handle actions
                 // TODO handle actions
@@ -177,7 +188,7 @@ void DialogueWindow::drawQuote(std::shared_ptr<graphics::Renderer> renderer) {
             }
 
             // draw character
-            if (display && current_len < m_current_index) renderer->draw(graphics::Text(std::string(&line[j], &line[j + 1])),
+            if (display && current_len < m_current_index) renderer->draw(graphics::Text(std::string(&line[j], &line[j + 1])).setColor(m_text_color).setFontSize(m_font_size),
                                WINDOW_MARGIN + PORTRAIT_SIZE + WINDOW_PADDING + char_pos * CHAR_WIDTH,
                                10 + cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN + WINDOW_PADDING + LINE_HEIGHT * i);
             if (current_len < m_current_index) current_len++;
