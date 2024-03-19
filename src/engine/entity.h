@@ -129,7 +129,7 @@ public:
     }
 
     void removeMember(const std::shared_ptr<Entity> &member) {
-        auto it = std::ranges::find(m_members.begin(), m_members.end(), member);
+        auto it = std::find(m_members.begin(), m_members.end(), member);
         if (it != m_members.end()) {
             m_members.erase(it);
             member->m_party.reset();
