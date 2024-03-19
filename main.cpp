@@ -43,8 +43,11 @@ int main() {
             std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())
                 .count();
         uint64_t delta_time = current_time - last_time;
-        frames_counter++;
 
+        if (delta_time < 1000.0f / cfg::FRAMERATE) {
+            continue;
+        }
+        frames_counter++;
         accumulated_time += delta_time;
         
         if (frames_counter == frames_to_average) {
@@ -65,9 +68,6 @@ int main() {
             accumulated_time = 0;
         }
 
-        if (delta_time < 1000.0f / cfg::FRAMERATE) {
-            continue;
-        }
         last_time = current_time;
 
         controller.setDeltaTime(delta_time);
@@ -85,9 +85,9 @@ int main() {
         }
         controller.update();
         if (cfg::FPS_COUNTER) {
-            renderer->drawRec(fps_rect);
-            renderer->draw(graphics::Text(std::to_string(rounded_fps), "arial", 20), 0, 0);
-            renderer->display();
+            window.setTitle(cfg::WINDOW_NAME + " | " + std::to_string(rounded_fps) + " FPS");
+        } else {
+            window.setTitle(cfg::WINDOW_NAME);
         }
     }
     return 0;
