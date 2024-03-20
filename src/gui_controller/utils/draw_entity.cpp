@@ -3,6 +3,7 @@
 #include "renderer/text.h"
 #include "static_data/game_config.h"
 #include "vector2d/vector2d.h"
+#include <cstring>
 
 namespace gui {
 namespace utils {
@@ -51,7 +52,8 @@ void drawHealthBar(const std::shared_ptr<graphics::Renderer> &renderer, Vector2d
 void drawEntity(const std::shared_ptr<graphics::Renderer> &renderer,
                 const std::shared_ptr<engine::entities::Entity> &entity, const uint8_t &position, bool is_selected,
                 const float &animation_progress) {
-    static std::shared_ptr<graphics::Animation> animation = graphics::Animation::load("heroes/highwayman.idle.gif");
+    static std::shared_ptr<graphics::Animation> animation =
+        graphics::Animation::load("heroes/" + std::tolower(entity->getName()) + "/idle.gif");
     auto sprite = animation->getFrame();
     if (position <= 3)
         sprite->setFlip(false, false);
