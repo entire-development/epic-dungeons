@@ -1,6 +1,9 @@
 #pragma once
+#include "dungeon/cell/cell.h"
+#include <map>
 
 namespace generation_cfg {
+    // events generation
     // map dimensions, in cells (room: 3x3 cells, corridor: 1x1 cells)
     static const size_t HEIGHT = 30;
     static const size_t WIDTH = 30;
@@ -20,4 +23,26 @@ namespace generation_cfg {
     static const size_t CORRIDOR_NOISE_ITERATIONS = 50;
     // maximum displacement of corridor along axis, per iteration
     static const size_t CORRIDOR_NOISE_STRENGTH = 2;
+
+    // events generation
+    static const std::map<dungeon::CellType, size_t> rooms_weights = {
+            {dungeon::CellType::NOTHING, 0},
+            {dungeon::CellType::FIGHT, 1},
+            {dungeon::CellType::TREASURE, 1},
+            {dungeon::CellType::BOSS, 2}
+    };
+    static const std::map<dungeon::CellType, double> rooms_limits = {
+            {dungeon::CellType::NOTHING, 0},
+            {dungeon::CellType::FIGHT, 0},
+            {dungeon::CellType::TREASURE, 0},
+            {dungeon::CellType::BOSS, .5}
+    };
+
+    static const std::map<dungeon::CellType, size_t> corridors_weights = {
+            {dungeon::CellType::NOTHING, 18},
+            {dungeon::CellType::FIGHT, 2},
+            {dungeon::CellType::TREASURE, 2},
+            {dungeon::CellType::TRAP, 1},
+            {dungeon::CellType::DOOR, 1},
+    };
 }

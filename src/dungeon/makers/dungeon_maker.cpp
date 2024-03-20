@@ -200,20 +200,6 @@ void DungeonMaker::setRandomSeed() {
 }
 
 void DungeonMaker::generate_room_events(const std::weak_ptr<Room>& start) {
-    std::map<CellType, size_t> weights = {
-            {CellType::NOTHING, 0},
-            {CellType::FIGHT, 1},
-            {CellType::TREASURE, 1},
-            {CellType::BOSS, 2}
-    };
-    std::map<CellType, double> limits = {
-            {CellType::NOTHING, 0},
-            {CellType::FIGHT, 0},
-            {CellType::TREASURE, 0},
-            {CellType::BOSS, .5}
-    };
-    double exit_limit = .7;
-
     std::vector<std::pair<size_t, std::weak_ptr<Room>>> rooms;
     std::map<coords, size_t> dists;
 
@@ -248,8 +234,8 @@ void DungeonMaker::generate_room_events(const std::weak_ptr<Room>& start) {
 
     for (int i = 1; i < count; i++) {
         std::vector<CellType> types;
-        for (std::pair<CellType, size_t> p : weights) {
-            if (limits.contains(p.first) && limits[p.first] > (double)i / count)
+        for (std::pair<CellType, size_t> p : generation_cfg::rooms_weights) {
+            if (generation_cfg::rooms_limits.contains(p.first) && generation_cfg::rooms_limits.at(p.first) > (double)i / count)
                 continue;
             for (int j = 0; j < p.second; j++)
                 types.push_back(p.first);
@@ -261,24 +247,17 @@ void DungeonMaker::generate_room_events(const std::weak_ptr<Room>& start) {
 }
 
 void DungeonMaker::generate_corridor_events() {
-    std::map<CellType, size_t> weights = {
-            {CellType::NOTHING, 18},
-            {CellType::FIGHT, 2},
-            {CellType::TREASURE, 2},
-            {CellType::TRAP, 1},
-            {CellType::DOOR, 1},
-    };
     std::map<CellType, size_t> balance_weights;
     std::queue<CellType> balance;
     int length = 10;
-    for (std::pair<CellType, size_t> p : weights)
+    for (std::pair<CellType, size_t> p : generation_cfg::corridors_weights)
         balance_weights[p.first] = 0;
 
     for (const std::shared_ptr<Cell>& cell : dungeon->getCells()) {
         if (cell->isRoom()) continue;
 
         std::vector<CellType> types;
-        for (std::pair<CellType, size_t> p : weights) {
+        for (std::pair<CellType, size_t> p : generation_cfg::corridors_weights) {
             for (int j = 0; j < (int)p.second - balance_weights[p.first]; j++)
                 types.push_back(p.first);
         }
