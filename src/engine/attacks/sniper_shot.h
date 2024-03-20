@@ -4,7 +4,7 @@
 namespace engine {
 namespace skills {
 struct SniperShot : public CombatSkill {
-    SniperShot : CombatSkill() {
+    SniperShot() : CombatSkill() {
     id = "sniper_shot";
     name = "Sniper Shot";
     level = 0;
