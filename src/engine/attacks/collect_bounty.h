@@ -4,7 +4,7 @@
 namespace engine {
 namespace skills {
 struct CollectBounty : public CombatSkill {
-    CollectBounty : CombatSkill() {
+    CollectBounty() : CombatSkill() {
     id = "collect_bounty";
     name = "Collect Bounty";
     level = 0;
