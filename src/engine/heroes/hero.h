@@ -5,9 +5,6 @@
 
 namespace engine {
 namespace entities {
-class Hero : public Entity {
-public:
-    Hero(const std::string &name) : Entity(name) {}
-};
+class Hero : public Entity {};
 }   // namespace entities
 }   // namespace engine

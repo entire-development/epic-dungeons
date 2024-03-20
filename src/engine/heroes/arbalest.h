@@ -12,7 +12,9 @@ namespace entities {
 
 class Arbalest : public Hero {
 public:
-    Arbalest() : Hero("Arbalest") {
+    Arbalest() : Hero() {
+        m_id = "arbalest";
+        m_name = "Arbalest";
         m_health = 27;
         m_max_health = 27;
         m_weapon = std::make_shared<items::Crossbow>();

@@ -12,7 +12,9 @@ namespace entities {
 
 class Abomination : public Hero {
 public:
-    Abomination() : Hero("Abomination") {
+    Abomination() : Hero() {
+        m_id = "abomination";
+        m_name = "Abomination";
         m_health = 26;
         m_max_health = 26;
         m_weapon = std::make_shared<items::IncubatingMutation>();

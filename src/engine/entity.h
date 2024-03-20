@@ -34,8 +34,6 @@ class Entity : public std::enable_shared_from_this<Entity> {
     friend class Party;
 
 public:
-    Entity(const std::string &name) : m_name(name) {}
-
     virtual ~Entity() {}
 
     uint32_t getHealth() const {
@@ -89,7 +87,11 @@ public:
 
     const uint8_t getPosition() const;
 
-    std::string getName() const {
+    const std::string &getId() const {
+        return m_id;
+    }
+
+    const std::string &getName() const {
         return m_name;
     }
 
@@ -98,6 +100,7 @@ public:
     }
 
 protected:
+    std::string m_id;
     std::string m_name;
     bool m_is_alive = true;
     uint32_t m_max_health = 20;
