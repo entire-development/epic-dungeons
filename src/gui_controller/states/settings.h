@@ -2,19 +2,20 @@
 
 #include "gui_controller/controller.h"
 #include "static_data/game_config.h"
+#include "gui_controller/keyboard_manager/keyboard_manager.h"
 
 namespace gui {
 class Settings : public State {
 public:
     void enter(Controller *controller) {
         render(controller->m_renderer.get());
+        k_manager.reset();
     }
 
     void update(Controller *controller) {
-        bool pressed_f = keyboard::isPressed(keyboard::KEY_F);
-        if (pressed_f != is_key_pressed) {
-            is_key_pressed = pressed_f;
-            render(controller->m_renderer.get());
+        k_manager.update();
+        if (k_manager.isClicked(keyboard::KEY_F)) {
+            cfg::FPS_COUNTER ^= true;
         }
 
         if (keyboard::isPressed(keyboard::KEY_ESCAPE)) {
@@ -40,17 +41,16 @@ public:
         renderer->drawText(100, 400, "Action: " + keyboard::keyToString(cfg::CONTROLS_ACTION));
         renderer->drawText(100, 430, "Close: " + keyboard::keyToString(cfg::CONTROLS_CLOSE));
         renderer->drawText(100, 460, "Secondary: " + keyboard::keyToString(cfg::CONTROLS_SECONDARY));
+        renderer->drawText(100, 490, std::string("FPS Counter: ") + (cfg::FPS_COUNTER ? "ON" : "OFF"));
 
         // Back
-        renderer->drawText(100, 500, "Press ESC to go back");
-        renderer->drawText(100, 530, "Press F to pay respects");
-        if (keyboard::isPressed(keyboard::KEY_F)) {
-            renderer->drawText(80, 530, "F");
-        }
+        renderer->drawText(100, 530, "Press ESC to go back");
+        renderer->drawText(100, 560, "Press F to pay respects and on/off fps counter");
+
         renderer->display();
     }
 
 private:
-    bool is_key_pressed = false;
+    KeyboardManager k_manager;
 };
 }   // namespace gui
