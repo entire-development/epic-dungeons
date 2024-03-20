@@ -26,7 +26,8 @@ public:
         renderer->clear();
         renderer->drawText(100, 100, "Settings");
 
-        renderer->draw(graphics::Sprite("background/main_menu/background.png").toSizeX(cfg::WINDOW_WIDTH), 0, 0);
+        static graphics::Sprite background = graphics::Sprite("background/main_menu/background.png").toSizeX(cfg::WINDOW_WIDTH);
+        renderer->draw(background, 0, 0);
 
         // Current resolution
         renderer->drawText(
