@@ -4,12 +4,14 @@
 
 namespace cfg {
 const int FRAMERATE = 30;
+inline bool FPS_COUNTER = false;
 const unsigned WINDOW_WIDTH = 1280;
 const unsigned WINDOW_HEIGHT = 800;
 const unsigned CELL_SIZE = 20;
 const std::string WINDOW_NAME = "*EPIC DUNGEONS*";
 const std::string FONTS_PATH = "res/fonts/";
 const std::string SPRITES_PATH = "res/sprites/";
+const std::string SOUNDS_PATH = "res/sounds/";
 
 const keyboard::Key CONTROLS_MOVE_RIGHT = keyboard::Key::KEY_RIGHT;
 const keyboard::Key CONTROLS_MOVE_DOWN = keyboard::Key::KEY_DOWN;
