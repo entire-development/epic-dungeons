@@ -4,7 +4,7 @@
 namespace engine {
 namespace skills {
 struct TargetTag : public CombatSkill {
-    TargetTag : CombatSkill{
+    TargetTag : CombatSkill() {
     id = "target_tag";
     name = "Target Tag";
     level = 0;
