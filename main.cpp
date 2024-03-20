@@ -7,8 +7,6 @@
 #include <chrono>
 
 int main() {
-    graphics::Rectangle fps_rect = {0, 0, 100, 20, "#000000"};
-
     auto window = sf::RenderWindow {{cfg::WINDOW_WIDTH, cfg::WINDOW_HEIGHT},
                                     cfg::WINDOW_NAME,
                                     sf::Style::Titlebar | sf::Style::Close};
