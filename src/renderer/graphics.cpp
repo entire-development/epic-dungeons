@@ -26,7 +26,6 @@ void Renderer::drawSprite(int x, int y, const std::string &sprite_id) {
 
 void Renderer::drawText(int x, int y, const std::string &line, uint32_t font_size) {
     sf::Font font;
-    std::cout << "TRIGGER" << std::endl;
     if (!font.loadFromFile(cfg::FONTS_PATH + cfg::FONT_PATH + ".ttf")) {
         std::cerr << "Font not found!" << std::endl;
         return;

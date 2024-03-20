@@ -7,7 +7,6 @@
 #include <string>
 #include <functional>
 #include <cmath>
-#include "static_data/dialogue.h"
 
 using namespace dl;
 
@@ -194,8 +193,10 @@ void DialogueWindow::drawQuote(std::shared_ptr<graphics::Renderer> renderer) {
                                 .setColor(m_text_color).setFontSize(m_font_size),
                                 WINDOW_MARGIN + PORTRAIT_SIZE + WINDOW_PADDING + char_pos * CHAR_WIDTH,
                                 10 + cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN + WINDOW_PADDING + LINE_HEIGHT * i);
-            if (current_len < m_current_index) current_len++;
-            else m_is_finished = true;
+            if (m_current_index < m_content_len) current_len++;
+            else {
+                m_is_finished = true;
+            }
         }
     }
 }
@@ -232,7 +233,8 @@ void DialogueWindow::drawChoice(std::shared_ptr<graphics::Renderer> renderer, st
 }
 
 void DialogueWindow::update(uint32_t current_character) {
-    m_current_index = current_character;
+    if (!m_is_finished) m_current_index = current_character;
+    else m_current_index = m_content_len;
 }
 
 DialogueManager::DialogueManager() :
@@ -249,6 +251,10 @@ void DialogueManager::nextQuote(gui::game::GameMachine* gm) {
     script::QuoteNode* quote = dynamic_cast<script::QuoteNode*>(m_current_quote);
     if (quote != nullptr && quote->next == nullptr) {
         m_is_active = false;
+        return;
+    }
+    if (!m_dialogue_window.isFinished()) {
+        m_dialogue_window.forceFinish();
         return;
     }
     setEntryPoint(quote->next, gm);
@@ -334,10 +340,7 @@ void DialogueManager::choose(gui::game::GameMachine* gm) {
 void DialogueManager::handleKeyboard(gui::KeyboardManager& keyboard_manager, gui::game::GameMachine* gm) {
     this->update(gm->getDeltaTime());
     if (keyboard_manager.isClicked(cfg::CONTROLS_ACTION)) {
-        if (this->isActive()) {
-            this->setEntryPoint(&quote_1, gm);
-        }
-        else if (this->isChoice()) {
+        if (this->isChoice()) {
             this->choose(gm);
         }
         else {
