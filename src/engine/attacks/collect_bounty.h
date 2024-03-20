@@ -3,7 +3,8 @@
 
 namespace engine {
 namespace skills {
-struct PistolShot : public CombatSkill {
+struct CollectBounty : public CombatSkill {
+    CollectBounty : CombatSkill {
     id = "collect_bounty";
     name = "Collect Bounty";
     level = 0;
@@ -14,6 +15,7 @@ struct PistolShot : public CombatSkill {
     attackMod = 85;
     damageMod = 0;
     criticalChanceMod = 7f;
+    }
 };
 
 }   // namespace skills

@@ -5,12 +5,15 @@
 namespace engine {
 namespace items {
 
-struct HighwaymanArmor : public Armor {
+struct AbominationArmor : public Armor {
+    AbominationArmor : Armor() {
+
     id = "abomination_armor";
     name = "Abomination Armor";
     defenseMod = 7;
     protectionMod = 0;
     speedMod = 0;
+    }
 };
 
 }   // namespace items

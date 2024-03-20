@@ -4,6 +4,7 @@
 namespace engine {
 namespace skills {
 struct TargetTag : public CombatSkill {
+    TargetTag : CombatSkill{
     id = "target_tag";
     name = "Target Tag";
     level = 0;
@@ -14,6 +15,7 @@ struct TargetTag : public CombatSkill {
     attackMod = 100;
     damageMod = -100;
     criticalChanceMod = 0f;
+    }
 };
 
 }   // namespace skills
