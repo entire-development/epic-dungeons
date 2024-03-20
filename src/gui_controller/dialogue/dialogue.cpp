@@ -3,9 +3,11 @@
 #include "renderer/graphics.h"
 #include "gui_controller/timed_count.h"
 #include "gui_controller/game/game_machine.h"
+#include "gui_controller/keyboard_manager/keyboard_manager.h"
 #include <string>
 #include <functional>
 #include <cmath>
+#include "static_data/dialogue.h"
 
 using namespace dl;
 
@@ -188,11 +190,43 @@ void DialogueWindow::drawQuote(std::shared_ptr<graphics::Renderer> renderer) {
             }
 
             // draw character
-            if (display && current_len < m_current_index) renderer->draw(graphics::Text(std::string(&line[j], &line[j + 1])).setColor(m_text_color).setFontSize(m_font_size),
-                               WINDOW_MARGIN + PORTRAIT_SIZE + WINDOW_PADDING + char_pos * CHAR_WIDTH,
-                               10 + cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN + WINDOW_PADDING + LINE_HEIGHT * i);
+            if (display && current_len < m_current_index) renderer->draw(graphics::Text(std::string(&line[j], &line[j + 1]))
+                                .setColor(m_text_color).setFontSize(m_font_size),
+                                WINDOW_MARGIN + PORTRAIT_SIZE + WINDOW_PADDING + char_pos * CHAR_WIDTH,
+                                10 + cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN + WINDOW_PADDING + LINE_HEIGHT * i);
             if (current_len < m_current_index) current_len++;
             else m_is_finished = true;
+        }
+    }
+}
+
+void DialogueWindow::drawChoice(std::shared_ptr<graphics::Renderer> renderer, std::vector<std::string> lines,
+                                uint32_t active_choice, std::vector<script::ScriptNode *> next_steps) const {
+    // CONTAINER
+    renderer->drawRec({
+        .x = WINDOW_MARGIN, .y = cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN,
+        .w = DIALOGUE_WINDOW_WIDTH - WINDOW_MARGIN * 2, .h = DIALOGUE_WINDOW_HEIGHT - WINDOW_MARGIN * 2,
+        .color = graphics::Color("#000000"), .stroke = 5,
+        .stroke_color = graphics::Color("#ffffff")});
+
+    uint32_t rec_padding = 4;
+    // CONTENT
+    for (int i = 0; i < lines.size(); i++) {
+        std::string line = lines[i];
+        if (i == active_choice) {
+            renderer->drawRec({
+                .x = static_cast<float>(WINDOW_MARGIN + WINDOW_PADDING - rec_padding),
+                .y = static_cast<float>(cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN + WINDOW_PADDING + LINE_HEIGHT * i - rec_padding),
+                .w = static_cast<float>(DIALOGUE_WINDOW_WIDTH - WINDOW_MARGIN * 2 - rec_padding * 2 - WINDOW_PADDING),
+                .h = static_cast<float>(rec_padding * 2 + LINE_HEIGHT),
+                .color = graphics::Color("#ffffff")
+            });
+            renderer->draw(graphics::Text(line).setColor("#000000"), WINDOW_MARGIN + WINDOW_PADDING,
+                           10 + cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN + WINDOW_PADDING + LINE_HEIGHT * i);
+        }
+        else {
+            renderer->draw(graphics::Text(line), WINDOW_MARGIN + WINDOW_PADDING,
+                           10 + cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN + WINDOW_PADDING + LINE_HEIGHT * i);
         }
     }
 }
@@ -237,12 +271,16 @@ void DialogueManager::handleActionKeyPressed(gui::game::GameMachine* gm) {
 void DialogueManager::update(uint64_t delta_time) {
     m_character_anim.update(delta_time);
     m_dialogue_window.update(std::round(m_character_anim.get()));
-    //if (m_dialogue_window.isFinished()) m_is_active = false;
 }
 
 void DialogueManager::draw(std::shared_ptr<graphics::Renderer> renderer) {
     if (m_is_active && m_current_quote != nullptr) {
-        m_dialogue_window.drawQuote(renderer);
+        if (m_is_dialogue) {
+            m_dialogue_window.drawChoice(renderer, m_choice_lines, m_active_choice, m_next_steps);
+        }
+        else {
+            m_dialogue_window.drawQuote(renderer);
+        }
     }
 }
 
@@ -273,14 +311,39 @@ bool DialogueManager::isActive() const {
     return !m_is_active;
 }
 
+bool DialogueManager::isChoice() const {
+    return m_is_dialogue;
+}
+
 void DialogueManager::nextChoice() {
+    if (!m_is_dialogue) return;
     m_active_choice = (m_active_choice + 1) % m_choice_lines.size();
 }
 
 void DialogueManager::prevChoice() {
-    m_active_choice = (m_active_choice - 1) % m_choice_lines.size();
+    if (!m_is_dialogue) return;
+    m_active_choice -= 1;
+    if (m_active_choice + 1 == 0) m_active_choice = m_choice_lines.size() - 1;
 }
 
 void DialogueManager::choose(gui::game::GameMachine* gm) {
+    if (!m_is_dialogue) return;
     setEntryPoint(m_next_steps[m_active_choice], gm);
+}
+
+void DialogueManager::handleKeyboard(gui::KeyboardManager& keyboard_manager, gui::game::GameMachine* gm) {
+    this->update(gm->getDeltaTime());
+    if (keyboard_manager.isClicked(cfg::CONTROLS_ACTION)) {
+        if (this->isActive()) {
+            this->setEntryPoint(&quote_1, gm);
+        }
+        else if (this->isChoice()) {
+            this->choose(gm);
+        }
+        else {
+            this->nextQuote(gm);
+        }
+    }
+    if (keyboard_manager.isClicked(cfg::CONTROLS_MOVE_DOWN)) this->nextChoice();
+    if (keyboard_manager.isClicked(cfg::CONTROLS_MOVE_UP)) this->prevChoice();
 }
