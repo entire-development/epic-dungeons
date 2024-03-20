@@ -7,11 +7,11 @@ namespace items {
 
 struct AntiquarianArmor : public Armor {
     AntiquarianArmor() : Armor() {
-    id = "antiquarian_armor";
-    name = "Antiquarian Armor";
-    defenseMod = 10;
-    protectionMod = 0;
-    speedMod = 0;
+        id = "antiquarian_armor";
+        name = "Antiquarian Armor";
+        defenseMod = 10;
+        protectionMod = 0;
+        speedMod = 0;
     }
 };
 

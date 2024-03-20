@@ -1,4 +1,5 @@
 #include "animation.h"
+#include "logging/logger.h"
 #include "sprite.h"
 #include "static_data/game_config.h"
 #include <fstream>
@@ -11,6 +12,7 @@ Animation::Animation(const std::string &path) {
     m_path = path;
     // remove .gif
     m_path = m_path.substr(0, m_path.size() - 4);
+    logging::info("Loading animation " + m_path);
     while (true) {
         std::string frame_path = cfg::SPRITES_PATH + m_path + "/frame-" + std::to_string(m_frames_count) + ".png";
         if (std::ifstream(frame_path).good()) {
@@ -19,11 +21,16 @@ Animation::Animation(const std::string &path) {
             break;
         }
     }
-    printf("Loaded animation %s with %d frames\n", m_path.c_str(), m_frames_count);
+    if (m_frames_count == 0) {
+        logging::error("No frames found in animation " + m_path);
+        throw std::runtime_error("No frames found in animation " + m_path);
+    }
+    logging::debug("Loaded " + std::to_string(m_frames_count) + " frames for animation " + m_path);
     for (uint32_t i = 0; i < m_frames_count; i++) {
         std::string frame_path = m_path + "/frame-" + std::to_string(i) + ".png";
         m_frames.push_back(Sprite::load(frame_path));
     }
+    logging::info("Loaded animation " + m_path);
 }
 
 const uint32_t Animation::getFramesCount() const {

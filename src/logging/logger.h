@@ -1,6 +1,7 @@
 // logger.h
 #pragma once
 #include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 
 namespace logging {
@@ -8,7 +9,11 @@ namespace logging {
 class Logger {
 public:
     Logger() {
-        m_logger = spdlog::basic_logger_mt("basic_logger", "logs/log.txt");
+        std::vector<spdlog::sink_ptr> sinks;
+        sinks.push_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
+        sinks.push_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>("logs/log.txt", true));
+        m_logger = std::make_shared<spdlog::logger>("logger", begin(sinks), end(sinks));
+        spdlog::register_logger(m_logger);
         m_logger->set_level(spdlog::level::debug);
     }
 
@@ -28,29 +33,29 @@ public:
         m_logger->error(msg);
     }
 
+    static Logger &getLogger() {
+        static Logger logger;
+        return logger;
+    }
+
 private:
     std::shared_ptr<spdlog::logger> m_logger;
 };
 
-Logger &getLogger() {
-    static Logger logger;
-    return logger;
-}
-
 static void debug(const std::string &msg) {
-    getLogger().debug(msg);
+    Logger::getLogger().debug(msg);
 }
 
 static void info(const std::string &msg) {
-    getLogger().info(msg);
+    Logger::getLogger().info(msg);
 }
 
 static void warn(const std::string &msg) {
-    getLogger().warn(msg);
+    Logger::getLogger().warn(msg);
 }
 
-void error(const std::string &msg) {
-    getLogger().error(msg);
+static void error(const std::string &msg) {
+    Logger::getLogger().error(msg);
 }
 
 }   // namespace logging

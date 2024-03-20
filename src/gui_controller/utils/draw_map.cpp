@@ -1,5 +1,6 @@
 
 #include "gui_controller/utils.h"
+#include "logging/logger.h"
 #include <map>
 
 namespace gui {
@@ -18,8 +19,8 @@ void drawMap(const std::shared_ptr<graphics::Renderer> &renderer, const std::sha
     static graphics::SpritePtr m_selected_room_sprite;
     static graphics::SpritePtr m_current_cell_sprite;
     if (!is_loaded) {
-        printf("Loading map textures\n");
         // clang-format off
+        logging::info("Loading map sprites");
         m_hall_sprites = {
             {dungeon::CellType::NOTHING,    graphics::Sprite::load(map_path + "hall/clear.png")},
             {dungeon::CellType::FIGHT,      graphics::Sprite::load(map_path + "hall/battle.png")},
@@ -39,6 +40,7 @@ void drawMap(const std::shared_ptr<graphics::Renderer> &renderer, const std::sha
         m_current_cell_sprite =             graphics::Sprite::load(map_path + "indicator.png");
         // clang-format on
         is_loaded = true;
+        logging::info("Map sprites loaded");
     }
     std::shared_ptr<graphics::Renderer> r = renderer;
     std::shared_ptr<dungeon::Dungeon> d = dungeon;
