@@ -9,6 +9,7 @@ namespace gui {
 class MainMenu : public State {
 public:
     void enter(Controller *controller) {
+        is_ending = false;
         m_selected = 0;
         is_key_pressed = false;
 

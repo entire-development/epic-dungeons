@@ -12,6 +12,7 @@ class Main : public GameState {
     TimedCount m_anim;
 
     void enter(GameMachine *gm) override {
+        is_ending = false;
         auto sigm = [](float x) {
             return 1 / (1 + std::exp(-10 * (x - 0.5)));
         };
