@@ -250,7 +250,7 @@ void DungeonMaker::generate_room_events(const std::weak_ptr<Room>& start) {
 void DungeonMaker::generate_corridor_events() {
     std::map<CellType, size_t> balance_weights;
     std::queue<CellType> balance;
-    int length = 10;
+
     for (std::pair<CellType, size_t> p : generation_cfg::corridors_weights)
         balance_weights[p.first] = 0;
 
@@ -266,7 +266,7 @@ void DungeonMaker::generate_corridor_events() {
         CellType type = types[randint(0, (int)types.size() - 1)];
         balance_weights[type] += 1;
         balance.push(type);
-        if (balance.size() > length) {
+        if (balance.size() > generation_cfg::corridors_memory_length) {
             balance_weights[balance.front()] -= 1;
             balance.pop();
         }
