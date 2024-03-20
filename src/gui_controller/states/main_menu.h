@@ -68,7 +68,6 @@ public:
             });
             m_anim.start();
             is_ending = true;
-            
         }
     };
 
@@ -84,9 +83,9 @@ public:
         renderer->draw(background, 0, 0);
         renderer->draw(title, cfg::WINDOW_WIDTH / 3, 100);
         for (int i = 0; i < m_options.size(); i++) {
-            renderer->draw(graphics::Text(m_options[i], "story", 40), cfg::WINDOW_WIDTH * 17 / 36, 300 + i * 50);
+            renderer->draw(graphics::Text(m_options[i], "story", 40), cfg::WINDOW_WIDTH * 16 / 36, 300 + i * 50);
             if (i == m_selected) {
-                renderer->draw(graphics::Text("*", "story", 50), cfg::WINDOW_WIDTH * 17 / 36 - 20, 315 + i * 50);
+                renderer->draw(graphics::Text("*", "story", 50), cfg::WINDOW_WIDTH * 16 / 36 - 20, 315 + i * 50);
             }
         }
         renderer->drawRec({0, 0, cfg::WINDOW_WIDTH, cfg::WINDOW_HEIGHT, {0, 0, 0, alpha}});

@@ -26,6 +26,8 @@ public:
         renderer->clear();
         renderer->drawText(100, 100, "Settings");
 
+        renderer->draw(graphics::Sprite("background/main_menu/background.png").toSizeX(cfg::WINDOW_WIDTH), 0, 0);
+
         // Current resolution
         renderer->drawText(
             100, 150, "Resolution: " + std::to_string(cfg::WINDOW_WIDTH) + "x" + std::to_string(cfg::WINDOW_HEIGHT));
