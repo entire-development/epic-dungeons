@@ -6,7 +6,7 @@ namespace engine {
 namespace items {
 
 struct Glaive : public Weapon {
-    Glaive(): Weapon() {
+    Glaive() : Weapon() {
     id = "glaive";
     name = "Glaive";
     attackMod = 0;
