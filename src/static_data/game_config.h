@@ -1,5 +1,6 @@
 #pragma once
 #include "keyboard/keyboard.h"
+#include <spdlog/spdlog.h>
 #include <string>
 
 namespace cfg {
@@ -29,4 +30,11 @@ const std::string FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.
 const std::string FONT_PATH = "/Library/Fonts/Arial Unicode.ttf";
 #endif
 
+#ifdef DEBUG
+const spdlog::level::level_enum LOG_LEVEL = spdlog::level::debug;
+#elif RELEASE
+const spdlog::level::level_enum LOG_LEVEL = spdlog::level::info;
+#else
+const spdlog::level::level_enum LOG_LEVEL = spdlog::level::warn;
+#endif
 }   // namespace cfg

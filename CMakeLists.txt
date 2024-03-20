@@ -35,3 +35,18 @@ foreach(GIF ${GIFS})
     file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/res/${FRAME_DIR})
     execute_process(COMMAND convert -coalesce ${GIF} ${CMAKE_BINARY_DIR}/res/${FRAME_DIR}/frame.png)
 endforeach()
+
+# add define for debug mode
+if (CMAKE_BUILD_TYPE MATCHES Debug)
+    target_compile_definitions(EpicDungeons PRIVATE DEBUG)
+endif()
+
+# add define for release mode
+if (CMAKE_BUILD_TYPE MATCHES Release)
+    target_compile_definitions(EpicDungeons PRIVATE RELEASE)
+endif()
+
+# add define for profiling mode
+if (CMAKE_BUILD_TYPE MATCHES MinSizeRel)
+    target_compile_definitions(EpicDungeons PRIVATE PROFILING)
+endif()

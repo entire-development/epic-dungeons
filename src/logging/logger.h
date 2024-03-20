@@ -1,5 +1,6 @@
 // logger.h
 #pragma once
+#include "static_data/game_config.h"
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
@@ -14,7 +15,9 @@ public:
         sinks.push_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>("logs/log.txt", true));
         m_logger = std::make_shared<spdlog::logger>("logger", begin(sinks), end(sinks));
         spdlog::register_logger(m_logger);
-        m_logger->set_level(spdlog::level::debug);
+        m_logger->set_level(cfg::LOG_LEVEL);
+        // setup format
+        spdlog::set_pattern("[%H:%M:%S %z] [%^%l%$] %v");
     }
 
     void debug(const std::string &msg) {

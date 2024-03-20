@@ -1,4 +1,5 @@
 #include "gui_controller/utils.h"
+#include "logging/logger.h"
 
 namespace gui {
 namespace utils {
@@ -10,7 +11,7 @@ void cellView(const std::shared_ptr<graphics::Renderer> &renderer, const std::sh
     static std::vector<graphics::Sprite> m_hall_backgrounds;
     static std::vector<graphics::Sprite> m_room_backgrounds;
     if (!is_loaded) {
-        printf("Loading cell view textures\n");
+        logging::info("Loading cell view sprites");
         m_hall_backgrounds.push_back(graphics::Sprite("background/hall/crypts/0.png"));
         m_hall_backgrounds.push_back(graphics::Sprite("background/hall/crypts/1.png"));
         m_hall_backgrounds.push_back(graphics::Sprite("background/hall/crypts/2.png"));
@@ -25,6 +26,7 @@ void cellView(const std::shared_ptr<graphics::Renderer> &renderer, const std::sh
         }
 
         is_loaded = true;
+        logging::info("Cell view sprites loaded");
     }
 
     std::shared_ptr<graphics::Renderer> r = renderer;

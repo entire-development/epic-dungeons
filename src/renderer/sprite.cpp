@@ -8,7 +8,7 @@ Sprite::Sprite(const std::string &path) {
         logging::error("Error loading sprite from file: " + m_path);
         throw std::runtime_error("Error loading sprite from file: " + m_path);
     }
-    logging::info("Loaded sprite " + m_path);
+    logging::debug("Loaded sprite " + m_path);
     m_texture.setSmooth(true);   // enable smooth texture
 }
 

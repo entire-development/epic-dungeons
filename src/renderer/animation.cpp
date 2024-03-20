@@ -12,7 +12,7 @@ Animation::Animation(const std::string &path) {
     m_path = path;
     // remove .gif
     m_path = m_path.substr(0, m_path.size() - 4);
-    logging::info("Loading animation " + m_path);
+    logging::debug("Loading animation " + m_path);
     while (true) {
         std::string frame_path = cfg::SPRITES_PATH + m_path + "/frame-" + std::to_string(m_frames_count) + ".png";
         if (std::ifstream(frame_path).good()) {
@@ -30,7 +30,7 @@ Animation::Animation(const std::string &path) {
         std::string frame_path = m_path + "/frame-" + std::to_string(i) + ".png";
         m_frames.push_back(Sprite::load(frame_path));
     }
-    logging::info("Loaded animation " + m_path);
+    logging::debug("Loaded animation " + m_path);
 }
 
 const uint32_t Animation::getFramesCount() const {
