@@ -6,7 +6,7 @@ namespace engine {
 namespace items {
 
 struct AbominationArmor : public Armor {
-    AbominationArmor : Armor() {
+    AbominationArmor() : Armor() {
 
     id = "abomination_armor";
     name = "Abomination Armor";
