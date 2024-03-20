@@ -3,9 +3,11 @@
 #include "renderer/graphics.h"
 #include "gui_controller/timed_count.h"
 #include "gui_controller/game/game_machine.h"
+#include "gui_controller/keyboard_manager/keyboard_manager.h"
 #include <string>
 #include <functional>
 #include <cmath>
+#include "static_data/dialogue.h"
 
 using namespace dl;
 
@@ -188,29 +190,49 @@ void DialogueWindow::drawQuote(std::shared_ptr<graphics::Renderer> renderer) {
             }
 
             // draw character
-            if (display && current_len < m_current_index) renderer->draw(graphics::Text(std::string(&line[j], &line[j + 1])).setColor(m_text_color).setFontSize(m_font_size),
-                               WINDOW_MARGIN + PORTRAIT_SIZE + WINDOW_PADDING + char_pos * CHAR_WIDTH,
-                               10 + cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN + WINDOW_PADDING + LINE_HEIGHT * i);
+            if (display && current_len < m_current_index) renderer->draw(graphics::Text(std::string(&line[j], &line[j + 1]))
+                                .setColor(m_text_color).setFontSize(m_font_size),
+                                WINDOW_MARGIN + PORTRAIT_SIZE + WINDOW_PADDING + char_pos * CHAR_WIDTH,
+                                10 + cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN + WINDOW_PADDING + LINE_HEIGHT * i);
             if (current_len < m_current_index) current_len++;
             else m_is_finished = true;
         }
     }
 }
 
-void DialogueWindow::update(uint32_t current_character) {
-    m_current_index = current_character;
+void DialogueWindow::drawChoice(std::shared_ptr<graphics::Renderer> renderer, std::vector<std::string> lines,
+                                uint32_t active_choice, std::vector<script::ScriptNode *> next_steps) const {
+    // CONTAINER
+    renderer->drawRec({
+        .x = WINDOW_MARGIN, .y = cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN,
+        .w = DIALOGUE_WINDOW_WIDTH - WINDOW_MARGIN * 2, .h = DIALOGUE_WINDOW_HEIGHT - WINDOW_MARGIN * 2,
+        .color = graphics::Color("#000000"), .stroke = 5,
+        .stroke_color = graphics::Color("#ffffff")});
+
+    uint32_t rec_padding = 4;
+    // CONTENT
+    for (int i = 0; i < lines.size(); i++) {
+        std::string line = lines[i];
+        if (i == active_choice) {
+            renderer->drawRec({
+                .x = static_cast<float>(WINDOW_MARGIN + WINDOW_PADDING - rec_padding),
+                .y = static_cast<float>(cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN + WINDOW_PADDING + LINE_HEIGHT * i - rec_padding),
+                .w = static_cast<float>(DIALOGUE_WINDOW_WIDTH - WINDOW_MARGIN * 2 - rec_padding * 2 - WINDOW_PADDING),
+                .h = static_cast<float>(rec_padding * 2 + LINE_HEIGHT),
+                .color = graphics::Color("#ffffff")
+            });
+            renderer->draw(graphics::Text(line).setColor("#000000"), WINDOW_MARGIN + WINDOW_PADDING,
+                           10 + cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN + WINDOW_PADDING + LINE_HEIGHT * i);
+        }
+        else {
+            renderer->draw(graphics::Text(line), WINDOW_MARGIN + WINDOW_PADDING,
+                           10 + cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN + WINDOW_PADDING + LINE_HEIGHT * i);
+        }
+    }
 }
 
-DialogueManager::DialogueManager(script::QuoteNode* entry_point) :
-    m_current_quote(entry_point),
-    m_dialogue_window(DialogueWindow()),
-    m_character_anim(gui::TimedCount()),
-    m_is_active(true)
-{
-    m_dialogue_window.changeQuote(entry_point->content, entry_point->sprite);
-    size_t str_len = dl::preprocessString(entry_point->content).length();
-    m_character_anim.init(0, str_len, str_len * cfg::DIALOGUE_FONT_SPEED);
-    m_character_anim.start();
+void DialogueWindow::update(uint32_t current_character) {
+    m_current_index = current_character;
 }
 
 DialogueManager::DialogueManager() :
@@ -224,17 +246,12 @@ DialogueManager::DialogueManager() :
 
 
 void DialogueManager::nextQuote(gui::game::GameMachine* gm) {
-    if (m_current_quote->next == nullptr) {
+    script::QuoteNode* quote = dynamic_cast<script::QuoteNode*>(m_current_quote);
+    if (quote != nullptr && quote->next == nullptr) {
         m_is_active = false;
         return;
     }
-    m_current_quote = m_current_quote->next;
-    std::invoke(m_current_quote->meta_action, gm);
-    m_dialogue_window.changeQuote(m_current_quote->content, m_current_quote->sprite);
-    size_t str_len = dl::preprocessString(m_current_quote->content).length();
-    m_character_anim.init(0, str_len, str_len * cfg::DIALOGUE_FONT_SPEED);
-    m_character_anim.start();
-    m_is_active = true;
+    setEntryPoint(quote->next, gm);
 }
 
 inline void DialogueManager::skip() {
@@ -254,25 +271,79 @@ void DialogueManager::handleActionKeyPressed(gui::game::GameMachine* gm) {
 void DialogueManager::update(uint64_t delta_time) {
     m_character_anim.update(delta_time);
     m_dialogue_window.update(std::round(m_character_anim.get()));
-    //if (m_dialogue_window.isFinished()) m_is_active = false;
 }
 
 void DialogueManager::draw(std::shared_ptr<graphics::Renderer> renderer) {
     if (m_is_active && m_current_quote != nullptr) {
-        m_dialogue_window.drawQuote(renderer);
+        if (m_is_dialogue) {
+            m_dialogue_window.drawChoice(renderer, m_choice_lines, m_active_choice, m_next_steps);
+        }
+        else {
+            m_dialogue_window.drawQuote(renderer);
+        }
     }
 }
 
-void DialogueManager::setEntryPoint(script::QuoteNode* entry_point, gui::game::GameMachine* gm) {
+void DialogueManager::setEntryPoint(script::ScriptNode* entry_point, gui::game::GameMachine* gm) {
     m_current_quote = entry_point;
-    std::invoke(m_current_quote->meta_action, gm);
-    m_dialogue_window.changeQuote(m_current_quote->content, m_current_quote->sprite);
-    size_t str_len = dl::preprocessString(entry_point->content).length();
-    m_character_anim.init(0, str_len, str_len * cfg::DIALOGUE_FONT_SPEED);
-    m_character_anim.start();
-    m_is_active = 1;
+    script::QuoteNode* quote = dynamic_cast<script::QuoteNode*>(entry_point);
+    if (quote != nullptr) { // if script node
+        std::invoke(quote->meta_action, gm);
+        m_dialogue_window.changeQuote(quote->content, quote->sprite);
+        size_t str_len = dl::preprocessString(quote->content).length();
+        m_character_anim.init(0, str_len, str_len * cfg::DIALOGUE_FONT_SPEED);
+        m_character_anim.start();
+        m_is_active = 1;
+        m_is_dialogue = 0;
+    }
+    else { // if choice node
+        script::ChoiceNode* choice = dynamic_cast<script::ChoiceNode*>(entry_point);
+        std::invoke(choice->meta_action, gm);
+        m_next_steps = choice->next_pool;
+        m_choice_lines = choice->string_pool;
+        m_is_active = 1;
+        m_is_dialogue = 1;
+        m_active_choice = 0;
+    }
 }
 
 bool DialogueManager::isActive() const {
     return !m_is_active;
+}
+
+bool DialogueManager::isChoice() const {
+    return m_is_dialogue;
+}
+
+void DialogueManager::nextChoice() {
+    if (!m_is_dialogue) return;
+    m_active_choice = (m_active_choice + 1) % m_choice_lines.size();
+}
+
+void DialogueManager::prevChoice() {
+    if (!m_is_dialogue) return;
+    m_active_choice -= 1;
+    if (m_active_choice + 1 == 0) m_active_choice = m_choice_lines.size() - 1;
+}
+
+void DialogueManager::choose(gui::game::GameMachine* gm) {
+    if (!m_is_dialogue) return;
+    setEntryPoint(m_next_steps[m_active_choice], gm);
+}
+
+void DialogueManager::handleKeyboard(gui::KeyboardManager& keyboard_manager, gui::game::GameMachine* gm) {
+    this->update(gm->getDeltaTime());
+    if (keyboard_manager.isClicked(cfg::CONTROLS_ACTION)) {
+        if (this->isActive()) {
+            this->setEntryPoint(&quote_1, gm);
+        }
+        else if (this->isChoice()) {
+            this->choose(gm);
+        }
+        else {
+            this->nextQuote(gm);
+        }
+    }
+    if (keyboard_manager.isClicked(cfg::CONTROLS_MOVE_DOWN)) this->nextChoice();
+    if (keyboard_manager.isClicked(cfg::CONTROLS_MOVE_UP)) this->prevChoice();
 }
