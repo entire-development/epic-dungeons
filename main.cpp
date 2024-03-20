@@ -1,12 +1,21 @@
 #include "dungeon/makers/dungeon-maker.h"
 #include "gui_controller/controller.h"
 #include "keyboard/keyboard.h"
+#include "logging/logger.h"
 #include "renderer/graphics.h"
 #include "static_data/game_config.h"
 #include <SFML/Graphics.hpp>
 #include <chrono>
 
-int main() {
+// get -v from the command line
+int main(int argc, char *argv[]) {
+    for (int i = 0; i < argc; i++) {
+        if (std::string(argv[i]) == "-v" || std::string(argv[i]) == "--verbose") {
+            logging::setLevel(spdlog::level::debug);
+            logging::debug("Verbose mode enabled");
+        }
+    }
+
     auto window = sf::RenderWindow {{cfg::WINDOW_WIDTH, cfg::WINDOW_HEIGHT},
                                     cfg::WINDOW_NAME,
                                     sf::Style::Titlebar | sf::Style::Close};

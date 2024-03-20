@@ -31,10 +31,11 @@ const std::string FONT_PATH = "/Library/Fonts/Arial Unicode.ttf";
 #endif
 
 #ifdef DEBUG
-const spdlog::level::level_enum LOG_LEVEL = spdlog::level::debug;
+inline spdlog::level::level_enum LOG_LEVEL = spdlog::level::info;
 #elif RELEASE
-const spdlog::level::level_enum LOG_LEVEL = spdlog::level::info;
+inline spdlog::level::level_enum LOG_LEVEL = spdlog::level::info;
 #else
-const spdlog::level::level_enum LOG_LEVEL = spdlog::level::warn;
+inline spdlog::level::level_enum LOG_LEVEL = spdlog::level::warn;
 #endif
+
 }   // namespace cfg

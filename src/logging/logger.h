@@ -36,6 +36,10 @@ public:
         m_logger->error(msg);
     }
 
+    void setLevel(const spdlog::level::level_enum &level) {
+        m_logger->set_level(level);
+    }
+
     static Logger &getLogger() {
         static Logger logger;
         return logger;
@@ -59,6 +63,10 @@ static void warn(const std::string &msg) {
 
 static void error(const std::string &msg) {
     Logger::getLogger().error(msg);
+}
+
+static void setLevel(const spdlog::level::level_enum &level) {
+    Logger::getLogger().setLevel(level);
 }
 
 }   // namespace logging
