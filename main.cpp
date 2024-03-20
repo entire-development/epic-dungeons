@@ -9,12 +9,18 @@
 
 // get -v from the command line
 int main(int argc, char *argv[]) {
+#ifdef DEBUG
     for (int i = 0; i < argc; i++) {
         if (std::string(argv[i]) == "-v" || std::string(argv[i]) == "--verbose") {
             logging::setLevel(spdlog::level::debug);
             logging::debug("Verbose mode enabled");
         }
+        if (std::string(argv[i]) == "-h" || std::string(argv[i]) == "--help") {
+            std::cout << "Usage: " << argv[0] << " [-v|--verbose] [-h|--help]" << std::endl;
+            return 0;
+        }
     }
+#endif
 
     auto window = sf::RenderWindow {{cfg::WINDOW_WIDTH, cfg::WINDOW_HEIGHT},
                                     cfg::WINDOW_NAME,
