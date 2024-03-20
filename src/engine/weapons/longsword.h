@@ -6,6 +6,7 @@ namespace engine {
 namespace items {
 
 struct Longsword : public Weapon {
+    Longsword() : Weapon() {
     id = "longsword";
     name = "Longsword";
     attackMod = 0;
@@ -13,6 +14,7 @@ struct Longsword : public Weapon {
     maxDamage = 12;
     criticalChanceMod = 3;
     speedMod = 1;
+    }
 };
 
 }   // namespace items
