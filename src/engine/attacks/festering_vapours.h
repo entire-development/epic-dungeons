@@ -4,7 +4,7 @@
 namespace engine {
 namespace skills {
 struct FesteringVapours : public CombatSkill {
-    FesteringVapours : CombatSkill() {
+    FesteringVapours() : CombatSkill() {
     id = "festering_vapours";
     name = "Festering Vapours";
     level = 0;
