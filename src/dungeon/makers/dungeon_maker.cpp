@@ -229,10 +229,11 @@ void DungeonMaker::generate_room_events(const std::weak_ptr<Room>& start) {
         return a.first < b.first;
     });
 
-    setCellType(rooms[0].second, CellType::ENTRANCE);
+    setCellType(rooms.front().second, CellType::ENTRANCE);
+    setCellType(rooms.back().second, CellType::EXIT);
     size_t count = rooms.size();
 
-    for (int i = 1; i < count; i++) {
+    for (int i = 1; i < count - 1; i++) {
         std::vector<CellType> types;
         for (std::pair<CellType, size_t> p : generation_cfg::rooms_weights) {
             if (generation_cfg::rooms_limits.contains(p.first) && generation_cfg::rooms_limits.at(p.first) > (double)i / count)
