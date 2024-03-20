@@ -5,7 +5,8 @@
 namespace engine {
 namespace items {
 
-struct MakeshiftCencser : public Weapon {
+struct MakeshiftCenser : public Weapon {
+    MakeshiftCenser() : Weapon() {
     id = "makeshift_censer";
     name = "Makeshift Censer";
     attackMod = 0;
@@ -13,6 +14,7 @@ struct MakeshiftCencser : public Weapon {
     maxDamage = 5;
     criticalChanceMod = 1;
     speedMod = 5;
+    }
 };
 
 }   // namespace items
