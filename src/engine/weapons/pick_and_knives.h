@@ -6,7 +6,7 @@ namespace engine {
 namespace items {
 
 struct PickAndKnives : public Weapon {
-    Pistol() : Weapon() {
+    PickAndKnives() : Weapon() {
     id = "pick_and_knives";
     name = "Pick and Knives";
     attackMod = 0;
