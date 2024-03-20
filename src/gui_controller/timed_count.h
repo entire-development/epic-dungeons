@@ -2,6 +2,13 @@
 #include <functional>
 
 namespace gui {
+
+//std::function<float(uint32_t)> frame_func(uint32_t frame_count, uint32_t cycle_len) { // function to animate sprites with frames
+//    return [&cycle_len, &frame_count](float x) {
+//        return (std::lround(x) % cycle_len) / frame_count;
+//    };
+//}
+
 class TimedCount {
 public:
     void init(float from, float to, uint64_t time);
