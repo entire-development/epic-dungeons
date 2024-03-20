@@ -12,7 +12,9 @@ namespace entities {
 
 class GraveRobber : public Hero {
 public:
-    GraveRobber() : Hero("Grave Robber") {
+    GraveRobber() : Hero() {
+        m_id = "grave_robber";
+        m_name = "Grave Robber";
         m_health = 40;
         m_max_health = 40;
         m_weapon = std::make_shared<items::PickAndKnives>();

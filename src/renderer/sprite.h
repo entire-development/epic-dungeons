@@ -26,7 +26,7 @@ public:
         return std::make_shared<graphics::Sprite>(path);
     }
 
-private:
+protected:
     std::string m_path;
     bool m_flipped_x = false, m_flipped_y = false;
     float m_x_scale = 1.0f, m_y_scale = 1.0f, m_angle = 0;

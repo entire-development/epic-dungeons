@@ -4,6 +4,7 @@
 namespace engine {
 namespace skills {
 struct Smite : public CombatSkill {
+    Smite() : CombatSkill() {
     id = "smite";
     name = "Smite";
     level = 0;
@@ -14,6 +15,7 @@ struct Smite : public CombatSkill {
     attackMod = 85;
     damageMod = 0;
     criticalChanceMod = 0;
+    }
 };
 
 }   // namespace skills

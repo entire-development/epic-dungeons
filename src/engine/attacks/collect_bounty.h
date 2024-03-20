@@ -3,17 +3,19 @@
 
 namespace engine {
 namespace skills {
-struct PistolShot : public CombatSkill {
-    id = "collect_bounty";
-    name = "Collect Bounty";
-    level = 0;
-    type = Type::kMelee;
-    targetType = TargetType::kIndividual;
-    claunchablePositions = {3, 2, 1};
-    targetablePositions = {1, 2};
-    attackMod = 85;
-    damageMod = 0;
-    criticalChanceMod = 7f;
+struct CollectBounty : public CombatSkill {
+    CollectBounty() : CombatSkill() {
+        id = "collect_bounty";
+        name = "Collect Bounty";
+        level = 0;
+        type = Type::kMelee;
+        targetType = TargetType::kIndividual;
+        launchablePositions = {3, 2, 1};
+        targetablePositions = {1, 2};
+        attackMod = 85;
+        damageMod = 0;
+        criticalChanceMod = 7;
+    }
 };
 
 }   // namespace skills

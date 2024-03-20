@@ -6,11 +6,13 @@ namespace engine {
 namespace items {
 
 struct HellionArmor : public Armor {
-    id = "hellion_armor";
-    name = "Hellion Armor";
-    defenseMod = 10;
-    protectionMod = 0;
-    speedMod = 0;
+    HellionArmor() : Armor() {
+        id = "hellion_armor";
+        name = "Hellion Armor";
+        defenseMod = 10;
+        protectionMod = 0;
+        speedMod = 0;
+    }
 };
 
 }   // namespace items

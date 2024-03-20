@@ -4,6 +4,7 @@
 namespace engine {
 namespace skills {
 struct WickedHack : public CombatSkill {
+    WickedHack() : CombatSkill() {
     id = "wicked_hack";
     name = "Wicked Hack";
     level = 0;
@@ -14,6 +15,7 @@ struct WickedHack : public CombatSkill {
     attackMod = 85;
     damageMod = 0;
     criticalChanceMod = 4;
+    }
 };
 
 }   // namespace skills

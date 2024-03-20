@@ -102,6 +102,7 @@ public:
                 attack(gm);
                 break;
         }
+        render(gm);
     }
 
     void attack(GameMachine *gm) {

@@ -1,6 +1,8 @@
 #pragma once
 #include "dungeon/dungeon.h"
 #include "entity.h"
+#include "heroes/bounty_hunter.h"
+#include "heroes/crusader.h"
 #include "heroes/highwayman.h"
 #include <memory>
 
@@ -10,8 +12,8 @@ public:
     Engine() : m_dungeon(nullptr), m_party(nullptr) {
         m_party = std::make_shared<entities::Party>();
         m_party->addMember(std::make_shared<entities::Highwayman>());
-        m_party->addMember(std::make_shared<entities::Highwayman>());
-        m_party->addMember(std::make_shared<entities::Highwayman>());
+        m_party->addMember(std::make_shared<entities::Crusader>());
+        m_party->addMember(std::make_shared<entities::BountyHunter>());
     }
 
     void bindDungeon(const std::shared_ptr<dungeon::Dungeon> &dungeon) {

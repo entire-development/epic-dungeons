@@ -32,13 +32,11 @@ struct Skill {
     std::vector<uint8_t> targetablePositions;
 
     bool isUsable(const uint8_t position) const {
-        return std::find(launchablePositions.begin(), launchablePositions.end(), position)
-            != launchablePositions.end();
+        return std::find(launchablePositions.begin(), launchablePositions.end(), position) != launchablePositions.end();
     }
 
     bool isTargetable(const uint8_t position) const {
-        return std::find(targetablePositions.begin(), targetablePositions.end(), position)
-            != targetablePositions.end();
+        return std::find(targetablePositions.begin(), targetablePositions.end(), position) != targetablePositions.end();
     }
 };
 

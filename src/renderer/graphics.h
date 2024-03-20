@@ -1,5 +1,6 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "animation.h"
 #include "color.h"
 #include "keyboard/keyboard.h"
 #include "sprite.h"

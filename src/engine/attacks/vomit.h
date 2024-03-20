@@ -4,6 +4,7 @@
 namespace engine {
 namespace skills {
 struct Vomit : public CombatSkill {
+    Vomit() : CombatSkill() {
     id = "vomit";
     name = "Vomit";
     level = 0;
@@ -14,6 +15,7 @@ struct Vomit : public CombatSkill {
     attackMod = 95;
     damageMod = -90;
     criticalChanceMod = 2;
+    }
 };
 
 }   // namespace skills

@@ -12,7 +12,9 @@ namespace entities {
 
 class Antiquarian : public Hero {
 public:
-    Antiquarian() : Hero("Antiquarian") {
+    Antiquarian() : Hero() {
+        m_id = "antiquarian";
+        m_name = "Antiquarian";
         m_health = 17;
         m_max_health = 17;
         m_weapon = std::make_shared<items::MakeshiftCenser>();

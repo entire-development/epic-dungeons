@@ -1,11 +1,14 @@
 #include "sprite.h"
+#include "logging/logger.h"
 
 namespace graphics {
 Sprite::Sprite(const std::string &path) {
     m_path = cfg::SPRITES_PATH + path;
     if (!m_texture.loadFromFile(m_path)) {
+        logging::error("Error loading sprite from file: " + m_path);
         throw std::runtime_error("Error loading sprite from file: " + m_path);
     }
+    logging::debug("Loaded sprite " + m_path);
     m_texture.setSmooth(true);   // enable smooth texture
 }
 

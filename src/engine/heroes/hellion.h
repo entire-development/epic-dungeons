@@ -12,7 +12,9 @@ namespace entities {
 
 class Hellion : public Hero {
 public:
-    Hellion() : Hero("Hellion") {
+    Hellion() : Hero() {
+        m_id = "hellion";
+        m_name = "Hellion";
         m_health = 26;
         m_max_health = 26;
         m_weapon = std::make_shared<items::Glaive>();

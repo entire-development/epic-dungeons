@@ -79,6 +79,7 @@ public:
                 d->setNextCell(d->getPrevOnPath().lock());
                 gm->changeState(GUIGameState::kMoveTransition);
             }
+            render(r, gm->m_engine.lock());
             return;
         }
 
@@ -96,8 +97,8 @@ public:
         }
         if (is_clicked) {
             d->setTargetRoom(neighbours[r_selected].lock());
-            render(r, gm->m_engine.lock());
         }
+        render(r, gm->m_engine.lock());
     }
 
     void render(std::shared_ptr<graphics::Renderer> r, std::shared_ptr<engine::Engine> e,

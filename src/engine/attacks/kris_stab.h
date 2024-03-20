@@ -4,6 +4,7 @@
 namespace engine {
 namespace skills {
 struct KrisStab : public CombatSkill {
+    KrisStab() : CombatSkill() {
     id = "kris_stab";
     name = "Kris Stab";
     level = 0;
@@ -14,6 +15,7 @@ struct KrisStab : public CombatSkill {
     attackMod = 85;
     damageMod = 0;
     criticalChanceMod = 3;
+    }
 };
 
 }   // namespace skills

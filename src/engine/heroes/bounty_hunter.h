@@ -12,7 +12,9 @@ namespace entities {
 
 class BountyHunter : public Hero {
 public:
-    BountyHunter() : Hero("Bounty Hunter") {
+    BountyHunter() : Hero() {
+        m_id = "bounty_hunter";
+        m_name = "Bounty Hunter";
         m_health = 25;
         m_max_health = 25;
         m_weapon = std::make_shared<items::AbandonedAxe>();

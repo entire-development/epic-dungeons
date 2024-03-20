@@ -4,6 +4,7 @@
 namespace engine {
 namespace skills {
 struct SuppresingFire : public CombatSkill {
+    SuppresingFire() : CombatSkill() {
     id = "suppresing_fire";
     name = "Suppresing Fire";
     level = 0;
@@ -14,6 +15,7 @@ struct SuppresingFire : public CombatSkill {
     attackMod = 95;
     damageMod = -80;
     criticalChanceMod = -10;
+    }
 };
 
 }   // namespace skills

@@ -1,5 +1,6 @@
 #pragma once
 #include "keyboard/keyboard.h"
+#include <spdlog/spdlog.h>
 #include <string>
 
 namespace cfg {
@@ -10,6 +11,7 @@ const unsigned CELL_SIZE = 20;
 const std::string WINDOW_NAME = "*EPIC DUNGEONS*";
 const std::string FONTS_PATH = "res/fonts/";
 const std::string SPRITES_PATH = "res/sprites/";
+const uint32_t ANIMATION_FRAME_DURATION = 33;
 
 const keyboard::Key CONTROLS_MOVE_RIGHT = keyboard::Key::KEY_RIGHT;
 const keyboard::Key CONTROLS_MOVE_DOWN = keyboard::Key::KEY_DOWN;
@@ -26,6 +28,14 @@ const std::string FONT_PATH = "C:/Windows/Fonts/arial.ttf";
 const std::string FONT_PATH = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf";
 #elif __APPLE__
 const std::string FONT_PATH = "/Library/Fonts/Arial Unicode.ttf";
+#endif
+
+#ifdef DEBUG
+inline spdlog::level::level_enum LOG_LEVEL = spdlog::level::info;
+#elif RELEASE
+inline spdlog::level::level_enum LOG_LEVEL = spdlog::level::info;
+#else
+inline spdlog::level::level_enum LOG_LEVEL = spdlog::level::warn;
 #endif
 
 }   // namespace cfg

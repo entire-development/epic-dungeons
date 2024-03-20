@@ -6,11 +6,13 @@ namespace engine {
 namespace items {
 
 struct AntiquarianArmor : public Armor {
-    id = "antiquarian_armor";
-    name = "Antiquarian Armor";
-    defenseMod = 10;
-    protectionMod = 0;
-    speedMod = 0;
+    AntiquarianArmor() : Armor() {
+        id = "antiquarian_armor";
+        name = "Antiquarian Armor";
+        defenseMod = 10;
+        protectionMod = 0;
+        speedMod = 0;
+    }
 };
 
 }   // namespace items

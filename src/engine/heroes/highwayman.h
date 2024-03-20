@@ -12,7 +12,9 @@ namespace entities {
 
 class Highwayman : public Hero {
 public:
-    Highwayman() : Hero("Highwayman") {
+    Highwayman() : Hero() {
+        m_id = "highwayman";
+        m_name = "Highwayman";
         m_health = 23;
         m_max_health = 23;
         m_weapon = std::make_shared<items::Pistol>();
