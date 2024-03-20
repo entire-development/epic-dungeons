@@ -23,19 +23,26 @@ const uint32_t CHAR_WIDTH = 18;     // pixels
 std::string preprocessString(const std::string& str);
 
 namespace script {
-    struct ScriptNode { };
+    struct ScriptNode {
+        virtual ~ScriptNode() {};
+    };
 
-    struct QuoteNode : ScriptNode {
+    class QuoteNode : public ScriptNode {
+    public:
+        QuoteNode(std::string content, std::string sprite,  ScriptNode* next, std::function<void(gui::game::GameMachine* gm)> meta_action) :
+        content(content), sprite(sprite), next(next), meta_action(meta_action) {}
         std::string content;
         std::string sprite;
-        QuoteNode* next;
+        ScriptNode* next;
         std::function<void(gui::game::GameMachine* gm)> meta_action;
     };
 
-    struct ChoiseNode : ScriptNode {
+    class ChoiceNode : public ScriptNode {
+    public:
+        ChoiceNode(std::vector<ScriptNode*> next_pool, std::vector<std::string> string_pool, std::function<void(gui::game::GameMachine* gm)> meta_action) :
+        next_pool(next_pool), string_pool(string_pool), meta_action(meta_action) {}
         std::vector<ScriptNode*> next_pool;
         std::vector<std::string> string_pool;
-        uint32_t timer;
         std::function<void(gui::game::GameMachine* gm)> meta_action;
     };
 }
@@ -66,18 +73,25 @@ private:
 class DialogueManager { // to manage dialogue branches, meta-actions etc
 public:
     DialogueManager();
-    explicit DialogueManager(script::QuoteNode* entry_point);
-    void setEntryPoint(script::QuoteNode* entry_point, gui::game::GameMachine* gm);
+    void setEntryPoint(script::ScriptNode* entry_point, gui::game::GameMachine* gm);
     void nextQuote(gui::game::GameMachine* gm);
     void skip();
     void update(uint64_t delta_time);
     void draw(std::shared_ptr<graphics::Renderer> renderer);
     bool isActive() const;
     void handleActionKeyPressed(gui::game::GameMachine* gm); // nextQuote() or skip() call depending of text animation status
+    void nextChoice();
+    void prevChoice();
+    void choose(gui::game::GameMachine* gm);
 private:
     bool m_is_active;
-    script::QuoteNode* m_current_quote;
+    bool m_is_dialogue;
+    script::ScriptNode* m_current_quote;
     DialogueWindow m_dialogue_window;
     gui::TimedCount m_character_anim;
+    uint32_t m_active_choice;
+    std::vector<script::ScriptNode*> m_next_steps;
+    std::vector<std::string> m_choice_lines;
+    void drawChoices() const;
 };
 }

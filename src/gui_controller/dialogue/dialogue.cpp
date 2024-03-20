@@ -201,18 +201,6 @@ void DialogueWindow::update(uint32_t current_character) {
     m_current_index = current_character;
 }
 
-DialogueManager::DialogueManager(script::QuoteNode* entry_point) :
-    m_current_quote(entry_point),
-    m_dialogue_window(DialogueWindow()),
-    m_character_anim(gui::TimedCount()),
-    m_is_active(true)
-{
-    m_dialogue_window.changeQuote(entry_point->content, entry_point->sprite);
-    size_t str_len = dl::preprocessString(entry_point->content).length();
-    m_character_anim.init(0, str_len, str_len * cfg::DIALOGUE_FONT_SPEED);
-    m_character_anim.start();
-}
-
 DialogueManager::DialogueManager() :
         m_current_quote(nullptr),
         m_dialogue_window(DialogueWindow()),
@@ -224,17 +212,12 @@ DialogueManager::DialogueManager() :
 
 
 void DialogueManager::nextQuote(gui::game::GameMachine* gm) {
-    if (m_current_quote->next == nullptr) {
+    script::QuoteNode* quote = dynamic_cast<script::QuoteNode*>(m_current_quote);
+    if (quote != nullptr && quote->next == nullptr) {
         m_is_active = false;
         return;
     }
-    m_current_quote = m_current_quote->next;
-    std::invoke(m_current_quote->meta_action, gm);
-    m_dialogue_window.changeQuote(m_current_quote->content, m_current_quote->sprite);
-    size_t str_len = dl::preprocessString(m_current_quote->content).length();
-    m_character_anim.init(0, str_len, str_len * cfg::DIALOGUE_FONT_SPEED);
-    m_character_anim.start();
-    m_is_active = true;
+    setEntryPoint(quote->next, gm);
 }
 
 inline void DialogueManager::skip() {
@@ -263,16 +246,41 @@ void DialogueManager::draw(std::shared_ptr<graphics::Renderer> renderer) {
     }
 }
 
-void DialogueManager::setEntryPoint(script::QuoteNode* entry_point, gui::game::GameMachine* gm) {
+void DialogueManager::setEntryPoint(script::ScriptNode* entry_point, gui::game::GameMachine* gm) {
     m_current_quote = entry_point;
-    std::invoke(m_current_quote->meta_action, gm);
-    m_dialogue_window.changeQuote(m_current_quote->content, m_current_quote->sprite);
-    size_t str_len = dl::preprocessString(entry_point->content).length();
-    m_character_anim.init(0, str_len, str_len * cfg::DIALOGUE_FONT_SPEED);
-    m_character_anim.start();
-    m_is_active = 1;
+    script::QuoteNode* quote = dynamic_cast<script::QuoteNode*>(entry_point);
+    if (quote != nullptr) { // if script node
+        std::invoke(quote->meta_action, gm);
+        m_dialogue_window.changeQuote(quote->content, quote->sprite);
+        size_t str_len = dl::preprocessString(quote->content).length();
+        m_character_anim.init(0, str_len, str_len * cfg::DIALOGUE_FONT_SPEED);
+        m_character_anim.start();
+        m_is_active = 1;
+        m_is_dialogue = 0;
+    }
+    else { // if choice node
+        script::ChoiceNode* choice = dynamic_cast<script::ChoiceNode*>(entry_point);
+        std::invoke(choice->meta_action, gm);
+        m_next_steps = choice->next_pool;
+        m_choice_lines = choice->string_pool;
+        m_is_active = 1;
+        m_is_dialogue = 1;
+        m_active_choice = 0;
+    }
 }
 
 bool DialogueManager::isActive() const {
     return !m_is_active;
+}
+
+void DialogueManager::nextChoice() {
+    m_active_choice = (m_active_choice + 1) % m_choice_lines.size();
+}
+
+void DialogueManager::prevChoice() {
+    m_active_choice = (m_active_choice - 1) % m_choice_lines.size();
+}
+
+void DialogueManager::choose(gui::game::GameMachine* gm) {
+    setEntryPoint(m_next_steps[m_active_choice], gm);
 }

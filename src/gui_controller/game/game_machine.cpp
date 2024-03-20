@@ -19,7 +19,7 @@ GameMachine::GameMachine() {
     addState<Event>(GUIGameState::kEvent);
     addState<PostEvent>(GUIGameState::kPostEvent);
     addState<DialogueDemo>(GUIGameState::kDialogueDemo);
-    changeState(GUIGameState::kMain);
+    changeState(GUIGameState::kDialogueDemo);
 }
 
 }   // namespace game
