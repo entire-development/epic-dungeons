@@ -2,7 +2,7 @@
 #include "gui_controller/dialogue/dialogue.h"
 #include "gui_controller/game/game_machine.h"
 
-using namespace dl;
+using namespace gui;
 
 dl::script::QuoteNode choice_1 = dl::script::QuoteNode(
         "Choice 1! Wise choice.",

@@ -8,7 +8,7 @@
 #include <functional>
 #include <cmath>
 
-using namespace dl;
+using namespace gui::dl;
 
 namespace METADATA {
     std::string SHORTPAUSE = "$p$p$p$p$p$p$p$p$p$p$p";
@@ -17,7 +17,7 @@ namespace METADATA {
     const int CHAR_SIZE_TAG_LENGTH = 6;
 };
 
-std::string dl::preprocessString(const std::string& str) {
+std::string gui::dl::preprocessString(const std::string& str) {
     std::string result  = "";
     size_t last_index = 0;
     for (int i = 0; i < str.length(); i++) {

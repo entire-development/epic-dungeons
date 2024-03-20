@@ -17,9 +17,8 @@ find_package(Threads REQUIRED)
 target_link_libraries(EpicDungeons PRIVATE Threads::Threads)
 
 # add sfml
-set(SFML_DIR "/opt/homebrew/Cellar/sfml/2.6.1")
-
-find_package(SFML 2.6.1 COMPONENTS graphics audio REQUIRED)
+# set(SFML_DIR "/opt/homebrew/Cellar/sfml/2.6.1")
+find_package(SFML 2.5.1 COMPONENTS graphics audio REQUIRED)
 target_link_libraries(EpicDungeons PRIVATE sfml-graphics sfml-audio)
 
 # include fonts

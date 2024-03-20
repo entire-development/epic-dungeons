@@ -12,6 +12,7 @@
 #include <numeric>
 #include <memory>
 
+namespace gui {
 namespace dl {
 const uint32_t DIALOGUE_WINDOW_WIDTH = cfg::WINDOW_WIDTH;
 const uint32_t DIALOGUE_WINDOW_HEIGHT = cfg::WINDOW_HEIGHT / 4.5;
@@ -100,4 +101,5 @@ private:
     std::vector<script::ScriptNode*> m_next_steps;
     std::vector<std::string> m_choice_lines;
 };
+}
 }
