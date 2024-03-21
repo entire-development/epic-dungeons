@@ -7,4 +7,5 @@
 #include "heroes/bounty_hunter.h"
 #include "heroes/crusader.h"
 #include "heroes/grave_robber.h"
+#include "heroes/hellion.h"
 #include "heroes/highwayman.h"

@@ -64,6 +64,7 @@ protected:
     std::weak_ptr<engine::entities::Entity> m_entity;
     std::map<State, std::shared_ptr<graphics::Animation>> m_animations;
     std::shared_ptr<graphics::Sprite> m_portrait;
+    std::shared_ptr<graphics::Sprite> m_grave;
     State m_state;
     Selection m_selection;
 };

@@ -47,7 +47,14 @@ const Vector2d getPosition(uint8_t position) {
 const void Entity::render(const std::shared_ptr<graphics::Renderer> &renderer, const uint8_t &position,
                           const float &animation_progress) {
     auto entity = m_entity.lock();
-    auto sprite = m_animations[m_state]->getFrame();
+    std::shared_ptr<graphics::Sprite> sprite;
+    if (entity->isAlive()) {
+        sprite = m_animations[m_state]->getFrame();
+        sprite->setScale(1);
+    } else {
+        sprite = m_grave;
+        sprite->setScale(0.32);
+    }
     if (position <= 3)
         sprite->setFlip(false, false);
     else
@@ -56,16 +63,15 @@ const void Entity::render(const std::shared_ptr<graphics::Renderer> &renderer, c
 
     Vector2d bottom_center = getPosition(position);
     static const float entity_width = cfg::WINDOW_WIDTH / (8);
-    sprite->setScale(1);
     const float entity_height = sprite->getSize().y();
 
     Vector2d size = {entity_width, entity_height};
     Vector2d top_left = bottom_center - Vector2d {size.x() / 2, size.y()};
     Vector2d bottom_left = top_left + Vector2d {0, size.y()};
-    if (entity->isAlive())
-        sprite->setColor("#ffffff");
-    else
-        sprite->setColor("#ff0000");
+    // if (entity->isAlive())
+    // sprite->setColor("#ffffff");
+    // else
+    // sprite->setColor("#ff0000");
     renderer->draw(*sprite, top_left.x(), top_left.y());
     graphics::Text name = graphics::Text(entity->getName(), "arial", 20).setStyle(sf::Text::Bold);
     graphics::Text health = graphics::Text("Health: " + std::to_string(entity->getHealth()), "arial", 20);
@@ -121,6 +127,8 @@ void Entity::bind(const std::shared_ptr<engine::entities::Entity> &entity) {
     m_animations[State::kIdle] = getAnimation(path + "/idle.gif");
     m_animations[State::kCombat] = getAnimation(path + "/combat.gif");
     m_portrait = getSprite(path + "/portrait.png");
+    m_grave = getSprite("heroes/grave.png");
+    m_grave->setScale(0.32);
 }
 
 }   // namespace views

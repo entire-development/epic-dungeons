@@ -33,9 +33,32 @@ public:
         m_keyboard.reset();
         std::shared_ptr<graphics::Renderer> r = gm->m_renderer.lock();
         m_enemy_party = std::make_shared<engine::entities::Party>();
-        m_enemy_party->addMember(std::make_shared<engine::entities::Abomination>());
-        m_enemy_party->addMember(std::make_shared<engine::entities::Antiquarian>());
-        m_enemy_party->addMember(std::make_shared<engine::entities::Arbalest>());
+
+        // bad code
+        for (size_t i = 0; i < 3; i++) {
+            switch (rand() % 5) {
+                case 0:
+                    m_enemy_party->addMember(std::make_shared<engine::entities::Abomination>());
+                    break;
+                case 1:
+                    m_enemy_party->addMember(std::make_shared<engine::entities::Antiquarian>());
+                    break;
+                case 2:
+                    m_enemy_party->addMember(std::make_shared<engine::entities::Arbalest>());
+                    break;
+                case 3:
+                    m_enemy_party->addMember(std::make_shared<engine::entities::GraveRobber>());
+                    break;
+                case 4:
+                    m_enemy_party->addMember(std::make_shared<engine::entities::Hellion>());
+                    break;
+            }
+        }
+        // end of bad code
+
+        // m_enemy_party->addMember(std::make_shared<engine::entities::Abomination>());
+        // m_enemy_party->addMember(std::make_shared<engine::entities::Antiquarian>());
+        // m_enemy_party->addMember(std::make_shared<engine::entities::Arbalest>());
         auto party = gm->m_engine.lock()->getParty();
 
         // bad code
@@ -61,10 +84,12 @@ public:
 
         m_queue.clear();
         for (auto &hero : m_heroes) {
+            hero->reset();
             hero->setState(views::Entity::State::kCombat);
             m_queue.push_back(hero);
         }
         for (auto &enemy : m_enemies) {
+            enemy->reset();
             enemy->setState(views::Entity::State::kCombat);
             m_queue.push_back(enemy);
         }
@@ -245,6 +270,13 @@ public:
     }
 
     void routing(GameMachine *gm) {
+        for (auto &hero : m_heroes)
+            hero->setSelection(views::Entity::Selection::kNone);
+        for (auto &enemy : m_enemies)
+            enemy->setSelection(views::Entity::Selection::kNone);
+        m_selected_defender = 0;
+        m_selected_skill = 0;
+
         if (!m_queue[m_current].lock()->getEntity().lock()->isAlive()) {
             m_current = (m_current + 1) % m_queue.size();
         }
@@ -322,7 +354,23 @@ public:
             std::shared_ptr<views::Entity> attacker = m_queue[m_current].lock();
             std::vector<std::shared_ptr<engine::skills::Skill>> skills = attacker->getEntity().lock()->getSkills();
             utils::drawSkills(r, skills, m_selected_skill);
+
+            std::shared_ptr<engine::skills::CombatSkill> skill =
+                std::dynamic_pointer_cast<engine::skills::CombatSkill>(skills[m_selected_skill]);
+
+            r->draw(graphics::Text(skill->name, "story", 40), cfg::WINDOW_WIDTH * 0.1, cfg::WINDOW_HEIGHT * 0.82);
+            int32_t min_damage = std::round((float) attacker->getEntity().lock()->getWeapon()->minDamage
+                                            * (100 + skill->damageMod) / 100);
+            int32_t max_damage = std::round((float) attacker->getEntity().lock()->getWeapon()->maxDamage
+                                            * (100 + skill->damageMod) / 100);
+            r->draw(
+                graphics::Text("DMG: " + std::to_string(min_damage) + "-" + std::to_string(max_damage), "story", 26),
+                cfg::WINDOW_WIDTH * 0.1, cfg::WINDOW_HEIGHT * 0.82 + 30);
+            int32_t atk = attacker->getEntity().lock()->getWeapon()->attackMod + skill->attackMod;
+            r->draw(graphics::Text("ATK: " + std::to_string(atk) + "%", "story", 26), cfg::WINDOW_WIDTH * 0.1,
+                    cfg::WINDOW_HEIGHT * 0.82 + 60);
         }
+
         r->display();
     }
 
