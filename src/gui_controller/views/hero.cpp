@@ -48,18 +48,20 @@ const void Entity::render(const std::shared_ptr<graphics::Renderer> &renderer, c
                           const float &animation_progress) {
     auto entity = m_entity.lock();
     std::shared_ptr<graphics::Sprite> sprite;
+    float dh = 0;
     if (entity->isAlive()) {
         sprite = m_animations[m_state]->getFrame();
         sprite->setScale(1);
+        sprite->setRotation(animation_progress * 360);
     } else {
         sprite = m_grave;
         sprite->setScale(0.32);
+        dh = sin(animation_progress * 3.14) * 15;
     }
     if (position <= 3)
         sprite->setFlip(false, false);
     else
         sprite->setFlip(true, false);
-    sprite->setRotation(animation_progress * 360);
 
     Vector2d bottom_center = getPosition(position);
     static const float entity_width = cfg::WINDOW_WIDTH / (8);
@@ -72,7 +74,7 @@ const void Entity::render(const std::shared_ptr<graphics::Renderer> &renderer, c
     // sprite->setColor("#ffffff");
     // else
     // sprite->setColor("#ff0000");
-    renderer->draw(*sprite, top_left.x(), top_left.y());
+    renderer->draw(*sprite, top_left.x(), top_left.y() - dh);
     graphics::Text name = graphics::Text(entity->getName(), "arial", 20).setStyle(sf::Text::Bold);
     graphics::Text health = graphics::Text("Health: " + std::to_string(entity->getHealth()), "arial", 20);
 
