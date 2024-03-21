@@ -8,6 +8,7 @@
 #include "gui_controller/views/hero.h"
 #include "keyboard/keyboard.h"
 #include "logging/logger.h"
+#include "sound_manager/sound_manager.h"
 #include "static_data/dialogue.h"
 #include "static_data/game_config.h"
 #include <cmath>
@@ -196,16 +197,16 @@ public:
         //std::cout << (m_state == BattleState::kAttack) << std::endl;
         if (m_state != BattleState::kAttack) {
             if (dialogue_manager.isActive()) {
+                logging::debug("Enemy's turn");
                 std::string enemy_quote = "Ouch! Enemy [color=#990000] " + entity->getName()
-                    + "[/color] attacks your team with " + m_skill.lock()->name + ".";
+                    + "[/color] attacks your team with [color=#990000] " + m_skill.lock()->name + " [/color].";
                 std::cout << m_attacker.lock()->getEntity().lock()->getName() << std::endl;
                 dialogue_manager.setEntryPoint(oneTimeQuote(enemy_quote), gm, [this](gui::game::GameMachine *gm) {
                     this->m_state = BattleState::kAttack;
                 });
+                logging::debug("Enemy attacks with " + m_skill.lock()->name);
             }
-            logging::debug("Enemy's turn");
         }
-        logging::debug("Enemy attacks with " + m_skill.lock()->name);
     }
 
     void attack(GameMachine *gm) {
@@ -215,6 +216,8 @@ public:
 
         dl::script::QuoteNode *quote1 = nullptr;
         dl::script::QuoteNode *tail = nullptr;
+
+        sound::playSound(m_skill.lock()->id);
 
         for (auto &defender : m_defenders) {
             std::shared_ptr<engine::entities::Entity> target = defender.lock()->getEntity().lock();
