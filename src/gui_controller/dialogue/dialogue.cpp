@@ -192,7 +192,7 @@ void DialogueWindow::drawQuote(std::shared_ptr<graphics::Renderer> renderer) {
             if (display && current_len < m_current_index) renderer->draw(graphics::Text(std::string(&line[j], &line[j + 1]))
                                 .setColor(m_text_color).setFontSize(m_font_size),
                                 WINDOW_MARGIN + PORTRAIT_SIZE + WINDOW_PADDING + char_pos * CHAR_WIDTH,
-                                10 + cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN + WINDOW_PADDING + LINE_HEIGHT * i);
+                                10 + cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN + WINDOW_PADDING + LINE_HEIGHT * (i - 1));
             if (m_current_index < m_content_len) current_len++;
             else {
                 m_is_finished = true;
@@ -251,6 +251,7 @@ void DialogueManager::nextQuote(gui::game::GameMachine* gm) {
     script::QuoteNode* quote = dynamic_cast<script::QuoteNode*>(m_current_quote);
     if (quote != nullptr && quote->next == nullptr) {
         m_is_active = false;
+        std::invoke(on_finish, gm);
         return;
     }
     if (!m_dialogue_window.isFinished()) {
@@ -290,17 +291,19 @@ void DialogueManager::draw(std::shared_ptr<graphics::Renderer> renderer) {
     }
 }
 
-void DialogueManager::setEntryPoint(script::ScriptNode* entry_point, gui::game::GameMachine* gm) {
+void DialogueManager::setEntryPoint(script::ScriptNode* entry_point, gui::game::GameMachine* gm, std::function<void(gui::game::GameMachine* gm)> new_on_finish) {
     m_current_quote = entry_point;
     script::QuoteNode* quote = dynamic_cast<script::QuoteNode*>(entry_point);
     if (quote != nullptr) { // if script node
         std::invoke(quote->meta_action, gm);
-        m_dialogue_window.changeQuote(quote->content, quote->sprite);
+        m_dialogue_window.changeQuote
+        (quote->content, quote->sprite);
         size_t str_len = dl::preprocessString(quote->content).length();
         m_character_anim.init(0, str_len, str_len * cfg::DIALOGUE_FONT_SPEED);
         m_character_anim.start();
         m_is_active = 1;
         m_is_dialogue = 0;
+        on_finish = new_on_finish;
     }
     else { // if choice node
         script::ChoiceNode* choice = dynamic_cast<script::ChoiceNode*>(entry_point);
@@ -310,6 +313,7 @@ void DialogueManager::setEntryPoint(script::ScriptNode* entry_point, gui::game::
         m_is_active = 1;
         m_is_dialogue = 1;
         m_active_choice = 0;
+        on_finish = new_on_finish;
     }
 }
 
@@ -339,7 +343,8 @@ void DialogueManager::choose(gui::game::GameMachine* gm) {
 
 void DialogueManager::handleKeyboard(gui::KeyboardManager& keyboard_manager, gui::game::GameMachine* gm) {
     this->update(gm->getDeltaTime());
-    if (keyboard_manager.isClicked(cfg::CONTROLS_ACTION)) {
+    if (!this->m_is_active) return;
+    if (keyboard_manager.isClicked(keyboard::KEY_ENTER)) {
         if (this->isChoice()) {
             this->choose(gm);
         }

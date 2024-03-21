@@ -20,7 +20,7 @@ const uint32_t WINDOW_MARGIN = 16;
 const uint32_t WINDOW_PADDING = 8;
 const uint32_t PORTRAIT_SIZE = DIALOGUE_WINDOW_HEIGHT - WINDOW_MARGIN * 2;
 const uint32_t LINE_HEIGHT = 36;    // pixels
-const uint32_t LINE_LENGTH = 47;    // characters
+const uint32_t LINE_LENGTH = 80;    // characters
 const uint32_t CHAR_WIDTH = 18;     // pixels
 
 std::string preprocessString(const std::string& str);
@@ -79,7 +79,8 @@ private:
 class DialogueManager { // to manage dialogue branches, meta-actions etc
 public:
     DialogueManager();
-    void setEntryPoint(script::ScriptNode* entry_point, gui::game::GameMachine* gm);
+    void setEntryPoint(script::ScriptNode* entry_point, gui::game::GameMachine* gm, std::function<void(gui::game::GameMachine* gm)> new_on_finish = [](gui::game::GameMachine* gm){
+    });
     void nextQuote(gui::game::GameMachine* gm);
     void skip();
     void update(uint64_t delta_time);
@@ -100,6 +101,7 @@ private:
     uint32_t m_active_choice;
     std::vector<script::ScriptNode*> m_next_steps;
     std::vector<std::string> m_choice_lines;
+    std::function<void(gui::game::GameMachine* gm)> on_finish;
 };
 }
 }

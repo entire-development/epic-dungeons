@@ -1,6 +1,9 @@
 #pragma once
 #include "gui_controller/dialogue/dialogue.h"
 #include "gui_controller/game/game_machine.h"
+#include <functional>
+#include <string>
+#include <iostream>
 
 using namespace gui;
 
@@ -58,3 +61,48 @@ dl::script::QuoteNode quote_1 = dl::script::QuoteNode(
         [](gui::game::GameMachine* gm) {
             std::cout << "Quote 1 meta action!";
         });
+
+
+dl::script::QuoteNode fight_quote = dl::script::QuoteNode(
+        "You've entered the fight!",
+        "123",
+        nullptr,
+        [](gui::game::GameMachine* gm) {
+
+        });
+
+dl::script::QuoteNode player_turn_quote = dl::script::QuoteNode(
+        "It's your turn.",
+        "123",
+        nullptr,
+        [](gui::game::GameMachine* gm) {
+
+        });
+
+dl::script::QuoteNode enemy_turn_quote = dl::script::QuoteNode(
+        "It's enemies turn.",
+        "123",
+        nullptr,
+        [](gui::game::GameMachine* gm) {
+            //std::cout << "ENEMY ATTACK START" << std::endl;
+        });
+
+dl::script::QuoteNode* enemyAttack(std::string tool) {
+    dl::script::QuoteNode* quote = new dl::script::QuoteNode(
+            "Enemy attacks with " + tool,
+            "123",
+            nullptr,
+            [](gui::game::GameMachine* gm) {
+                //std::cout << "ENEMY ATTACK START" << std::endl;
+            });
+    return quote;
+}
+
+dl::script::QuoteNode* oneTimeQuote(std::string content) {
+    dl::script::QuoteNode* quote = new dl::script::QuoteNode(
+           content,
+            "123",
+            nullptr,
+            [](gui::game::GameMachine* gm) {});
+    return quote;
+}

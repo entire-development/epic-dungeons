@@ -1,12 +1,14 @@
 #pragma once
 #include "dungeon/dungeon.h"
 #include "engine/entities.h"
+#include "gui_controller/dialogue/dialogue.h"
 #include "gui_controller/game/game_machine.h"
 #include "gui_controller/keyboard_manager/keyboard_manager.h"
 #include "gui_controller/utils.h"
 #include "gui_controller/views/hero.h"
 #include "keyboard/keyboard.h"
 #include "logging/logger.h"
+#include "static_data/dialogue.h"
 #include "static_data/game_config.h"
 #include <cmath>
 #include <memory>
@@ -15,6 +17,7 @@ namespace gui {
 namespace game {
 class Battle : public GameState {
 public:
+    dl::DialogueManager dialogue_manager = dl::DialogueManager();
     enum class BattleState {
         kNone,
         kEnemyAttack,
@@ -99,9 +102,11 @@ public:
                   [](const std::weak_ptr<views::Entity> &a, const std::weak_ptr<views::Entity> &b) {
                       return a.lock()->getEntity().lock()->getSpeed() > b.lock()->getEntity().lock()->getSpeed();
                   });
-        logging::debug("First in queue: " + std::to_string(m_queue[0].lock()->getEntity().lock()->getSpeed()));
-        logging::debug("Last in queue: "
-                       + std::to_string(m_queue[m_queue.size() - 1].lock()->getEntity().lock()->getSpeed()));
+        dialogue_manager.setEntryPoint(
+            oneTimeQuote("Queue First in queue: " + std::to_string(m_queue[0].lock()->getEntity().lock()->getSpeed())
+                         + "        Last in queue: "
+                         + std::to_string(m_queue[m_queue.size() - 1].lock()->getEntity().lock()->getSpeed())),
+            gm);
 
         render(gm);
     }
@@ -119,6 +124,8 @@ public:
     void skill_selection(GameMachine *gm) {
         std::shared_ptr<views::Entity> attacker = m_queue[m_current].lock();
         std::vector<std::shared_ptr<engine::skills::Skill>> skills = attacker->getEntity().lock()->getSkills();
+        if (!dialogue_manager.isActive())
+            return;
         if (m_keyboard.isClicked(keyboard::KEY_ENTER) || m_keyboard.isClicked(keyboard::KEY_SPACE)
             || m_keyboard.isClicked(keyboard::KEY_W) || m_keyboard.isClicked(keyboard::KEY_UP)) {
             m_skill = std::dynamic_pointer_cast<engine::skills::CombatSkill>(skills[m_selected_skill]);
@@ -184,8 +191,21 @@ public:
                 if (m_enemies[i]->getEntity().lock()->isAlive())
                     m_defenders.push_back(m_enemies[i]);
         }
+        //dialogue_manager.setEntryPoint(enemyAttack(m_skill.lock()->name), gm);
+        //m_state = BattleState::kAttack;
+        //std::cout << (m_state == BattleState::kAttack) << std::endl;
+        if (m_state != BattleState::kAttack) {
+            if (dialogue_manager.isActive()) {
+                std::string enemy_quote = "Ouch! Enemy [color=#990000] " + entity->getName()
+                    + "[/color] attacks your team with " + m_skill.lock()->name + ".";
+                std::cout << m_attacker.lock()->getEntity().lock()->getName() << std::endl;
+                dialogue_manager.setEntryPoint(oneTimeQuote(enemy_quote), gm, [this](gui::game::GameMachine *gm) {
+                    this->m_state = BattleState::kAttack;
+                });
+            }
+            logging::debug("Enemy's turn");
+        }
         logging::debug("Enemy attacks with " + m_skill.lock()->name);
-        m_state = BattleState::kAttack;
     }
 
     void attack(GameMachine *gm) {
@@ -193,25 +213,37 @@ public:
         std::shared_ptr<engine::entities::Entity> entity = attacker->getEntity().lock();
         std::shared_ptr<engine::entities::Party> target_party = gm->m_engine.lock()->getParty();
 
+        dl::script::QuoteNode *quote1 = nullptr;
+        dl::script::QuoteNode *tail = nullptr;
+
         for (auto &defender : m_defenders) {
             std::shared_ptr<engine::entities::Entity> target = defender.lock()->getEntity().lock();
             engine::skills::AttackResult result = target->takeAttack(entity, m_skill.lock());
             if (result.isHit) {
-                logging::debug("Hit! Damage: " + std::to_string(result.damage));
-                if (result.isCritical)
-                    logging::debug("Critical hit!");
+                quote1 = new dl::script::QuoteNode("Hit! Damage: [color=#ee2222] " + std::to_string(result.damage)
+                                                       + (result.isCritical ? " CRITICAL " : "") + " [/color]",
+                                                   "123", nullptr, [](gui::game::GameMachine *gm) {});
+                tail = quote1;
+
                 if (result.damage > 0) {
-                    logging::debug("Target health: " + std::to_string(target->getHealth()));
+                    quote1->next =
+                        new dl::script::QuoteNode("targeted: [color=#66ff66] " + target->getName()
+                                                      + " [/color] health: " + std::to_string(target->getHealth()),
+                                                  "123", nullptr, [](gui::game::GameMachine *gm) {});
                 }
             } else {
+                quote1 = new dl::script::QuoteNode(" Miss!", "123", nullptr, [](gui::game::GameMachine *gm) {});
                 logging::debug("Miss!");
             }
+            dialogue_manager.setEntryPoint(quote1, gm);
         }
         m_current = (m_current + 1) % m_queue.size();
         m_state = BattleState::kNone;
     }
 
     void defender_selection(GameMachine *gm) {
+        if (!dialogue_manager.isActive())
+            return;
         if (m_keyboard.isClicked(keyboard::KEY_ENTER)) {
             for (auto &enemy : m_enemies) {
                 enemy->setSelection(views::Entity::Selection::kNone);
@@ -303,16 +335,16 @@ public:
 
         if (m_queue[m_current].lock()->getEntity().lock()->getParty() == gm->m_engine.lock()->getParty()) {
             m_state = BattleState::kSkillSelection;
+            //dialogue_manager.setEntryPoint(&player_turn_quote, gm);
             logging::debug("Player's turn");
+
         } else {
             m_state = BattleState::kEnemyAttack;
-            logging::debug("Enemy's turn");
         }
     }
 
     virtual void update(GameMachine *gm) {
         m_keyboard.update();
-
         switch (m_state) {
             case BattleState::kNone:
                 routing(gm);
@@ -332,6 +364,7 @@ public:
             default:
                 break;
         }
+        dialogue_manager.handleKeyboard(m_keyboard, gm);
         render(gm);
     }
 
@@ -371,6 +404,7 @@ public:
                     cfg::WINDOW_HEIGHT * 0.82 + 60);
         }
 
+        dialogue_manager.draw(r);
         r->display();
     }
 
