@@ -5,6 +5,7 @@
 #include "gui_controller/timed_count.h"
 #include "gui_controller/utils.h"
 #include "static_data/game_config.h"
+#include "sound_manager/sound_manager.h"
 #include <cmath>
 #include <map>
 #include <memory>
@@ -80,6 +81,7 @@ public:
                 gm->changeState(GUIGameState::kMoveTransition);
             }
             render(r, gm->m_engine.lock());
+            sound::playSound("walking-sound", 80);
             return;
         }
 
@@ -92,6 +94,7 @@ public:
         } else if (clicked_left && !neighbours[3].expired()) {
             r_selected = 3;
         } else if (clicked_enter) {
+            sound::playSound("chime");
             d->setNextCell(d->getNextOnPath().lock());
             gm->changeState(GUIGameState::kMoveTransition);
         }

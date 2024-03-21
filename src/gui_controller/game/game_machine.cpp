@@ -7,6 +7,7 @@
 #include "states/main.h"
 #include "states/move_transition.h"
 #include "states/post_event.h"
+#include "states/dialogue_demo.h"
 
 namespace gui {
 namespace game {
@@ -19,6 +20,7 @@ GameMachine::GameMachine() {
     addState<Event>(GUIGameState::kEvent);
     addState<PostEvent>(GUIGameState::kPostEvent);
     addState<GameOver>(GUIGameState::kGameOver);
+    addState<DialogueDemo>(GUIGameState::kDialogueDemo);
     changeState(GUIGameState::kMain);
 }
 

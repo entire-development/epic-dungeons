@@ -43,15 +43,44 @@ int main(int argc, char *argv[]) {
     uint64_t last_time =
         std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())
             .count();
+    int rounded_fps = 0;
+    const int frames_to_average = 5;
+    uint64_t accumulated_time = 0;
+    int frames_counter = 0;
+    double alpha = 0.1;
+    double smoothed_fps = 0.0;
+
     clock.restart();
     while (window.isOpen()) {
         uint64_t current_time =
             std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())
                 .count();
         uint64_t delta_time = current_time - last_time;
+
         if (delta_time < 1000.0f / cfg::FRAMERATE) {
             continue;
         }
+        frames_counter++;
+        accumulated_time += delta_time;
+        
+        if (frames_counter == frames_to_average) {
+            uint64_t average_time = accumulated_time / frames_to_average;
+
+            if (average_time != 0) {
+                if (smoothed_fps == 0) {
+                    smoothed_fps = 1000 / average_time;
+                } else {
+                    smoothed_fps = alpha * (1000 / average_time) + (1 - alpha) * smoothed_fps;
+                }
+            } else {
+                smoothed_fps = 0;
+            }
+            rounded_fps = std::floor(smoothed_fps + 0.5);
+
+            frames_counter = 0;
+            accumulated_time = 0;
+        }
+
         last_time = current_time;
 
         controller.setDeltaTime(delta_time);
@@ -67,8 +96,12 @@ int main(int argc, char *argv[]) {
                 keyboard::setKeyState(event.key.code, false);
             }
         }
-
         controller.update();
+        if (cfg::FPS_COUNTER) {
+            window.setTitle(cfg::WINDOW_NAME + " | " + std::to_string(rounded_fps) + " FPS");
+        } else {
+            window.setTitle(cfg::WINDOW_NAME);
+        }
     }
     return 0;
 }

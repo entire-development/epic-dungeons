@@ -10,7 +10,7 @@ class Color;
 
 class Text {
 public:
-    Text(const std::string &text, const std::string &font_name, const size_t &size);
+    Text(const std::string &text, const std::string &font_name = cfg::FONT_PATH, const size_t &size = cfg::DIALOGUE_FONT_SIZE);
 
     enum class Origin {
         CENTER,
@@ -26,6 +26,7 @@ public:
     Text &setLetterSpacing(float spacingFactor);
     Text &setScale(float factorX, float factorY);
     Vector2d getSize() const;
+    Text &setFontSize(int size);
     std::string getFont(const std::string &name) const;
     sf::Text toSF() const;
 
