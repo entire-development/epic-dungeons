@@ -81,8 +81,8 @@ const void Entity::render(const std::shared_ptr<graphics::Renderer> &renderer, c
         health_offset = width - health.getSize().x();
     }
 
-    renderer->draw(name, bottom_left.x() + name_offset, bottom_left.y());
-    renderer->draw(health, bottom_left.x() + health_offset, bottom_left.y() + 20);
+    renderer->draw(name, bottom_left.x() + name_offset, bottom_left.y() - 350);
+    renderer->draw(health, bottom_left.x() + health_offset, bottom_left.y() - 330);
     if (m_selection == Selection::kSelected) {
         Vector2d bottom_center = getPosition(position);
         renderer->draw(graphics::Text("/\\", "arial", 20).setStyle(sf::Text::Bold).setColor("#00ff00"),

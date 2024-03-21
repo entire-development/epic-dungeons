@@ -1,0 +1,1 @@
+[13:22:28 +03:00] [error] No frames found in animation heroes/highwayman/idle

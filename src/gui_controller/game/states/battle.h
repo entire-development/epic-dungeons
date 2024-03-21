@@ -8,6 +8,8 @@
 #include "keyboard/keyboard.h"
 #include "logging/logger.h"
 #include "static_data/game_config.h"
+#include "gui_controller/dialogue/dialogue.h"
+#include "static_data/dialogue.h"
 #include <cmath>
 #include <memory>
 
@@ -15,6 +17,7 @@ namespace gui {
 namespace game {
 class Battle : public GameState {
 public:
+    dl::DialogueManager dialogue_manager = dl::DialogueManager();
     enum class BattleState {
         kNone,
         kEnemyAttack,
@@ -159,8 +162,21 @@ public:
                 if (m_enemies[i]->getEntity().lock()->isAlive())
                     m_defenders.push_back(m_enemies[i]);
         }
+        //dialogue_manager.setEntryPoint(enemyAttack(m_skill.lock()->name), gm);
+        //m_state = BattleState::kAttack;
+        //std::cout << (m_state == BattleState::kAttack) << std::endl;
+        if (m_state != BattleState::kAttack) {
+            if (dialogue_manager.isActive()) {
+                std::string enemy_quote = "Ouch! Enemy [color=#990000] " + entity->getName() + "[/color] attacks your team with " + m_skill.lock()->name + ".";
+                std::cout << m_attacker.lock()->getEntity().lock()->getName() << std::endl;
+                dialogue_manager.setEntryPoint(oneTimeQuote(enemy_quote), gm, [this](gui::game::GameMachine *gm) {
+                    this->m_state = BattleState::kAttack;
+                });
+            }
+            logging::debug("Enemy's turn");
+        }
         logging::debug("Enemy attacks with " + m_skill.lock()->name);
-        m_state = BattleState::kAttack;
+
     }
 
     void attack(GameMachine *gm) {
@@ -271,16 +287,17 @@ public:
 
         if (m_queue[m_current].lock()->getEntity().lock()->getParty() == gm->m_engine.lock()->getParty()) {
             m_state = BattleState::kSkillSelection;
+            //dialogue_manager.setEntryPoint(&player_turn_quote, gm);
             logging::debug("Player's turn");
+
         } else {
             m_state = BattleState::kEnemyAttack;
-            logging::debug("Enemy's turn");
         }
     }
 
     virtual void update(GameMachine *gm) {
         m_keyboard.update();
-
+        dialogue_manager.handleKeyboard(m_keyboard, gm);
         switch (m_state) {
             case BattleState::kNone:
                 routing(gm);
@@ -323,6 +340,7 @@ public:
             std::vector<std::shared_ptr<engine::skills::Skill>> skills = attacker->getEntity().lock()->getSkills();
             utils::drawSkills(r, skills, m_selected_skill);
         }
+        dialogue_manager.draw(r);
         r->display();
     }
 

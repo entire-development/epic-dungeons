@@ -79,7 +79,8 @@ private:
 class DialogueManager { // to manage dialogue branches, meta-actions etc
 public:
     DialogueManager();
-    void setEntryPoint(script::ScriptNode* entry_point, gui::game::GameMachine* gm);
+    void setEntryPoint(script::ScriptNode* entry_point, gui::game::GameMachine* gm, std::function<void(gui::game::GameMachine* gm)> new_on_finish = [](gui::game::GameMachine* gm){
+    });
     void nextQuote(gui::game::GameMachine* gm);
     void skip();
     void update(uint64_t delta_time);
@@ -100,6 +101,7 @@ private:
     uint32_t m_active_choice;
     std::vector<script::ScriptNode*> m_next_steps;
     std::vector<std::string> m_choice_lines;
+    std::function<void(gui::game::GameMachine* gm)> on_finish;
 };
 }
 }
