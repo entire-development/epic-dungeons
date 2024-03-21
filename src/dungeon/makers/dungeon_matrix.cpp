@@ -1,4 +1,4 @@
-#include "dungeon-matrix.h"
+#include "dungeon_matrix.h"
 
 using namespace dungeon_matrix;
 
@@ -87,6 +87,16 @@ coords DungeonMatrix::get_end(int y, int x, coords from) const {
         return get_end(n.first, n.second, coords(y, x));
     }
     return coords(y, x);
+}
+
+size_t DungeonMatrix::get_path_length(int y, int x, coords from) const {
+    // (y, x) - corridor
+    for (coords n : neighbors(y, x)) {
+        if (n == from) continue;
+        if (get_cell(n.first, n.second) != DungeonMatrixCell::Corridor) continue;
+        return get_path_length(n.first, n.second, coords(y, x)) + 1;
+    }
+    return 1;
 }
 
 std::shared_ptr<std::deque<coords>> DungeonMatrix::get_path(int y, int x, coords from) const {
