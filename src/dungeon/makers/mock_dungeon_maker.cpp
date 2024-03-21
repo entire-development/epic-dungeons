@@ -1,5 +1,5 @@
-#include "MockDungeonMaker.h"
-#include <assert.h>
+#include "mock_dungeon_maker.h"
+#include <cassert>
 #include <memory>
 
 namespace dungeon {

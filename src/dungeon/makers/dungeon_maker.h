@@ -1,6 +1,6 @@
 #pragma once
-#include "dungeon-matrix.h"
 #include "dungeon/dungeon.h"
+#include "dungeon_matrix.h"
 #include "randint.h"
 #include <memory>
 #include <utility>
@@ -8,18 +8,6 @@
 namespace dungeon {
 class DungeonMaker final : IDungeonMaker {
 private:
-    // settings
-    static const size_t width = 50, height = 50;
-
-    static const size_t max_rooms_count = 25;
-    static const size_t basic_distance = 6;
-
-    static const size_t rooms_noise_iterations = 50;
-    static const size_t rooms_noise_strength = 2;
-
-    static const size_t corridor_noise_iterations = 50;
-    static const size_t corridor_noise_strength = 2;
-
     // random
     unsigned int seed = 0;
     pseudorandom::Randint randint;
@@ -33,6 +21,14 @@ private:
     void generate_skeleton(const std::shared_ptr<dungeon_matrix::DungeonMatrix> &mat);
     void room_noise(const std::shared_ptr<dungeon_matrix::DungeonMatrix> &old);
     void corridor_noise(const std::shared_ptr<dungeon_matrix::DungeonMatrix> &old);
+
+    void generate_room_events(const std::weak_ptr<Room> &start);
+    void generate_corridor_events();
+
+public:
+    [[nodiscard]] unsigned int getSeed() const;
+    void setSeed(unsigned int value);
+    void setRandomSeed();
 
 public:
     [[nodiscard]] unsigned int getSeed() const;
