@@ -1,5 +1,12 @@
 #include "sprite.h"
+#include "color.h"
 #include "logging/logger.h"
+#include "static_data/game_config.h"
+#include "vector2d/vector2d.h"
+#include <iostream>
+#include <memory>
+#include <stdexcept>
+#include <string>
 
 namespace graphics {
 Sprite::Sprite(const std::string &path) {

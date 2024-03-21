@@ -1,4 +1,5 @@
 #include "text.h"
+#include "color.h"
 #include "vector2d/vector2d.h"
 
 namespace graphics {

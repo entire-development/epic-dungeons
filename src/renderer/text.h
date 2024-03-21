@@ -4,13 +4,15 @@
 #include "static_data/game_config.h"
 #include "vector2d/vector2d.h"
 #include <iostream>
+#include <string>
 
 namespace graphics {
-class Color;
+// class Color;
 
 class Text {
 public:
-    Text(const std::string &text, const std::string &font_name = cfg::FONT_PATH, const size_t &size = cfg::DIALOGUE_FONT_SIZE);
+    Text(const std::string &text, const std::string &font_name = cfg::FONT_PATH,
+         const size_t &size = cfg::DIALOGUE_FONT_SIZE);
 
     enum class Origin {
         CENTER,
