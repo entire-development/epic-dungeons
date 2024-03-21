@@ -7,6 +7,7 @@
 #include "gui_controller/views/hero.h"
 #include "keyboard/keyboard.h"
 #include "logging/logger.h"
+#include "sound_manager/sound_manager.h"
 #include "static_data/game_config.h"
 #include <cmath>
 #include <memory>
@@ -167,6 +168,7 @@ public:
         std::shared_ptr<views::Entity> attacker = m_queue[m_current].lock();
         std::shared_ptr<engine::entities::Entity> entity = attacker->getEntity().lock();
         std::shared_ptr<engine::entities::Party> target_party = gm->m_engine.lock()->getParty();
+        sound::playSound(m_skill.lock()->id);
 
         for (auto &defender : m_defenders) {
             std::shared_ptr<engine::entities::Entity> target = defender.lock()->getEntity().lock();
