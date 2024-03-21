@@ -2,6 +2,7 @@
 #include "SFML/Graphics/Color.hpp"
 #include "color.h"
 #include "static_data/game_config.h"
+#include "vector2d/vector2d.h"
 #include <iostream>
 
 namespace graphics {
@@ -11,6 +12,12 @@ class Text {
 public:
     Text(const std::string &text, const std::string &font_name = cfg::FONT_PATH, const size_t &size = cfg::DIALOGUE_FONT_SIZE);
 
+    enum class Origin {
+        CENTER,
+        TOP_LEFT,
+        BOTTOM_LEFT,
+    };
+
     Text &setColor(const graphics::Color &color);
     Text &setOutlineColor(const Color &color);
     Text &setOutlineThickness(float thickness);
@@ -18,6 +25,7 @@ public:
     Text &setRotation(float angle);
     Text &setLetterSpacing(float spacingFactor);
     Text &setScale(float factorX, float factorY);
+    Vector2d getSize() const;
     Text &setFontSize(int size);
     std::string getFont(const std::string &name) const;
     sf::Text toSF() const;

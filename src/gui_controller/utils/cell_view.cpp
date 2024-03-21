@@ -1,4 +1,8 @@
+#include "dungeon/dungeon.h"
+#include "engine/engine.h"
 #include "gui_controller/utils.h"
+#include "logging/logger.h"
+#include "static_data/game_config.h"
 
 namespace gui {
 namespace utils {
@@ -10,7 +14,7 @@ void cellView(const std::shared_ptr<graphics::Renderer> &renderer, const std::sh
     static std::vector<graphics::Sprite> m_hall_backgrounds;
     static std::vector<graphics::Sprite> m_room_backgrounds;
     if (!is_loaded) {
-        printf("Loading cell view textures\n");
+        logging::info("Loading cell view sprites");
         m_hall_backgrounds.push_back(graphics::Sprite("background/hall/crypts/0.png"));
         m_hall_backgrounds.push_back(graphics::Sprite("background/hall/crypts/1.png"));
         m_hall_backgrounds.push_back(graphics::Sprite("background/hall/crypts/2.png"));
@@ -25,6 +29,7 @@ void cellView(const std::shared_ptr<graphics::Renderer> &renderer, const std::sh
         }
 
         is_loaded = true;
+        logging::info("Cell view sprites loaded");
     }
 
     std::shared_ptr<graphics::Renderer> r = renderer;
@@ -32,8 +37,8 @@ void cellView(const std::shared_ptr<graphics::Renderer> &renderer, const std::sh
     std::shared_ptr<dungeon::Cell> current = d->getCurrentCell().lock();
     bool is_in_room = current->isRoom();
     if (is_in_room) {
-        uint8_t alpha = 255 * (1 - animation_progress);
-        m_room_backgrounds[0].setColor({255, 255, 255, alpha});
+        // uint8_t alpha = 255 * (1 - animation_progress);
+        // m_room_backgrounds[0].setColor({255, 255, 255});
         r->draw(m_room_backgrounds[0], 0, 0);
         return;
     }
@@ -45,8 +50,8 @@ void cellView(const std::shared_ptr<graphics::Renderer> &renderer, const std::sh
     }
 
     uint8_t alpha = 255;
-    if (next_cell->isRoom())
-        alpha = 255 * (1 - animation_progress);
+    // if (next_cell->isRoom())
+    //     alpha = 255 * (1 - animation_progress);
 
     int distance_to_target = d->getDistanceToTarget();
     for (int i = 0; i < 5; i++) {

@@ -47,10 +47,14 @@ public:
         std::shared_ptr<dungeon::Dungeon> d = gm->m_engine.lock().get()->getDungeon();
         m_prev_anim.update(gm->getDeltaTime());
         if (!m_prev_anim.isEnded()) {
-            render(r, d, m_prev_anim.get());
+            render(r, gm->m_engine.lock(), m_prev_anim.get());
             return;
         }
 
+        if (m_keyboard_manager.isClicked(keyboard::KEY_F)) {
+            gm->changeState(GUIGameState::kBattle);
+            return;
+        }
         m_keyboard_manager.update();
         bool clicked_up =
             m_keyboard_manager.isClicked(keyboard::KEY_UP) || m_keyboard_manager.isClicked(keyboard::KEY_W);
@@ -76,6 +80,7 @@ public:
                 d->setNextCell(d->getPrevOnPath().lock());
                 gm->changeState(GUIGameState::kMoveTransition);
             }
+            render(r, gm->m_engine.lock());
             sound::playSound("walking-sound", 80);
             return;
         }
@@ -95,21 +100,27 @@ public:
         }
         if (is_clicked) {
             d->setTargetRoom(neighbours[r_selected].lock());
-            render(r, d);
         }
+        render(r, gm->m_engine.lock());
     }
 
-    void render(std::shared_ptr<graphics::Renderer> r, std::shared_ptr<dungeon::Dungeon> d,
+    void render(std::shared_ptr<graphics::Renderer> r, std::shared_ptr<engine::Engine> e,
                 float animation_progress = 0.0f) {
+        std::shared_ptr<dungeon::Dungeon> d = e->getDungeon();
         std::shared_ptr<dungeon::Cell> current = d->getCurrentCell().lock();
         std::shared_ptr<dungeon::Cell> next_cell = d->getNextCell().lock();
+        std::shared_ptr<engine::entities::Party> party = e->getParty();
         r->clear();
         utils::cellView(r, d);
+        for (size_t i = 0; i < party->getMembersCount(); i++) {
+            utils::drawEntity(r, party->getMember(i), 3 - i);
+        }
         uint8_t alpha = std::round(m_prev_anim.get());
         r->drawRec({0, 0, cfg::WINDOW_WIDTH, cfg::WINDOW_HEIGHT, {0, 0, 0, alpha}});
         r->draw(*m_gradient, -(cfg::WINDOW_WIDTH / 2), cfg::WINDOW_HEIGHT);
         Vector2d center = {cfg::WINDOW_WIDTH * 4 / 5, cfg::WINDOW_HEIGHT / 2};
         utils::drawMap(r, d, center, cfg::CELL_SIZE);
+        utils::drawGUI(r, e);
         r->display();
     }
 

@@ -35,15 +35,31 @@ public:
         if (m_anim.isEnded()) {
             gm->changeState(GUIGameState::kEvent);
         }
-        render(r, d);
+        render(r, gm->m_engine.lock());
     }
 
-    void render(std::shared_ptr<graphics::Renderer> r, std::shared_ptr<dungeon::Dungeon> d) {
+    void render(std::shared_ptr<graphics::Renderer> r, std::shared_ptr<engine::Engine> e) {
+        std::shared_ptr<dungeon::Dungeon> d = e->getDungeon();
         std::shared_ptr<dungeon::Cell> current = d->getCurrentCell().lock();
         std::shared_ptr<dungeon::Cell> next_cell = d->getNextCell().lock();
+        std::shared_ptr<engine::entities::Party> party = e->getParty();
         float animation_progress = m_anim.get();
+
+        int direction = 1;
+        if (next_cell && next_cell != d->getNextOnPath().lock()) {
+            direction = -1;
+        }
+
         r->clear();
         utils::cellView(r, d, animation_progress);
+        for (size_t i = 0; i < party->getMembersCount(); i++) {
+            utils::drawEntity(r, party->getMember(i), 3 - i, false, animation_progress * direction);
+        }
+
+        if (d->getCurrentCell().lock()->isRoom() || d->getNextCell().lock()->isRoom()) {
+            uint8_t alpha = 255 * animation_progress;
+            r->drawRec({0, 0, cfg::WINDOW_WIDTH, cfg::WINDOW_HEIGHT, {0, 0, 0, alpha}});
+        }
         r->draw(*m_gradient, -(cfg::WINDOW_WIDTH / 2), cfg::WINDOW_HEIGHT);
         Vector2d center = {cfg::WINDOW_WIDTH * 4 / 5, cfg::WINDOW_HEIGHT / 2};
         utils::drawMap(r, d, center, cfg::CELL_SIZE, animation_progress);

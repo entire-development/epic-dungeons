@@ -18,8 +18,8 @@ class Event : public GameState {
                 //     next_state = GUIGameState::kEmpty;
                 break;
             case dungeon::CellType::FIGHT:
-                // if (!cell->isVisited())
-                //     next_state = GUIGameState::kFight;
+                if (!cell->isVisited())
+                    next_state = GUIGameState::kBattle;
                 break;
             default:
                 break;
