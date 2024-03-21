@@ -11,7 +11,7 @@ struct HighwaymanArmor : public Armor {
         name = "Highwayman Armor";
         defenseMod = 5;
         protectionMod = 5;
-        speedMod = 5;
+        speedMod = 0;
     }
 };
 

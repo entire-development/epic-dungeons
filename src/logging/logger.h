@@ -24,16 +24,36 @@ public:
         m_logger->debug(msg);
     }
 
+    template<typename... Args>
+    void debug(spdlog::format_string_t<Args...> msg, Args &&...args) {
+        m_logger->debug(msg, std::forward<Args>(args)...);
+    }
+
     void info(const std::string &msg) {
         m_logger->info(msg);
+    }
+
+    template<typename... Args>
+    void info(spdlog::format_string_t<Args...> msg, Args &&...args) {
+        m_logger->info(msg, std::forward<Args>(args)...);
     }
 
     void warn(const std::string &msg) {
         m_logger->warn(msg);
     }
 
+    template<typename... Args>
+    void warn(spdlog::format_string_t<Args...> msg, Args &&...args) {
+        m_logger->warn(msg, std::forward<Args>(args)...);
+    }
+
     void error(const std::string &msg) {
         m_logger->error(msg);
+    }
+
+    template<typename... Args>
+    void error(spdlog::format_string_t<Args...> msg, Args &&...args) {
+        m_logger->error(msg, std::forward<Args>(args)...);
     }
 
     void setLevel(const spdlog::level::level_enum &level) {
@@ -53,16 +73,36 @@ static void debug(const std::string &msg) {
     Logger::getLogger().debug(msg);
 }
 
+template<typename... Args>
+static void debug(spdlog::format_string_t<Args...> msg, Args &&...args) {
+    Logger::getLogger().debug(msg, std::forward<Args>(args)...);
+}
+
 static void info(const std::string &msg) {
     Logger::getLogger().info(msg);
+}
+
+template<typename... Args>
+static void info(spdlog::format_string_t<Args...> msg, Args &&...args) {
+    Logger::getLogger().info(msg, std::forward<Args>(args)...);
 }
 
 static void warn(const std::string &msg) {
     Logger::getLogger().warn(msg);
 }
 
+template<typename... Args>
+static void warn(spdlog::format_string_t<Args...> msg, Args &&...args) {
+    Logger::getLogger().warn(msg, std::forward<Args>(args)...);
+}
+
 static void error(const std::string &msg) {
     Logger::getLogger().error(msg);
+}
+
+template<typename... Args>
+static void error(spdlog::format_string_t<Args...> msg, Args &&...args) {
+    Logger::getLogger().error(msg, std::forward<Args>(args)...);
 }
 
 static void setLevel(const spdlog::level::level_enum &level) {

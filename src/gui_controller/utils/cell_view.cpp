@@ -1,5 +1,8 @@
+#include "dungeon/dungeon.h"
+#include "engine/engine.h"
 #include "gui_controller/utils.h"
 #include "logging/logger.h"
+#include "static_data/game_config.h"
 
 namespace gui {
 namespace utils {

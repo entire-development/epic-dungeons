@@ -21,6 +21,7 @@ public:
     Sprite &setFlip(bool flipX, bool flipY);
     sf::Sprite toSF() const;
     Vector2d getSize() const;
+    Vector2d getScale() const;
 
     static const std::shared_ptr<graphics::Sprite> load(const std::string &path) {
         return std::make_shared<graphics::Sprite>(path);

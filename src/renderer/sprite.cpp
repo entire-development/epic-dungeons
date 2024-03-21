@@ -22,6 +22,10 @@ Sprite &Sprite::setScale(float factorX, float factorY) {
     return *this;
 }
 
+Vector2d Sprite::getScale() const {
+    return Vector2d(m_x_scale, m_y_scale);
+}
+
 Sprite &Sprite::setScale(float ratio) {
     m_x_scale = ratio, m_y_scale = ratio;
     return *this;

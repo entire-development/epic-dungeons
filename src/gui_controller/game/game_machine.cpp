@@ -3,6 +3,7 @@
 #include "states/cell_movement.h"
 #include "states/empty.h"
 #include "states/event.h"
+#include "states/game_over.h"
 #include "states/main.h"
 #include "states/move_transition.h"
 #include "states/post_event.h"
@@ -17,6 +18,7 @@ GameMachine::GameMachine() {
     addState<Empty>(GUIGameState::kEmpty);
     addState<Event>(GUIGameState::kEvent);
     addState<PostEvent>(GUIGameState::kPostEvent);
+    addState<GameOver>(GUIGameState::kGameOver);
     changeState(GUIGameState::kMain);
 }
 

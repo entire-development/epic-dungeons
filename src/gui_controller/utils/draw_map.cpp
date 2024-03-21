@@ -1,6 +1,8 @@
-
+#include "dungeon/dungeon.h"
+#include "engine/engine.h"
 #include "gui_controller/utils.h"
 #include "logging/logger.h"
+#include "renderer/graphics.h"
 #include <map>
 
 namespace gui {
