@@ -407,7 +407,7 @@ public:
                     cfg::WINDOW_HEIGHT * 0.82 + 60);
         }
 
-        dialogue_manager.draw(r);
+        dialogue_manager.draw(r, m_queue[m_current].lock()->getPortrait());
         r->display();
     }
 

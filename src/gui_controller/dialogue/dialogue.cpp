@@ -123,7 +123,8 @@ inline bool DialogueWindow::isFinished() {
     return m_is_finished;
 }
 
-void DialogueWindow::drawQuote(std::shared_ptr<graphics::Renderer> renderer) {
+void DialogueWindow::drawQuote(std::shared_ptr<graphics::Renderer> renderer,
+                               std::shared_ptr<graphics::Sprite> portrait) {
     // CONTAINER
     renderer->drawRec({
         .x = WINDOW_MARGIN,
@@ -136,9 +137,9 @@ void DialogueWindow::drawQuote(std::shared_ptr<graphics::Renderer> renderer) {
     });
 
     // PORTRAIT (REFACTOR LATER)
-    m_demo_sprite->toSize(PORTRAIT_SIZE, PORTRAIT_SIZE);
-    m_demo_sprite->setColor({255, 255, 255, 255});
-    renderer->draw(*m_demo_sprite, WINDOW_MARGIN, cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN);
+    portrait->toSize(PORTRAIT_SIZE, PORTRAIT_SIZE);
+    portrait->setColor({255, 255, 255, 255});
+    renderer->draw(*portrait, WINDOW_MARGIN, cfg::WINDOW_HEIGHT - DIALOGUE_WINDOW_HEIGHT + WINDOW_MARGIN);
 
     // TEXT
     uint32_t current_len = 0;
@@ -278,12 +279,12 @@ void DialogueManager::update(uint64_t delta_time) {
     m_dialogue_window.update(std::round(m_character_anim.get()));
 }
 
-void DialogueManager::draw(std::shared_ptr<graphics::Renderer> renderer) {
+void DialogueManager::draw(std::shared_ptr<graphics::Renderer> renderer, std::shared_ptr<graphics::Sprite> portrait) {
     if (m_is_active && m_current_quote != nullptr) {
         if (m_is_dialogue) {
             m_dialogue_window.drawChoice(renderer, m_choice_lines, m_active_choice, m_next_steps);
         } else {
-            m_dialogue_window.drawQuote(renderer);
+            m_dialogue_window.drawQuote(renderer, portrait);
         }
     }
 }

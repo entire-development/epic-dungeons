@@ -61,7 +61,7 @@ public:
     DialogueWindow();
     DialogueWindow(const std::string &content, const std::string &sprite);
     void changeQuote(const std::string &new_content, const std::string &new_sprite);
-    void drawQuote(std::shared_ptr<graphics::Renderer> renderer);
+    void drawQuote(std::shared_ptr<graphics::Renderer> renderer, std::shared_ptr<graphics::Sprite> sprite);
     void drawChoice(std::shared_ptr<graphics::Renderer> renderer, std::vector<std::string> lines,
                     uint32_t active_choice, std::vector<script::ScriptNode *> next_steps) const;
     void update(uint32_t current_character);
@@ -91,7 +91,7 @@ public:
     void nextQuote(gui::game::GameMachine *gm);
     void skip();
     void update(uint64_t delta_time);
-    void draw(std::shared_ptr<graphics::Renderer> renderer);
+    void draw(std::shared_ptr<graphics::Renderer> renderer, std::shared_ptr<graphics::Sprite> sprite);
     bool isActive() const;
     bool isChoice() const;
     void handleActionKeyPressed(
