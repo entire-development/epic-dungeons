@@ -77,9 +77,8 @@ public:
                   [](const std::weak_ptr<views::Entity> &a, const std::weak_ptr<views::Entity> &b) {
                       return a.lock()->getEntity().lock()->getSpeed() > b.lock()->getEntity().lock()->getSpeed();
                   });
-        logging::debug("First in queue: " + std::to_string(m_queue[0].lock()->getEntity().lock()->getSpeed()));
-        logging::debug("Last in queue: "
-                       + std::to_string(m_queue[m_queue.size() - 1].lock()->getEntity().lock()->getSpeed()));
+        dialogue_manager.setEntryPoint(oneTimeQuote("Queue First in queue: " + std::to_string(m_queue[0].lock()->getEntity().lock()->getSpeed())
+        + "        Last in queue: "+ std::to_string(m_queue[m_queue.size() - 1].lock()->getEntity().lock()->getSpeed())), gm);
 
         render(gm);
     }
@@ -97,6 +96,7 @@ public:
     void skill_selection(GameMachine *gm) {
         std::shared_ptr<views::Entity> attacker = m_queue[m_current].lock();
         std::vector<std::shared_ptr<engine::skills::Skill>> skills = attacker->getEntity().lock()->getSkills();
+        if (!dialogue_manager.isActive()) return;
         if (m_keyboard.isClicked(keyboard::KEY_ENTER) || m_keyboard.isClicked(keyboard::KEY_SPACE)
             || m_keyboard.isClicked(keyboard::KEY_W) || m_keyboard.isClicked(keyboard::KEY_UP)) {
             m_skill = std::dynamic_pointer_cast<engine::skills::CombatSkill>(skills[m_selected_skill]);
@@ -184,25 +184,37 @@ public:
         std::shared_ptr<engine::entities::Entity> entity = attacker->getEntity().lock();
         std::shared_ptr<engine::entities::Party> target_party = gm->m_engine.lock()->getParty();
 
+        dl::script::QuoteNode* quote1 = nullptr;
+        dl::script::QuoteNode* tail = nullptr;
+
         for (auto &defender : m_defenders) {
             std::shared_ptr<engine::entities::Entity> target = defender.lock()->getEntity().lock();
             engine::skills::AttackResult result = target->takeAttack(entity, m_skill.lock());
             if (result.isHit) {
-                logging::debug("Hit! Damage: " + std::to_string(result.damage));
-                if (result.isCritical)
-                    logging::debug("Critical hit!");
+                quote1 = new dl::script::QuoteNode(
+                        "Hit! Damage:" + std::to_string(result.damage),
+                        "123", nullptr, [](gui::game::GameMachine* gm){});
+                tail = quote1;
+
                 if (result.damage > 0) {
-                    logging::debug("Target health: " + std::to_string(target->getHealth()));
+                    quote1->next = new dl::script::QuoteNode(
+                            target->getName() + " target health: " + std::to_string(target->getHealth()),
+                            "123", nullptr, [](gui::game::GameMachine* gm){});
                 }
             } else {
+                quote1 = new dl::script::QuoteNode(
+                        " Miss:" + std::to_string(result.damage),
+                        "123", nullptr, [](gui::game::GameMachine* gm){});
                 logging::debug("Miss!");
             }
+            dialogue_manager.setEntryPoint(quote1, gm);
         }
         m_current = (m_current + 1) % m_queue.size();
         m_state = BattleState::kNone;
     }
 
     void defender_selection(GameMachine *gm) {
+        if (!dialogue_manager.isActive()) return;
         if (m_keyboard.isClicked(keyboard::KEY_ENTER)) {
             for (auto &enemy : m_enemies) {
                 enemy->setSelection(views::Entity::Selection::kNone);
@@ -297,7 +309,6 @@ public:
 
     virtual void update(GameMachine *gm) {
         m_keyboard.update();
-        dialogue_manager.handleKeyboard(m_keyboard, gm);
         switch (m_state) {
             case BattleState::kNone:
                 routing(gm);
@@ -317,6 +328,7 @@ public:
             default:
                 break;
         }
+        dialogue_manager.handleKeyboard(m_keyboard, gm);
         render(gm);
     }
 
