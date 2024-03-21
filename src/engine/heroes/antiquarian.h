@@ -4,8 +4,8 @@
 #include "engine/armor/antiquarian.h"
 #include "engine/weapons/makeshift_censer.h"
 
+#include "engine/attacks/festering_vapours.h"
 #include "engine/attacks/kris_stab.h"
-#include "engine/attacks/restering_vapouts.h"
 
 namespace engine {
 namespace entities {

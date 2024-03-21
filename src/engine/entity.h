@@ -85,6 +85,8 @@ public:
 
     virtual const int32_t calculateDamage(const std::shared_ptr<skills::CombatSkill> &skill) const;
 
+    const int32_t getSpeed() const;
+
     const uint8_t getPosition() const;
 
     const std::string &getId() const {
@@ -99,12 +101,16 @@ public:
         return m_resistances;
     }
 
+    const std::shared_ptr<Party> getParty() const {
+        return m_party.lock();
+    }
+
 protected:
     std::string m_id;
     std::string m_name;
     bool m_is_alive = true;
-    uint32_t m_max_health = 20;
-    uint32_t m_health = 20;
+    int32_t m_max_health = 20;
+    int32_t m_health = 20;
     std::shared_ptr<items::Weapon> m_weapon = nullptr;
     std::shared_ptr<items::Armor> m_armor = nullptr;
     std::vector<std::shared_ptr<skills::Skill>> m_skills;
@@ -154,6 +160,16 @@ public:
         return m_members.size();
     }
 
+    uint8_t getAliveMembersCount() {
+        uint8_t count = 0;
+        for (auto &member : m_members) {
+            if (member->isAlive()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     uint8_t getMemberPosition(const std::shared_ptr<const Entity> &member) {
         for (uint8_t i = 0; i < m_members.size(); i++) {
             if (m_members[i] == member) {
@@ -171,6 +187,15 @@ public:
         }
     }
 
+    void arrangeMembers() {
+        // move dead members to the end
+        // bubble sort
+        for (uint8_t i = 0; i < m_members.size(); i++) {
+            while (i + 1 < m_members.size() && !m_members[i]->isAlive() && m_members[i + 1]->isAlive())
+                swapMembers(i, i + 1);
+        }
+    }
+
     void clear() {
         for (auto &member : m_members) {
             member->m_party.reset();
@@ -179,7 +204,8 @@ public:
     }
 
     void memberDied(const std::shared_ptr<Entity> &member) {
-        removeMember(member);
+        arrangeMembers();
+        // removeMember(member);
     }
 
 protected:

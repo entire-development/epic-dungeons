@@ -1,5 +1,6 @@
 #include "entity.h"
 #include "item.h"
+#include "logging/logger.h"
 #include "skill.h"
 
 namespace engine {
@@ -39,6 +40,15 @@ const int32_t Entity::calculateCritChance(const std::shared_ptr<skills::CombatSk
     return crit_chance;
 }
 
+const int32_t Entity::getSpeed() const {
+    int32_t speed = 0;
+    if (m_weapon)
+        speed += m_weapon->speedMod;
+    if (m_armor)
+        speed += m_armor->speedMod;
+    return speed;
+}
+
 const skills::AttackResult Entity::takeAttack(const std::shared_ptr<Entity> &attacker,
                                               const std::shared_ptr<skills::CombatSkill> &skill) {
     skills::AttackResult result;
@@ -53,6 +63,7 @@ const skills::AttackResult Entity::takeAttack(const std::shared_ptr<Entity> &att
         if (rand() % 100 < m_armor->protectionMod) {
             result.damage = result.damage * (100 - m_armor->protectionMod) / 100;
         }
+        logging::debug(attacker->getName() + " attacks " + getName() + " with " + skill->name);
         updateHealth(-result.damage);
     }
     return result;
@@ -66,6 +77,7 @@ const uint8_t Entity::getPosition() const {
 }
 
 void Entity::updateHealth(const int32_t &amount) {
+    int32_t old_health = m_health;
     m_health += amount;
     if (m_health > m_max_health) {
         m_health = m_max_health;
@@ -77,6 +89,7 @@ void Entity::updateHealth(const int32_t &amount) {
             m_party.lock()->memberDied(shared_from_this());
         }
     }
+    logging::debug(m_name + " health: " + std::to_string(old_health) + " -> " + std::to_string(m_health));
 }
 
 }   // namespace entities
