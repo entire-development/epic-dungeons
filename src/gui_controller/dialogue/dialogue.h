@@ -20,7 +20,7 @@ const uint32_t WINDOW_MARGIN = 16;
 const uint32_t WINDOW_PADDING = 8;
 const uint32_t PORTRAIT_SIZE = DIALOGUE_WINDOW_HEIGHT - WINDOW_MARGIN * 2;
 const uint32_t LINE_HEIGHT = 36;    // pixels
-const uint32_t LINE_LENGTH = 47;    // characters
+const uint32_t LINE_LENGTH = 80;    // characters
 const uint32_t CHAR_WIDTH = 18;     // pixels
 
 std::string preprocessString(const std::string& str);

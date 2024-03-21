@@ -192,18 +192,18 @@ public:
             engine::skills::AttackResult result = target->takeAttack(entity, m_skill.lock());
             if (result.isHit) {
                 quote1 = new dl::script::QuoteNode(
-                        "Hit! Damage:" + std::to_string(result.damage),
+                        "Hit! Damage: [color=#ee2222] " + std::to_string(result.damage) + (result.isCritical ? " CRITICAL " : "") + " [/color]",
                         "123", nullptr, [](gui::game::GameMachine* gm){});
                 tail = quote1;
 
                 if (result.damage > 0) {
                     quote1->next = new dl::script::QuoteNode(
-                            target->getName() + " target health: " + std::to_string(target->getHealth()),
+                            "targeted: [color=#66ff66] " + target->getName() + " [/color] health: " + std::to_string(target->getHealth()),
                             "123", nullptr, [](gui::game::GameMachine* gm){});
                 }
             } else {
                 quote1 = new dl::script::QuoteNode(
-                        " Miss:" + std::to_string(result.damage),
+                        " Miss!",
                         "123", nullptr, [](gui::game::GameMachine* gm){});
                 logging::debug("Miss!");
             }
