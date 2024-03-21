@@ -34,6 +34,8 @@ public:
     [[nodiscard]] coords get_room(int id) const;
     void erase_room(int id);
 
+    static std::vector<coords> neighbors(int y, int x, int dist = 1);
+    static std::vector<coords> corners(int y, int x);
     [[nodiscard]] coords get_end(int y, int x, coords from = coords(-1, -1)) const;
     [[nodiscard]] size_t get_path_length(int y, int x, coords from = coords(-1, -1)) const;
     [[nodiscard]] std::shared_ptr<std::deque<coords>> get_path(int y, int x, coords from = coords(-1, -1)) const;

@@ -30,11 +30,6 @@ public:
     void setSeed(unsigned int value);
     void setRandomSeed();
 
-public:
-    [[nodiscard]] unsigned int getSeed() const;
-    void setSeed(unsigned int value);
-    void setRandomSeed();
-
     void build() final;
     [[nodiscard]] std::shared_ptr<Dungeon> getDungeon() const final;
 };
